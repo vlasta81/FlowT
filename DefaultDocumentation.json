@@ -1,0 +1,149 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Doraku/DefaultDocumentation/master/source/DefaultDocumentation.Common/Configuration/Settings.schema.json",
+  "LogLevel": "Information",
+  "AssemblyPageName": "index",
+  "GeneratedAccessModifiers": "Api",
+  "IncludeUndocumentedItems": false,
+  "GeneratedPages": "Namespaces,Types,Members",
+  "LinksOutputFilePath": "docs/FlowT.links",
+  "AssemblyFilePath": "src/FlowT/bin/Release/net10.0/FlowT.dll",
+  "DocumentationFilePath": "src/FlowT/bin/Release/net10.0/FlowT.xml",
+  "OutputDirectoryPath": "docs/api",
+  "ProjectName": "FlowT", 
+  "LinksBaseUrl": "https://github.com/vlasta81/FlowT/blob/master/docs/api/",
+  "FileNameFactory": "NameAndMd5Mix",
+  "Sections": [
+    "Header",
+    "Default",
+    "Footer"
+  ],
+  "Markdown": {
+    "NestedTypeVisibilities": "Namespace",
+    "RemoveFileExtensionFromUrl": false,
+    "HandleLineBreak": false,
+    "InvalidCharToTrimRegex": "[\\=\\ ]",
+    "InvalidCharToReplaceRegex": "[\\\\<>:\\*\\?]",
+    "InvalidCharReplacement": "_",
+    "TableOfContentsModes": "Grouped,IncludeSummary",
+    "UrlFormat": "[{0}]({1} '{2}')",
+    "UseFullUrl": false
+  },
+  "AssemblyDocItem": {
+    "Sections": [
+      "Title",
+      "summary",
+      "TableOfContents"
+    ]
+  },
+  "NamespaceDocItem": {
+    "Sections": [
+      "Title",
+      "summary",
+      "TableOfContents"
+    ]
+  },
+  "ClassDocItem": {
+    "Sections": [
+      "Title",
+      "summary",
+      "Definition",
+      "TypeParameters",
+      "Inheritance",
+      "Derived",
+      "Implement",
+      "example",
+      "remarks",
+      "seealso",
+      "Constructors",
+      "Fields",
+      "Properties",
+      "Methods",
+      "Events",
+      "Operators",
+      "ExplicitInterfaceImplementations"
+    ]
+  },
+  "StructDocItem": {
+    "Sections": [
+      "Title",
+      "summary",
+      "Definition",
+      "TypeParameters",
+      "Implement",
+      "example",
+      "remarks",
+      "seealso",
+      "Constructors",
+      "Fields",
+      "Properties",
+      "Methods",
+      "Events",
+      "Operators",
+      "ExplicitInterfaceImplementations"
+    ]
+  },
+  "InterfaceDocItem": {
+    "Sections": [
+      "Title",
+      "summary",
+      "Definition",
+      "TypeParameters",
+      "Derived",
+      "example",
+      "remarks",
+      "seealso",
+      "Properties",
+      "Methods",
+      "Events"
+    ]
+  },
+  "EnumDocItem": {
+    "Sections": [
+      "Title",
+      "summary",
+      "Definition",
+      "example",
+      "remarks",
+      "seealso",
+      "EnumFields"
+    ]
+  },
+  "DelegateDocItem": {
+    "Sections": [
+      "Title",
+      "summary",
+      "Definition",
+      "TypeParameters",
+      "Parameters",
+      "returns",
+      "example",
+      "remarks",
+      "seealso"
+    ]
+  },
+  "MethodDocItem": {
+    "Sections": [
+      "Title",
+      "summary",
+      "Definition",
+      "TypeParameters",
+      "Parameters",
+      "returns",
+      "exception",
+      "example",
+      "remarks",
+      "seealso"
+    ]
+  },
+  "PropertyDocItem": {
+    "Sections": [
+      "Title",
+      "summary",
+      "Definition",
+      "value",
+      "example",
+      "remarks",
+      "seealso"
+    ]
+  }
+}

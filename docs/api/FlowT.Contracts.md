@@ -1,0 +1,22 @@
+## FlowT\.Contracts Namespace
+- **[IEventHandler&lt;TEvent&gt;](IEventHandler_TEvent_.md 'FlowT\.Contracts\.IEventHandler\<TEvent\>')**
+  - **[HandleAsync\(TEvent, CancellationToken\)](IEventHandler_TEvent_.HandleAsync.QGU5J0YMBY6L5QAEL753CRBJ4.md 'FlowT\.Contracts\.IEventHandler\<TEvent\>\.HandleAsync\(TEvent, System\.Threading\.CancellationToken\)')**
+- **[IFlow&lt;TRequest,TResponse&gt;](IFlow_TRequest,TResponse_.md 'FlowT\.Contracts\.IFlow\<TRequest,TResponse\>')**
+  - **[ExecuteAsync\(TRequest, FlowContext\)](IFlow_TRequest,TResponse_.ExecuteAsync.md#FlowT.Contracts.IFlow_TRequest,TResponse_.ExecuteAsync(TRequest,FlowT.FlowContext) 'FlowT\.Contracts\.IFlow\<TRequest,TResponse\>\.ExecuteAsync\(TRequest, FlowT\.FlowContext\)')**
+  - **[ExecuteAsync\(TRequest, HttpContext\)](IFlow_TRequest,TResponse_.ExecuteAsync.md#FlowT.Contracts.IFlow_TRequest,TResponse_.ExecuteAsync(TRequest,Microsoft.AspNetCore.Http.HttpContext) 'FlowT\.Contracts\.IFlow\<TRequest,TResponse\>\.ExecuteAsync\(TRequest, Microsoft\.AspNetCore\.Http\.HttpContext\)')**
+  - **[ExecuteAsync\(TRequest, IServiceProvider, CancellationToken\)](IFlow_TRequest,TResponse_.ExecuteAsync.md#FlowT.Contracts.IFlow_TRequest,TResponse_.ExecuteAsync(TRequest,System.IServiceProvider,System.Threading.CancellationToken) 'FlowT\.Contracts\.IFlow\<TRequest,TResponse\>\.ExecuteAsync\(TRequest, System\.IServiceProvider, System\.Threading\.CancellationToken\)')**
+- **[IFlowBuilder&lt;TRequest,TResponse&gt;](IFlowBuilder_TRequest,TResponse_.md 'FlowT\.Contracts\.IFlowBuilder\<TRequest,TResponse\>')**
+  - **[Check&lt;TSpec&gt;\(\)](IFlowBuilder_TRequest,TResponse_.Check_TSpec_().md 'FlowT\.Contracts\.IFlowBuilder\<TRequest,TResponse\>\.Check\<TSpec\>\(\)')**
+  - **[Handle&lt;THandler&gt;\(\)](IFlowBuilder_TRequest,TResponse_.Handle_THandler_().md 'FlowT\.Contracts\.IFlowBuilder\<TRequest,TResponse\>\.Handle\<THandler\>\(\)')**
+  - **[OnInterrupt\(Func&lt;FlowInterrupt&lt;object&gt;,TResponse&gt;\)](IFlowBuilder_TRequest,TResponse_.OnInterrupt.GUDAEN4XYZGDLTYRH92RZPLYC.md 'FlowT\.Contracts\.IFlowBuilder\<TRequest,TResponse\>\.OnInterrupt\(System\.Func\<FlowT\.FlowInterrupt\<object\>,TResponse\>\)')**
+  - **[Use&lt;TPolicy&gt;\(\)](IFlowBuilder_TRequest,TResponse_.Use_TPolicy_().md 'FlowT\.Contracts\.IFlowBuilder\<TRequest,TResponse\>\.Use\<TPolicy\>\(\)')**
+- **[IFlowHandler&lt;TRequest,TResponse&gt;](IFlowHandler_TRequest,TResponse_.md 'FlowT\.Contracts\.IFlowHandler\<TRequest,TResponse\>')**
+  - **[HandleAsync\(TRequest, FlowContext\)](IFlowHandler_TRequest,TResponse_.HandleAsync.N1GT85IT7Q6IH7COL3H8PI7IC.md 'FlowT\.Contracts\.IFlowHandler\<TRequest,TResponse\>\.HandleAsync\(TRequest, FlowT\.FlowContext\)')**
+- **[IFlowModule](IFlowModule.md 'FlowT\.Contracts\.IFlowModule')**
+  - **[MapEndpoints\(IEndpointRouteBuilder\)](IFlowModule.MapEndpoints.PIXQMFCULRCV7AUDTC6OLRBBC.md 'FlowT\.Contracts\.IFlowModule\.MapEndpoints\(Microsoft\.AspNetCore\.Routing\.IEndpointRouteBuilder\)')**
+  - **[Register\(IServiceCollection\)](IFlowModule.Register.ZE388V5XQHD23SSNAQ7TEOOCE.md 'FlowT\.Contracts\.IFlowModule\.Register\(Microsoft\.Extensions\.DependencyInjection\.IServiceCollection\)')**
+- **[IFlowPolicy&lt;TRequest,TResponse&gt;](IFlowPolicy_TRequest,TResponse_.md 'FlowT\.Contracts\.IFlowPolicy\<TRequest,TResponse\>')**
+- **[IFlowSpecification&lt;TRequest&gt;](IFlowSpecification_TRequest_.md 'FlowT\.Contracts\.IFlowSpecification\<TRequest\>')**
+  - **[CheckAsync\(TRequest, FlowContext\)](IFlowSpecification_TRequest_.CheckAsync.NZM8Q48866JUC17QS9N2RABZ8.md 'FlowT\.Contracts\.IFlowSpecification\<TRequest\>\.CheckAsync\(TRequest, FlowT\.FlowContext\)')**
+- **[IStreamableResponse](IStreamableResponse.md 'FlowT\.Contracts\.IStreamableResponse')**
+  - **[WriteToStreamAsync\(Utf8JsonWriter, CancellationToken\)](IStreamableResponse.WriteToStreamAsync.7USWWX1IJCBOGRK21IFII23O5.md 'FlowT\.Contracts\.IStreamableResponse\.WriteToStreamAsync\(System\.Text\.Json\.Utf8JsonWriter, System\.Threading\.CancellationToken\)')**

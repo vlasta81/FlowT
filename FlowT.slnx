@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="benchmarks/FlowT.Benchmarks/FlowT.Benchmarks.csproj" Id="06ba36d5-711a-41e9-b742-f724026b2e55" />
+  <Project Path="samples/FlowT.SampleApp/FlowT.SampleApp.csproj" />
+  <Project Path="src/FlowT/FlowT.csproj" />
+  <Project Path="src/FlowT.Analyzers/FlowT.Analyzers.csproj" />
+  <Project Path="tests/FlowT.Tests/FlowT.Tests.csproj" />
+</Solution>

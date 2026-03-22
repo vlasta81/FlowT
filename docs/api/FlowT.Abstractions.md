@@ -1,0 +1,33 @@
+## FlowT\.Abstractions Namespace
+- **[FileStreamResponse](FileStreamResponse.md 'FlowT\.Abstractions\.FileStreamResponse')**
+  - **[ContentType](FileStreamResponse.ContentType.md 'FlowT\.Abstractions\.FileStreamResponse\.ContentType')**
+  - **[EnableRangeProcessing](FileStreamResponse.EnableRangeProcessing.md 'FlowT\.Abstractions\.FileStreamResponse\.EnableRangeProcessing')**
+  - **[EntityTag](FileStreamResponse.EntityTag.md 'FlowT\.Abstractions\.FileStreamResponse\.EntityTag')**
+  - **[FileDownloadName](FileStreamResponse.FileDownloadName.md 'FlowT\.Abstractions\.FileStreamResponse\.FileDownloadName')**
+  - **[LastModified](FileStreamResponse.LastModified.md 'FlowT\.Abstractions\.FileStreamResponse\.LastModified')**
+  - **[Stream](FileStreamResponse.Stream.md 'FlowT\.Abstractions\.FileStreamResponse\.Stream')**
+  - **[Dispose\(\)](FileStreamResponse.Dispose().md 'FlowT\.Abstractions\.FileStreamResponse\.Dispose\(\)')**
+- **[FlowDefinition&lt;TRequest,TResponse&gt;](FlowDefinition_TRequest,TResponse_.md 'FlowT\.Abstractions\.FlowDefinition\<TRequest,TResponse\>')**
+  - **[Configure\(IFlowBuilder&lt;TRequest,TResponse&gt;\)](FlowDefinition_TRequest,TResponse_.Configure.G5IBOHYAF75GAD6HUZKJ4HLW1.md 'FlowT\.Abstractions\.FlowDefinition\<TRequest,TResponse\>\.Configure\(FlowT\.Contracts\.IFlowBuilder\<TRequest,TResponse\>\)')**
+  - **[ExecuteAsync\(TRequest, FlowContext\)](FlowDefinition_TRequest,TResponse_.ExecuteAsync.md#FlowT.Abstractions.FlowDefinition_TRequest,TResponse_.ExecuteAsync(TRequest,FlowT.FlowContext) 'FlowT\.Abstractions\.FlowDefinition\<TRequest,TResponse\>\.ExecuteAsync\(TRequest, FlowT\.FlowContext\)')**
+  - **[ExecuteAsync\(TRequest, HttpContext\)](FlowDefinition_TRequest,TResponse_.ExecuteAsync.md#FlowT.Abstractions.FlowDefinition_TRequest,TResponse_.ExecuteAsync(TRequest,Microsoft.AspNetCore.Http.HttpContext) 'FlowT\.Abstractions\.FlowDefinition\<TRequest,TResponse\>\.ExecuteAsync\(TRequest, Microsoft\.AspNetCore\.Http\.HttpContext\)')**
+  - **[ExecuteAsync\(TRequest, IServiceProvider, CancellationToken\)](FlowDefinition_TRequest,TResponse_.ExecuteAsync.md#FlowT.Abstractions.FlowDefinition_TRequest,TResponse_.ExecuteAsync(TRequest,System.IServiceProvider,System.Threading.CancellationToken) 'FlowT\.Abstractions\.FlowDefinition\<TRequest,TResponse\>\.ExecuteAsync\(TRequest, System\.IServiceProvider, System\.Threading\.CancellationToken\)')**
+- **[FlowPlugin](FlowPlugin.md 'FlowT\.Abstractions\.FlowPlugin')**
+  - **[Context](FlowPlugin.Context.md 'FlowT\.Abstractions\.FlowPlugin\.Context')**
+- **[FlowPolicy&lt;TRequest,TResponse&gt;](FlowPolicy_TRequest,TResponse_.md 'FlowT\.Abstractions\.FlowPolicy\<TRequest,TResponse\>')**
+  - **[Next](FlowPolicy_TRequest,TResponse_.Next.md 'FlowT\.Abstractions\.FlowPolicy\<TRequest,TResponse\>\.Next')**
+  - **[HandleAsync\(TRequest, FlowContext\)](FlowPolicy_TRequest,TResponse_.HandleAsync.ZEI5927PM8BELMIBZRCA8CSYA.md 'FlowT\.Abstractions\.FlowPolicy\<TRequest,TResponse\>\.HandleAsync\(TRequest, FlowT\.FlowContext\)')**
+  - **[SetNext\(IFlowHandler&lt;TRequest,TResponse&gt;\)](FlowPolicy_TRequest,TResponse_.SetNext.KX0NCCWVOD11RV5WS8287E3M6.md 'FlowT\.Abstractions\.FlowPolicy\<TRequest,TResponse\>\.SetNext\(FlowT\.Contracts\.IFlowHandler\<TRequest,TResponse\>\)')**
+- **[PagedStreamResponse&lt;T&gt;](PagedStreamResponse_T_.md 'FlowT\.Abstractions\.PagedStreamResponse\<T\>')**
+  - **[HasMore](PagedStreamResponse_T_.HasMore.md 'FlowT\.Abstractions\.PagedStreamResponse\<T\>\.HasMore')**
+  - **[Items](PagedStreamResponse_T_.Items.md 'FlowT\.Abstractions\.PagedStreamResponse\<T\>\.Items')**
+  - **[Page](PagedStreamResponse_T_.Page.md 'FlowT\.Abstractions\.PagedStreamResponse\<T\>\.Page')**
+  - **[PageSize](PagedStreamResponse_T_.PageSize.md 'FlowT\.Abstractions\.PagedStreamResponse\<T\>\.PageSize')**
+  - **[TotalCount](PagedStreamResponse_T_.TotalCount.md 'FlowT\.Abstractions\.PagedStreamResponse\<T\>\.TotalCount')**
+  - **[WriteItemsAsync\(Utf8JsonWriter, CancellationToken\)](PagedStreamResponse_T_.WriteItemsAsync.3BUEEYED65S2UZWDAXNIZRQW4.md 'FlowT\.Abstractions\.PagedStreamResponse\<T\>\.WriteItemsAsync\(System\.Text\.Json\.Utf8JsonWriter, System\.Threading\.CancellationToken\)')**
+  - **[WriteMetadataAsync\(Utf8JsonWriter, CancellationToken\)](PagedStreamResponse_T_.WriteMetadataAsync.D471ZQWC2C2GZ4FCBUEGXT52C.md 'FlowT\.Abstractions\.PagedStreamResponse\<T\>\.WriteMetadataAsync\(System\.Text\.Json\.Utf8JsonWriter, System\.Threading\.CancellationToken\)')**
+- **[StreamableResponse](StreamableResponse.md 'FlowT\.Abstractions\.StreamableResponse')**
+  - **[WriteItemsAsync\(Utf8JsonWriter, CancellationToken\)](StreamableResponse.WriteItemsAsync.CVS78QU0H752PP2KHCH7W4ZTE.md 'FlowT\.Abstractions\.StreamableResponse\.WriteItemsAsync\(System\.Text\.Json\.Utf8JsonWriter, System\.Threading\.CancellationToken\)')**
+  - **[WriteMetadataAsync\(Utf8JsonWriter, CancellationToken\)](StreamableResponse.WriteMetadataAsync.IAO5PI95GRUPJ5TVUOYKECXT6.md 'FlowT\.Abstractions\.StreamableResponse\.WriteMetadataAsync\(System\.Text\.Json\.Utf8JsonWriter, System\.Threading\.CancellationToken\)')**
+  - **[WriteProperty\(Utf8JsonWriter, string, object\)](StreamableResponse.WriteProperty.H7HOIXU0WE1N5ZKQQVG550HJC.md 'FlowT\.Abstractions\.StreamableResponse\.WriteProperty\(System\.Text\.Json\.Utf8JsonWriter, string, object\)')**
+  - **[WriteToStreamAsync\(Utf8JsonWriter, CancellationToken\)](StreamableResponse.WriteToStreamAsync.CML4D3PJUL4719IEVFT8RLE2A.md 'FlowT\.Abstractions\.StreamableResponse\.WriteToStreamAsync\(System\.Text\.Json\.Utf8JsonWriter, System\.Threading\.CancellationToken\)')**

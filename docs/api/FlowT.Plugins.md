@@ -1,0 +1,35 @@
+## FlowT\.Plugins Namespace
+- **[CorrelationPlugin](CorrelationPlugin.md 'FlowT\.Plugins\.CorrelationPlugin')**
+  - **[CorrelationId](CorrelationPlugin.CorrelationId.md 'FlowT\.Plugins\.CorrelationPlugin\.CorrelationId')**
+- **[FlowTransactionPlugin](FlowTransactionPlugin.md 'FlowT\.Plugins\.FlowTransactionPlugin')**
+  - **[IsActive](FlowTransactionPlugin.IsActive.md 'FlowT\.Plugins\.FlowTransactionPlugin\.IsActive')**
+  - **[BeginAsync\(CancellationToken\)](FlowTransactionPlugin.BeginAsync.H96ZSN403FF8O1OGHHHKIMR8D.md 'FlowT\.Plugins\.FlowTransactionPlugin\.BeginAsync\(System\.Threading\.CancellationToken\)')**
+  - **[CommitAsync\(CancellationToken\)](FlowTransactionPlugin.CommitAsync.JM16GUNNG830XWX4FCKPUUTO4.md 'FlowT\.Plugins\.FlowTransactionPlugin\.CommitAsync\(System\.Threading\.CancellationToken\)')**
+  - **[RollbackAsync\(CancellationToken\)](FlowTransactionPlugin.RollbackAsync.H9406Y6BANJM4EFTFP610UME6.md 'FlowT\.Plugins\.FlowTransactionPlugin\.RollbackAsync\(System\.Threading\.CancellationToken\)')**
+- **[RetryStatePlugin](RetryStatePlugin.md 'FlowT\.Plugins\.RetryStatePlugin')**
+  - **[AttemptNumber](RetryStatePlugin.AttemptNumber.md 'FlowT\.Plugins\.RetryStatePlugin\.AttemptNumber')**
+  - **[RegisterAttempt\(\)](RetryStatePlugin.RegisterAttempt().md 'FlowT\.Plugins\.RetryStatePlugin\.RegisterAttempt\(\)')**
+  - **[ShouldRetry\(int\)](RetryStatePlugin.ShouldRetry.MD22918TZKO7C11L1AJFQ9XY3.md 'FlowT\.Plugins\.RetryStatePlugin\.ShouldRetry\(int\)')**
+- **[UserIdentityPlugin](UserIdentityPlugin.md 'FlowT\.Plugins\.UserIdentityPlugin')**
+  - **[Email](UserIdentityPlugin.Email.md 'FlowT\.Plugins\.UserIdentityPlugin\.Email')**
+  - **[IsAuthenticated](UserIdentityPlugin.IsAuthenticated.md 'FlowT\.Plugins\.UserIdentityPlugin\.IsAuthenticated')**
+  - **[Principal](UserIdentityPlugin.Principal.md 'FlowT\.Plugins\.UserIdentityPlugin\.Principal')**
+  - **[UserId](UserIdentityPlugin.UserId.md 'FlowT\.Plugins\.UserIdentityPlugin\.UserId')**
+  - **[IsInRole\(string\)](UserIdentityPlugin.IsInRole.3E0H6HI61SIPILR853PLYIM58.md 'FlowT\.Plugins\.UserIdentityPlugin\.IsInRole\(string\)')**
+- **[ICorrelationPlugin](ICorrelationPlugin.md 'FlowT\.Plugins\.ICorrelationPlugin')**
+  - **[CorrelationId](ICorrelationPlugin.CorrelationId.md 'FlowT\.Plugins\.ICorrelationPlugin\.CorrelationId')**
+- **[IRetryStatePlugin](IRetryStatePlugin.md 'FlowT\.Plugins\.IRetryStatePlugin')**
+  - **[AttemptNumber](IRetryStatePlugin.AttemptNumber.md 'FlowT\.Plugins\.IRetryStatePlugin\.AttemptNumber')**
+  - **[RegisterAttempt\(\)](IRetryStatePlugin.RegisterAttempt().md 'FlowT\.Plugins\.IRetryStatePlugin\.RegisterAttempt\(\)')**
+  - **[ShouldRetry\(int\)](IRetryStatePlugin.ShouldRetry.2TH4BANNUE8NHZ0RIT7QBT8O.md 'FlowT\.Plugins\.IRetryStatePlugin\.ShouldRetry\(int\)')**
+- **[ITransactionPlugin](ITransactionPlugin.md 'FlowT\.Plugins\.ITransactionPlugin')**
+  - **[IsActive](ITransactionPlugin.IsActive.md 'FlowT\.Plugins\.ITransactionPlugin\.IsActive')**
+  - **[BeginAsync\(CancellationToken\)](ITransactionPlugin.BeginAsync.68EP3056CKK4WKJMTJMX9YH56.md 'FlowT\.Plugins\.ITransactionPlugin\.BeginAsync\(System\.Threading\.CancellationToken\)')**
+  - **[CommitAsync\(CancellationToken\)](ITransactionPlugin.CommitAsync.POHH5V5FS278DV41Z3OFWY659.md 'FlowT\.Plugins\.ITransactionPlugin\.CommitAsync\(System\.Threading\.CancellationToken\)')**
+  - **[RollbackAsync\(CancellationToken\)](ITransactionPlugin.RollbackAsync.BWVSHBYF5S0FPTV4HXEEPD8E9.md 'FlowT\.Plugins\.ITransactionPlugin\.RollbackAsync\(System\.Threading\.CancellationToken\)')**
+- **[IUserIdentityPlugin](IUserIdentityPlugin.md 'FlowT\.Plugins\.IUserIdentityPlugin')**
+  - **[Email](IUserIdentityPlugin.Email.md 'FlowT\.Plugins\.IUserIdentityPlugin\.Email')**
+  - **[IsAuthenticated](IUserIdentityPlugin.IsAuthenticated.md 'FlowT\.Plugins\.IUserIdentityPlugin\.IsAuthenticated')**
+  - **[Principal](IUserIdentityPlugin.Principal.md 'FlowT\.Plugins\.IUserIdentityPlugin\.Principal')**
+  - **[UserId](IUserIdentityPlugin.UserId.md 'FlowT\.Plugins\.IUserIdentityPlugin\.UserId')**
+  - **[IsInRole\(string\)](IUserIdentityPlugin.IsInRole.S6ABSPTVZ4TLH1N8486QDTMA6.md 'FlowT\.Plugins\.IUserIdentityPlugin\.IsInRole\(string\)')**

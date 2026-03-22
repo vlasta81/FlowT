@@ -1,0 +1,159 @@
+https://github.com/vlasta81/FlowT/blob/master/docs/api/
+P:FlowT.FlowContext.Services|FlowContext.Services.md|Services
+P:FlowT.FlowContext.CancellationToken|FlowContext.CancellationToken.md|CancellationToken
+P:FlowT.FlowContext.HttpContext|FlowContext.HttpContext.md|HttpContext
+P:FlowT.FlowContext.FlowId|FlowContext.FlowId.md|FlowId
+P:FlowT.FlowContext.StartedAt|FlowContext.StartedAt.md|StartedAt
+M:FlowT.FlowContext.GetFlowIdString|FlowContext.GetFlowIdString().md|GetFlowIdString()
+M:FlowT.FlowContext.Service``1|FlowContext.Service_T_().md|Service<T>()
+M:FlowT.FlowContext.TryService``1|FlowContext.TryService_T_().md|TryService<T>()
+M:FlowT.FlowContext.Plugin``1|FlowContext.Plugin_T_().md|Plugin<T>()
+M:FlowT.FlowContext.Set``1(``0,System.String)|FlowContext.Set.LZGE5IPZA0GXP0P31NTUXUGV4.md|Set<T>(T, string)
+M:FlowT.FlowContext.TryGet``1(``0@,System.String)|FlowContext.TryGet.4XAIGJ4SSSXL7SY4M9NPRD072.md|TryGet<T>(T, string)
+M:FlowT.FlowContext.GetOrAdd``1(System.Func{``0},System.String)|FlowContext.GetOrAdd.md#FlowT.FlowContext.GetOrAdd_T_(System.Func_T_,string)|GetOrAdd<T>(Func<T>, string)
+M:FlowT.FlowContext.GetOrAdd``2(``1,System.Func{``1,``0},System.String)|FlowContext.GetOrAdd.md#FlowT.FlowContext.GetOrAdd_T,TArg_(TArg,System.Func_TArg,T_,string)|GetOrAdd<T,TArg>(TArg, Func<TArg,T>, string)
+M:FlowT.FlowContext.Push``1(``0,System.String)|FlowContext.Push.UTSVV79C1VFG6FB6OQRBCQ9N9.md|Push<T>(T, string)
+M:FlowT.FlowContext.StartTimer(System.String)|FlowContext.StartTimer.O49H5630KGO18IC0310CZ9BBC.md|StartTimer(string)
+M:FlowT.FlowContext.PublishAsync``1(``0,System.Threading.CancellationToken)|FlowContext.PublishAsync.58535BP5AHRSH68ZVN80J8OS4.md|PublishAsync<TEvent>(TEvent, CancellationToken)
+M:FlowT.FlowContext.PublishInBackground``1(``0,System.Threading.CancellationToken)|FlowContext.PublishInBackground.049U5MCYD6M7WRRW382XY7XU4.md|PublishInBackground<TEvent>(TEvent, CancellationToken)
+M:FlowT.FlowContext.ThrowIfCancellationRequested|FlowContext.ThrowIfCancellationRequested().md|ThrowIfCancellationRequested()
+M:FlowT.FlowContext.GetUser|FlowContext.GetUser().md|GetUser()
+M:FlowT.FlowContext.IsAuthenticated|FlowContext.IsAuthenticated().md|IsAuthenticated()
+M:FlowT.FlowContext.IsInRole(System.String)|FlowContext.IsInRole.39QMID3G38VUGIW0L9Q5E8MN7.md|IsInRole(string)
+M:FlowT.FlowContext.GetUserId|FlowContext.GetUserId().md|GetUserId()
+M:FlowT.FlowContext.GetHeader(System.String)|FlowContext.GetHeader.A4LE0Z86ZSCQUM0PPIO6VZCM3.md|GetHeader(string)
+M:FlowT.FlowContext.GetQueryParam(System.String)|FlowContext.GetQueryParam.LA5WFIL0OBBB748VFSRHAV8WE.md|GetQueryParam(string)
+M:FlowT.FlowContext.GetRouteValue(System.String)|FlowContext.GetRouteValue.R10MVU6ED1G4MMIUEL071IU57.md|GetRouteValue(string)
+M:FlowT.FlowContext.GetClientIpAddress|FlowContext.GetClientIpAddress().md|GetClientIpAddress()
+M:FlowT.FlowContext.SetStatusCode(System.Int32)|FlowContext.SetStatusCode.ES7YACAKZB6SJOGWGSB9UJ0H3.md|SetStatusCode(int)
+M:FlowT.FlowContext.SetResponseHeader(System.String,System.String)|FlowContext.SetResponseHeader.W755M4VEUQBX0ENFY5BD0ZZIA.md|SetResponseHeader(string, string)
+M:FlowT.FlowContext.SetCookie(System.String,System.String,Microsoft.AspNetCore.Http.CookieOptions)|FlowContext.SetCookie.71FW3VJTHULINCXN3529J1J5D.md|SetCookie(string, string, CookieOptions)
+N:FlowT|FlowT.md|FlowT
+T:FlowT.FlowContext|FlowContext.md|FlowContext
+M:FlowT.FlowFactory.Create``2(System.IServiceProvider,FlowT.Abstractions.FlowDefinition{``0,``1})|FlowFactory.Create.U2EH8NIBQQNREET0UO8WC21Z3.md|Create<TRequest,TResponse>(IServiceProvider, FlowDefinition<TRequest,TResponse>)
+T:FlowT.FlowFactory|FlowFactory.md|FlowFactory
+P:FlowT.FlowInterrupt`1.Response|FlowInterrupt_TResponse_.Response.md|Response
+P:FlowT.FlowInterrupt`1.Message|FlowInterrupt_TResponse_.Message.md|Message
+P:FlowT.FlowInterrupt`1.StatusCode|FlowInterrupt_TResponse_.StatusCode.md|StatusCode
+P:FlowT.FlowInterrupt`1.IsFailure|FlowInterrupt_TResponse_.IsFailure.md|IsFailure
+P:FlowT.FlowInterrupt`1.IsEarlyReturn|FlowInterrupt_TResponse_.IsEarlyReturn.md|IsEarlyReturn
+M:FlowT.FlowInterrupt`1.Fail(System.String,System.Int32)|FlowInterrupt_TResponse_.Fail.TLZDJP7RUR1C0E9B7A1C2RVQ2.md|Fail(string, int)
+M:FlowT.FlowInterrupt`1.Stop(`0,System.Int32)|FlowInterrupt_TResponse_.Stop.6744CQMUQJUAPJELPCZ34S1D6.md|Stop(TResponse, int)
+T:FlowT.FlowInterrupt`1|FlowInterrupt_TResponse_.md|FlowInterrupt<TResponse>
+P:FlowT.Plugins.ICorrelationPlugin.CorrelationId|ICorrelationPlugin.CorrelationId.md|CorrelationId
+N:FlowT.Plugins|FlowT.Plugins.md|FlowT.Plugins
+T:FlowT.Plugins.ICorrelationPlugin|ICorrelationPlugin.md|ICorrelationPlugin
+P:FlowT.Plugins.CorrelationPlugin.CorrelationId|CorrelationPlugin.CorrelationId.md|CorrelationId
+T:FlowT.Plugins.CorrelationPlugin|CorrelationPlugin.md|CorrelationPlugin
+P:FlowT.Plugins.IRetryStatePlugin.AttemptNumber|IRetryStatePlugin.AttemptNumber.md|AttemptNumber
+M:FlowT.Plugins.IRetryStatePlugin.ShouldRetry(System.Int32)|IRetryStatePlugin.ShouldRetry.2TH4BANNUE8NHZ0RIT7QBT8O.md|ShouldRetry(int)
+M:FlowT.Plugins.IRetryStatePlugin.RegisterAttempt|IRetryStatePlugin.RegisterAttempt().md|RegisterAttempt()
+T:FlowT.Plugins.IRetryStatePlugin|IRetryStatePlugin.md|IRetryStatePlugin
+P:FlowT.Plugins.RetryStatePlugin.AttemptNumber|RetryStatePlugin.AttemptNumber.md|AttemptNumber
+M:FlowT.Plugins.RetryStatePlugin.ShouldRetry(System.Int32)|RetryStatePlugin.ShouldRetry.MD22918TZKO7C11L1AJFQ9XY3.md|ShouldRetry(int)
+M:FlowT.Plugins.RetryStatePlugin.RegisterAttempt|RetryStatePlugin.RegisterAttempt().md|RegisterAttempt()
+T:FlowT.Plugins.RetryStatePlugin|RetryStatePlugin.md|RetryStatePlugin
+P:FlowT.Plugins.ITransactionPlugin.IsActive|ITransactionPlugin.IsActive.md|IsActive
+M:FlowT.Plugins.ITransactionPlugin.BeginAsync(System.Threading.CancellationToken)|ITransactionPlugin.BeginAsync.68EP3056CKK4WKJMTJMX9YH56.md|BeginAsync(CancellationToken)
+M:FlowT.Plugins.ITransactionPlugin.CommitAsync(System.Threading.CancellationToken)|ITransactionPlugin.CommitAsync.POHH5V5FS278DV41Z3OFWY659.md|CommitAsync(CancellationToken)
+M:FlowT.Plugins.ITransactionPlugin.RollbackAsync(System.Threading.CancellationToken)|ITransactionPlugin.RollbackAsync.BWVSHBYF5S0FPTV4HXEEPD8E9.md|RollbackAsync(CancellationToken)
+T:FlowT.Plugins.ITransactionPlugin|ITransactionPlugin.md|ITransactionPlugin
+P:FlowT.Plugins.FlowTransactionPlugin.IsActive|FlowTransactionPlugin.IsActive.md|IsActive
+M:FlowT.Plugins.FlowTransactionPlugin.BeginAsync(System.Threading.CancellationToken)|FlowTransactionPlugin.BeginAsync.H96ZSN403FF8O1OGHHHKIMR8D.md|BeginAsync(CancellationToken)
+M:FlowT.Plugins.FlowTransactionPlugin.CommitAsync(System.Threading.CancellationToken)|FlowTransactionPlugin.CommitAsync.JM16GUNNG830XWX4FCKPUUTO4.md|CommitAsync(CancellationToken)
+M:FlowT.Plugins.FlowTransactionPlugin.RollbackAsync(System.Threading.CancellationToken)|FlowTransactionPlugin.RollbackAsync.H9406Y6BANJM4EFTFP610UME6.md|RollbackAsync(CancellationToken)
+T:FlowT.Plugins.FlowTransactionPlugin|FlowTransactionPlugin.md|FlowTransactionPlugin
+P:FlowT.Plugins.IUserIdentityPlugin.UserId|IUserIdentityPlugin.UserId.md|UserId
+P:FlowT.Plugins.IUserIdentityPlugin.Email|IUserIdentityPlugin.Email.md|Email
+P:FlowT.Plugins.IUserIdentityPlugin.IsAuthenticated|IUserIdentityPlugin.IsAuthenticated.md|IsAuthenticated
+P:FlowT.Plugins.IUserIdentityPlugin.Principal|IUserIdentityPlugin.Principal.md|Principal
+M:FlowT.Plugins.IUserIdentityPlugin.IsInRole(System.String)|IUserIdentityPlugin.IsInRole.S6ABSPTVZ4TLH1N8486QDTMA6.md|IsInRole(string)
+T:FlowT.Plugins.IUserIdentityPlugin|IUserIdentityPlugin.md|IUserIdentityPlugin
+P:FlowT.Plugins.UserIdentityPlugin.Principal|UserIdentityPlugin.Principal.md|Principal
+P:FlowT.Plugins.UserIdentityPlugin.UserId|UserIdentityPlugin.UserId.md|UserId
+P:FlowT.Plugins.UserIdentityPlugin.Email|UserIdentityPlugin.Email.md|Email
+P:FlowT.Plugins.UserIdentityPlugin.IsAuthenticated|UserIdentityPlugin.IsAuthenticated.md|IsAuthenticated
+M:FlowT.Plugins.UserIdentityPlugin.IsInRole(System.String)|UserIdentityPlugin.IsInRole.3E0H6HI61SIPILR853PLYIM58.md|IsInRole(string)
+T:FlowT.Plugins.UserIdentityPlugin|UserIdentityPlugin.md|UserIdentityPlugin
+M:FlowT.Extensions.FlowEndpointExtensions.MapFlow``3(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder,System.String,System.String)|FlowEndpointExtensions.MapFlow.ZBG6HKQSPLZH3C384SRU1AT8.md|MapFlow<TFlow,TRequest,TResponse>(this IEndpointRouteBuilder, string, string)
+N:FlowT.Extensions|FlowT.Extensions.md|FlowT.Extensions
+T:FlowT.Extensions.FlowEndpointExtensions|FlowEndpointExtensions.md|FlowEndpointExtensions
+M:FlowT.Extensions.FlowEndpointMapperExtensions.MapFlowModules(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder)|FlowEndpointMapperExtensions.MapFlowModules.MPWB8OTTOSWH4M1EE8S1VUYG6.md|MapFlowModules(this IEndpointRouteBuilder)
+T:FlowT.Extensions.FlowEndpointMapperExtensions|FlowEndpointMapperExtensions.md|FlowEndpointMapperExtensions
+M:FlowT.Extensions.FlowServiceCollectionExtensions.AddFlowModules(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.Assembly[])|FlowServiceCollectionExtensions.AddFlowModules.CRABQVK4FE6FJR6BTVIJUR4R9.md|AddFlowModules(this IServiceCollection, Assembly[])
+M:FlowT.Extensions.FlowServiceCollectionExtensions.AddFlows(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.Assembly[])|FlowServiceCollectionExtensions.AddFlows.X7RY68MYH6QHDKD789FMOXD6C.md|AddFlows(this IServiceCollection, Assembly[])
+M:FlowT.Extensions.FlowServiceCollectionExtensions.AddFlow``3(Microsoft.Extensions.DependencyInjection.IServiceCollection)|FlowServiceCollectionExtensions.AddFlow.IN2LROACCX9J5TGD4ZZ7N0FB4.md|AddFlow<TFlow,TRequest,TResponse>(this IServiceCollection)
+M:FlowT.Extensions.FlowServiceCollectionExtensions.AddFlowPlugin``2(Microsoft.Extensions.DependencyInjection.IServiceCollection)|FlowServiceCollectionExtensions.AddFlowPlugin.AIKE926MLT8W26WTMAF968EMC.md|AddFlowPlugin<TPlugin,TImpl>(this IServiceCollection)
+T:FlowT.Extensions.FlowServiceCollectionExtensions|FlowServiceCollectionExtensions.md|FlowServiceCollectionExtensions
+M:FlowT.Contracts.IEventHandler`1.HandleAsync(`0,System.Threading.CancellationToken)|IEventHandler_TEvent_.HandleAsync.QGU5J0YMBY6L5QAEL753CRBJ4.md|HandleAsync(TEvent, CancellationToken)
+N:FlowT.Contracts|FlowT.Contracts.md|FlowT.Contracts
+T:FlowT.Contracts.IEventHandler`1|IEventHandler_TEvent_.md|IEventHandler<TEvent>
+M:FlowT.Contracts.IFlow`2.ExecuteAsync(`0,FlowT.FlowContext)|IFlow_TRequest,TResponse_.ExecuteAsync.md#FlowT.Contracts.IFlow_TRequest,TResponse_.ExecuteAsync(TRequest,FlowT.FlowContext)|ExecuteAsync(TRequest, FlowContext)
+M:FlowT.Contracts.IFlow`2.ExecuteAsync(`0,Microsoft.AspNetCore.Http.HttpContext)|IFlow_TRequest,TResponse_.ExecuteAsync.md#FlowT.Contracts.IFlow_TRequest,TResponse_.ExecuteAsync(TRequest,Microsoft.AspNetCore.Http.HttpContext)|ExecuteAsync(TRequest, HttpContext)
+M:FlowT.Contracts.IFlow`2.ExecuteAsync(`0,System.IServiceProvider,System.Threading.CancellationToken)|IFlow_TRequest,TResponse_.ExecuteAsync.md#FlowT.Contracts.IFlow_TRequest,TResponse_.ExecuteAsync(TRequest,System.IServiceProvider,System.Threading.CancellationToken)|ExecuteAsync(TRequest, IServiceProvider, CancellationToken)
+T:FlowT.Contracts.IFlow`2|IFlow_TRequest,TResponse_.md|IFlow<TRequest,TResponse>
+M:FlowT.Contracts.IFlowBuilder`2.Check``1|IFlowBuilder_TRequest,TResponse_.Check_TSpec_().md|Check<TSpec>()
+M:FlowT.Contracts.IFlowBuilder`2.Use``1|IFlowBuilder_TRequest,TResponse_.Use_TPolicy_().md|Use<TPolicy>()
+M:FlowT.Contracts.IFlowBuilder`2.Handle``1|IFlowBuilder_TRequest,TResponse_.Handle_THandler_().md|Handle<THandler>()
+M:FlowT.Contracts.IFlowBuilder`2.OnInterrupt(System.Func{FlowT.FlowInterrupt{System.Object},`1})|IFlowBuilder_TRequest,TResponse_.OnInterrupt.GUDAEN4XYZGDLTYRH92RZPLYC.md|OnInterrupt(Func<FlowInterrupt<object>,TResponse>)
+T:FlowT.Contracts.IFlowBuilder`2|IFlowBuilder_TRequest,TResponse_.md|IFlowBuilder<TRequest,TResponse>
+M:FlowT.Contracts.IFlowHandler`2.HandleAsync(`0,FlowT.FlowContext)|IFlowHandler_TRequest,TResponse_.HandleAsync.N1GT85IT7Q6IH7COL3H8PI7IC.md|HandleAsync(TRequest, FlowContext)
+T:FlowT.Contracts.IFlowHandler`2|IFlowHandler_TRequest,TResponse_.md|IFlowHandler<TRequest,TResponse>
+M:FlowT.Contracts.IFlowModule.Register(Microsoft.Extensions.DependencyInjection.IServiceCollection)|IFlowModule.Register.ZE388V5XQHD23SSNAQ7TEOOCE.md|Register(IServiceCollection)
+M:FlowT.Contracts.IFlowModule.MapEndpoints(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder)|IFlowModule.MapEndpoints.PIXQMFCULRCV7AUDTC6OLRBBC.md|MapEndpoints(IEndpointRouteBuilder)
+T:FlowT.Contracts.IFlowModule|IFlowModule.md|IFlowModule
+T:FlowT.Contracts.IFlowPolicy`2|IFlowPolicy_TRequest,TResponse_.md|IFlowPolicy<TRequest,TResponse>
+M:FlowT.Contracts.IFlowSpecification`1.CheckAsync(`0,FlowT.FlowContext)|IFlowSpecification_TRequest_.CheckAsync.NZM8Q48866JUC17QS9N2RABZ8.md|CheckAsync(TRequest, FlowContext)
+T:FlowT.Contracts.IFlowSpecification`1|IFlowSpecification_TRequest_.md|IFlowSpecification<TRequest>
+M:FlowT.Contracts.IStreamableResponse.WriteToStreamAsync(System.Text.Json.Utf8JsonWriter,System.Threading.CancellationToken)|IStreamableResponse.WriteToStreamAsync.7USWWX1IJCBOGRK21IFII23O5.md|WriteToStreamAsync(Utf8JsonWriter, CancellationToken)
+T:FlowT.Contracts.IStreamableResponse|IStreamableResponse.md|IStreamableResponse
+M:FlowT.Attributes.FlowDefinitionAttribute.#ctor|FlowDefinitionAttribute.FlowDefinitionAttribute().md|FlowDefinitionAttribute()
+N:FlowT.Attributes|FlowT.Attributes.md|FlowT.Attributes
+T:FlowT.Attributes.FlowDefinitionAttribute|FlowDefinitionAttribute.md|FlowDefinitionAttribute
+P:FlowT.Attributes.FlowEndpointInfoAttribute.Summary|FlowEndpointInfoAttribute.Summary.md|Summary
+P:FlowT.Attributes.FlowEndpointInfoAttribute.Description|FlowEndpointInfoAttribute.Description.md|Description
+P:FlowT.Attributes.FlowEndpointInfoAttribute.Tags|FlowEndpointInfoAttribute.Tags.md|Tags
+M:FlowT.Attributes.FlowEndpointInfoAttribute.#ctor(System.String[])|FlowEndpointInfoAttribute..ctor.KOUN6NSNL42CFHVJ4ACRPUNB2.md|FlowEndpointInfoAttribute(string[])
+T:FlowT.Attributes.FlowEndpointInfoAttribute|FlowEndpointInfoAttribute.md|FlowEndpointInfoAttribute
+M:FlowT.Attributes.FlowModuleAttribute.#ctor|FlowModuleAttribute.FlowModuleAttribute().md|FlowModuleAttribute()
+T:FlowT.Attributes.FlowModuleAttribute|FlowModuleAttribute.md|FlowModuleAttribute
+P:FlowT.Abstractions.FileStreamResponse.Stream|FileStreamResponse.Stream.md|Stream
+P:FlowT.Abstractions.FileStreamResponse.ContentType|FileStreamResponse.ContentType.md|ContentType
+P:FlowT.Abstractions.FileStreamResponse.FileDownloadName|FileStreamResponse.FileDownloadName.md|FileDownloadName
+P:FlowT.Abstractions.FileStreamResponse.EnableRangeProcessing|FileStreamResponse.EnableRangeProcessing.md|EnableRangeProcessing
+P:FlowT.Abstractions.FileStreamResponse.EntityTag|FileStreamResponse.EntityTag.md|EntityTag
+P:FlowT.Abstractions.FileStreamResponse.LastModified|FileStreamResponse.LastModified.md|LastModified
+M:FlowT.Abstractions.FileStreamResponse.Dispose|FileStreamResponse.Dispose().md|Dispose()
+N:FlowT.Abstractions|FlowT.Abstractions.md|FlowT.Abstractions
+T:FlowT.Abstractions.FileStreamResponse|FileStreamResponse.md|FileStreamResponse
+M:FlowT.Abstractions.FlowDefinition`2.Configure(FlowT.Contracts.IFlowBuilder{`0,`1})|FlowDefinition_TRequest,TResponse_.Configure.G5IBOHYAF75GAD6HUZKJ4HLW1.md|Configure(IFlowBuilder<TRequest,TResponse>)
+M:FlowT.Abstractions.FlowDefinition`2.ExecuteAsync(`0,FlowT.FlowContext)|FlowDefinition_TRequest,TResponse_.ExecuteAsync.md#FlowT.Abstractions.FlowDefinition_TRequest,TResponse_.ExecuteAsync(TRequest,FlowT.FlowContext)|ExecuteAsync(TRequest, FlowContext)
+M:FlowT.Abstractions.FlowDefinition`2.ExecuteAsync(`0,Microsoft.AspNetCore.Http.HttpContext)|FlowDefinition_TRequest,TResponse_.ExecuteAsync.md#FlowT.Abstractions.FlowDefinition_TRequest,TResponse_.ExecuteAsync(TRequest,Microsoft.AspNetCore.Http.HttpContext)|ExecuteAsync(TRequest, HttpContext)
+M:FlowT.Abstractions.FlowDefinition`2.ExecuteAsync(`0,System.IServiceProvider,System.Threading.CancellationToken)|FlowDefinition_TRequest,TResponse_.ExecuteAsync.md#FlowT.Abstractions.FlowDefinition_TRequest,TResponse_.ExecuteAsync(TRequest,System.IServiceProvider,System.Threading.CancellationToken)|ExecuteAsync(TRequest, IServiceProvider, CancellationToken)
+T:FlowT.Abstractions.FlowDefinition`2|FlowDefinition_TRequest,TResponse_.md|FlowDefinition<TRequest,TResponse>
+P:FlowT.Abstractions.FlowPlugin.Context|FlowPlugin.Context.md|Context
+T:FlowT.Abstractions.FlowPlugin|FlowPlugin.md|FlowPlugin
+F:FlowT.Abstractions.FlowPolicy`2.Next|FlowPolicy_TRequest,TResponse_.Next.md|Next
+M:FlowT.Abstractions.FlowPolicy`2.SetNext(FlowT.Contracts.IFlowHandler{`0,`1})|FlowPolicy_TRequest,TResponse_.SetNext.KX0NCCWVOD11RV5WS8287E3M6.md|SetNext(IFlowHandler<TRequest,TResponse>)
+M:FlowT.Abstractions.FlowPolicy`2.HandleAsync(`0,FlowT.FlowContext)|FlowPolicy_TRequest,TResponse_.HandleAsync.ZEI5927PM8BELMIBZRCA8CSYA.md|HandleAsync(TRequest, FlowContext)
+T:FlowT.Abstractions.FlowPolicy`2|FlowPolicy_TRequest,TResponse_.md|FlowPolicy<TRequest,TResponse>
+P:FlowT.Abstractions.PagedStreamResponse`1.TotalCount|PagedStreamResponse_T_.TotalCount.md|TotalCount
+P:FlowT.Abstractions.PagedStreamResponse`1.Page|PagedStreamResponse_T_.Page.md|Page
+P:FlowT.Abstractions.PagedStreamResponse`1.PageSize|PagedStreamResponse_T_.PageSize.md|PageSize
+P:FlowT.Abstractions.PagedStreamResponse`1.HasMore|PagedStreamResponse_T_.HasMore.md|HasMore
+P:FlowT.Abstractions.PagedStreamResponse`1.Items|PagedStreamResponse_T_.Items.md|Items
+M:FlowT.Abstractions.PagedStreamResponse`1.WriteMetadataAsync(System.Text.Json.Utf8JsonWriter,System.Threading.CancellationToken)|PagedStreamResponse_T_.WriteMetadataAsync.D471ZQWC2C2GZ4FCBUEGXT52C.md|WriteMetadataAsync(Utf8JsonWriter, CancellationToken)
+M:FlowT.Abstractions.PagedStreamResponse`1.WriteItemsAsync(System.Text.Json.Utf8JsonWriter,System.Threading.CancellationToken)|PagedStreamResponse_T_.WriteItemsAsync.3BUEEYED65S2UZWDAXNIZRQW4.md|WriteItemsAsync(Utf8JsonWriter, CancellationToken)
+T:FlowT.Abstractions.PagedStreamResponse`1|PagedStreamResponse_T_.md|PagedStreamResponse<T>
+M:FlowT.Abstractions.StreamableResponse.WriteMetadataAsync(System.Text.Json.Utf8JsonWriter,System.Threading.CancellationToken)|StreamableResponse.WriteMetadataAsync.IAO5PI95GRUPJ5TVUOYKECXT6.md|WriteMetadataAsync(Utf8JsonWriter, CancellationToken)
+M:FlowT.Abstractions.StreamableResponse.WriteItemsAsync(System.Text.Json.Utf8JsonWriter,System.Threading.CancellationToken)|StreamableResponse.WriteItemsAsync.CVS78QU0H752PP2KHCH7W4ZTE.md|WriteItemsAsync(Utf8JsonWriter, CancellationToken)
+M:FlowT.Abstractions.StreamableResponse.WriteToStreamAsync(System.Text.Json.Utf8JsonWriter,System.Threading.CancellationToken)|StreamableResponse.WriteToStreamAsync.CML4D3PJUL4719IEVFT8RLE2A.md|WriteToStreamAsync(Utf8JsonWriter, CancellationToken)
+M:FlowT.Abstractions.StreamableResponse.WriteProperty(System.Text.Json.Utf8JsonWriter,System.String,System.Object)|StreamableResponse.WriteProperty.H7HOIXU0WE1N5ZKQQVG550HJC.md|WriteProperty(Utf8JsonWriter, string, object)
+T:FlowT.Abstractions.StreamableResponse|StreamableResponse.md|StreamableResponse
+M:FlowT.FlowContext.ScopeReverter.Dispose|FlowContext.ScopeReverter.Dispose().md|Dispose()
+T:FlowT.FlowContext.ScopeReverter|FlowContext.ScopeReverter.md|ScopeReverter
+M:FlowT.FlowContext.TimerDisposable.Dispose|FlowContext.TimerDisposable.Dispose().md|Dispose()
+T:FlowT.FlowContext.TimerDisposable|FlowContext.TimerDisposable.md|TimerDisposable
+?:FlowT.FlowContext.GetOrAdd|FlowContext.GetOrAdd.md|GetOrAdd
+?:FlowT.Contracts.IFlow`2.ExecuteAsync|IFlow_TRequest,TResponse_.ExecuteAsync.md|ExecuteAsync
+?:FlowT.Abstractions.FlowDefinition`2.ExecuteAsync|FlowDefinition_TRequest,TResponse_.ExecuteAsync.md|ExecuteAsync

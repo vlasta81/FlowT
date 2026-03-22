@@ -1,0 +1,17 @@
+# EditorConfig for FlowT Benchmarks
+# Benchmark-specific code style rules
+
+root = true
+
+[*.cs]
+# Benchmark methods can have long names for clarity
+dotnet_diagnostic.CA1707.severity = none
+
+# Benchmark code can use Task.Run in special cases
+dotnet_diagnostic.CA2007.severity = suggestion
+
+# Benchmark setup methods can be complex
+dotnet_diagnostic.CA1506.severity = none
+
+# Benchmarks can have many public methods
+dotnet_diagnostic.CA1822.severity = none

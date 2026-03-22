@@ -1,0 +1,57 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+		<!-- NuGet Package Metadata -->
+		<PackageId>FlowT</PackageId>
+		<IsPackable>true</IsPackable>
+		<Product>FlowT</Product>
+		<Description>FlowT is a high-performance orchestration library for .NET that implements the Chain of Responsibility pattern with a fluent API. Build maintainable, testable pipelines with specifications, policies, and handlers. Features: Type-safe flows, Named keys for context storage, ValueTask optimization, 9-10x faster than MediatR with 76-84% fewer allocations.</Description>
+		<PackageTags>orchestration;pipeline;chain-of-responsibility;cqrs;mediator;performance;async;dotnet;aspnetcore</PackageTags>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<PackageReleaseNotes>See CHANGELOG.md for detailed release notes.</PackageReleaseNotes>
+    <Version>1.1.2</Version>
+    <Authors>FlowT Contributors</Authors>
+    <PackageProjectUrl>https://github.com/vlasta81/FlowT</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <DevelopmentDependency>true</DevelopmentDependency>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    
+		<!-- Build Configuration -->
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
+		<!-- 
+			Version, Authors, Company, Copyright, RepositoryUrl, etc. 
+			are inherited from Directory.Build.props 
+		-->
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Folder Include="Attributes\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\..\README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- Reference analyzer project - will be built automatically -->
+		<ProjectReference Include="..\FlowT.Analyzers\FlowT.Analyzers.csproj" PrivateAssets="all" ReferenceOutputAssembly="false" SetTargetFramework="TargetFramework=netstandard2.0" />
+	</ItemGroup>
+
+	<!-- Include analyzer DLL in NuGet package -->
+	<ItemGroup>
+		<None Include="..\FlowT.Analyzers\bin\$(Configuration)\netstandard2.0\FlowT.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" Condition="Exists('..\FlowT.Analyzers\bin\$(Configuration)\netstandard2.0\FlowT.Analyzers.dll')" />
+	</ItemGroup>
+
+</Project>

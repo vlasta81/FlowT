@@ -1,0 +1,11 @@
+# BenchmarkDotNet artifacts
+BenchmarkDotNet.Artifacts/
+**/BenchmarkDotNet.Artifacts/
+
+# Benchmark results
+*.html
+*.csv
+*.rar
+
+# Logs
+*.log
