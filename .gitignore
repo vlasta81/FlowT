@@ -4,6 +4,8 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 COMMANDS.md
+CHANGELOG_old.md
+CONTRIBUTING_old.md
 
 # User-specific files
 *.rsuser

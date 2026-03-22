@@ -5,7 +5,6 @@
 [![.NET](https://img.shields.io/badge/.NET-10.0-purple.svg)](https://dotnet.microsoft.com/)
 [![Build](https://img.shields.io/badge/Build-Passing-brightgreen.svg)](https://github.com/vlasta81/FlowT)
 [![Tests](https://img.shields.io/badge/Tests-206%20Passing-brightgreen.svg)](tests/FlowT.Tests/)
-[![Coverage](https://codecov.io/gh/vlasta81/FlowT/branch/master/graph/badge.svg)](https://codecov.io/gh/vlasta81/FlowT)
 [![Analyzers](https://img.shields.io/badge/Analyzers-26%20Rules-blue.svg)](src/FlowT.Analyzers/README.md)
 
 **FlowT** is a high-performance orchestration library for .NET that implements the Chain of Responsibility pattern with a fluent API. Build maintainable, testable, and **ultra-fast** pipelines with specifications, policies, and handlers.
@@ -595,7 +594,6 @@ public class BadHandler : IFlowHandler<Request, Response>
 ### 📘 Getting Started
 - **[Quick Start](#-quick-start)** - 5-minute installation and basic example
 - **[Core Concepts](#-core-concepts)** - Modules, Flows, Context, Specifications, Policies
-- **[Contributing Guide](CONTRIBUTING.md)** - Setup, versioning, release process, task runner
 - **[Migration Guide: AddFlows() → AddFlow<>()](docs/MIGRATION_AddFlows.md)** - ⚠️ Migrate from deprecated AddFlows()
 
 ### 📚 API Reference
@@ -727,13 +725,7 @@ public class BadHandler : IFlowHandler<Request, Response>
 
 ```
 FlowT/
-├── tasks.ps1                           # ⭐ Unified task runner (start here)
-├── scripts/
-│   ├── build.ps1                       # Development build script
-│   ├── bump-version.ps1                # Version bumper
-│   └── release.ps1                     # Stable release script
-├── Directory.Build.props               # Centralized versioning
-├── CONTRIBUTING.md                     # Developer guide (setup, versioning, release)
+
 ├── CHANGELOG.md                        # Version history
 ├── src/
 │   ├── FlowT/                          # Core library (.NET 10 + .NET Standard 2.0)
@@ -769,41 +761,14 @@ FlowT/
 │   ├── FLOWCONTEXT.md                  # Complete FlowContext guide
 │   ├── PLUGINS.md                      # Plugin system guide
 │   └── FlowT.links                     # Direct links to API members
-├── .github/
-│   ├── workflows/ci.yml                # CI: build, test, coverage, badge update
-│   ├── workflows/release.yml           # CD: NuGet publish on git tag
-│   ├── workflows/benchmark.yml         # On-demand benchmarks
-│   ├── dependabot.yml                  # Automated dependency updates
-│   ├── ISSUE_TEMPLATE/                 # Bug report + feature request forms
-│   └── PULL_REQUEST_TEMPLATE.md        # PR checklist
 └── GenerateDefaultDocumentation.ps1    # Script to rebuild API docs
 ```
 
 ---
 
-## 🤝 Contributing
-
-Contributions are welcome! See **[CONTRIBUTING.md](CONTRIBUTING.md)** for the full guide.
-
 ### 🐛 Reporting Issues
 - Use [GitHub Issue Templates](https://github.com/vlasta81/FlowT/issues/new/choose): **Bug Report** or **Feature Request**
 - Include: .NET version, FlowT version, code sample, expected vs actual behavior
-
-### 💻 Submitting Code
-1. Fork the repository and create a feature branch
-2. Make changes following existing code style
-3. Add/update unit tests — all 206 must pass: `.\tasks.ps1 test`
-4. Update `CHANGELOG.md` under `[Unreleased]`
-5. Open a Pull Request (the PR template will guide you)
-
-### 📝 Quick Reference
-```powershell
-.\tasks.ps1 status      # project dashboard
-.\tasks.ps1 test        # run all tests
-.\tasks.ps1 changelog   # generate CHANGELOG entry from git log
-.\tasks.ps1 docs        # regenerate API documentation
-.\tasks.ps1 help        # full usage reference
-```
 
 ---
 
@@ -822,5 +787,5 @@ MIT License - see [LICENSE.txt](LICENSE.txt) file for details.
 
 ---
 
-**Made with ❤️ by [vlasta81](https://github.com/vlasta81) and FlowT Contributors**
+**Made with ❤️ by [vlasta81](https://github.com/vlasta81)**
 
