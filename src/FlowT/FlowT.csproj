@@ -10,7 +10,7 @@
     <Product>FlowT</Product>
     <Description>FlowT is a high-performance orchestration library for .NET that implements the Chain of Responsibility pattern with a fluent API. Build maintainable, testable pipelines with specifications, policies, and handlers.</Description>
     <PackageTags>orchestration;pipeline;chain-of-responsibility;cqrs;mediator;performance;async;dotnet;aspnetcore</PackageTags>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReadmeFile>README_NUGET.md</PackageReadmeFile>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReleaseNotes>See CHANGELOG.md for detailed release notes.</PackageReleaseNotes>
     <Version>1.1.2</Version>
@@ -39,7 +39,7 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\README_NUGET.md" Pack="true" PackagePath="\" />
     <None Include="..\..\CHANGELOG.md" Pack="true" PackagePath="\" Condition="Exists('..\..\CHANGELOG.md')" />
     <None Include="..\..\icon.png" Pack="true" PackagePath="\" Condition="Exists('..\..\icon.png')" />
   </ItemGroup>

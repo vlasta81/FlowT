@@ -2,11 +2,13 @@
 
 Comprehensive unit and integration test suite for the FlowT orchestration library.
 
+> 📚 **Documentation Hub:** [docs/index.md](../../docs/index.md) | [Main README](../../README.md)
+
 ---
 
 ## 📊 Test Coverage
 
-**112+ tests** covering all critical paths and edge cases.
+**206+ tests** covering all critical paths and edge cases.
 
 ### Test Categories
 

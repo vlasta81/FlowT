@@ -2,72 +2,76 @@
 
 Welcome to the **FlowT** documentation! This is your central navigation point for all FlowT resources.
 
+> 💡 **New to FlowT?** Start with the [Main README](../README.md) for a quick overview and 5-minute setup guide.
+
 ---
 
-## 📖 Documentation Categories
+## 🗂️ Documentation Structure
 
 ### 🚀 Getting Started
-- **[Main README](../README.md)** - Overview, quick start, key features
-- **[Installation & Setup](../README.md#-quick-start)** - Get FlowT running in 5 minutes
-- **[Core Concepts](../README.md#-core-concepts)** - Modules, Flows, Context, Specs, Policies
+- **[Main README](../README.md)** — Overview, quick start, key features
+- **[Installation Guide](../README.md#-quick-start)** — Get FlowT running in 5 minutes
+- **[Core Concepts](../README.md#-core-concepts)** — Modules, Flows, Context, Specs, Policies
+- **[Sample Application](../samples/FlowT.SampleApp/README.md)** — Complete working example with CRUD operations
 
 ### 📚 API Reference
-- **[API Documentation](api/index.md)** - Complete auto-generated API reference
-- **[FlowT.links](FlowT.links)** - Direct links to all types and members
-- **Generate:** Run `.\GenerateDefaultDocumentation.ps1` from solution root
+- **[Auto-Generated API Docs](api/index.md)** — Complete reference from XML comments
+- **[FlowT.links](FlowT.links)** — Direct links to all types and members
+- **Regenerate docs:** Run `./GenerateDefaultDocumentation.ps1` from solution root
 
 ### 📘 Guides & Best Practices
-- **[Best Practices](BEST_PRACTICES.md)** - Thread-safety, performance, DI patterns
-- **[FlowContext Complete Guide](FLOWCONTEXT.md)** - ⭐ Full API reference, patterns & named keys
-- **[Plugin System Guide](PLUGINS.md)** - PerFlow plugins, `FlowPlugin` base class, `AddFlowPlugin`
-- **[Migration Guide: AddFlows() → AddFlow<>()](MIGRATION_AddFlows.md)** - ⚠️ Migrate from deprecated AddFlows()
-- **[Namespace Collisions](NAMESPACE_COLLISIONS.md)** - Flows with same names in different namespaces
-- **[Streaming Guide](../benchmarks/FlowT.Benchmarks/docs/Streaming-Benchmarks.md)** - IAsyncEnumerable streaming patterns
+- **[Best Practices](BEST_PRACTICES.md)** — Thread-safety, performance, DI patterns
+- **[FlowContext Complete Guide](FLOWCONTEXT.md)** — ⭐ Full API reference, patterns & named keys
+- **[Plugin System Guide](PLUGINS.md)** — PerFlow plugins, `FlowPlugin` base class, `AddFlowPlugin`
+- **[Migration Guide](MIGRATION_AddFlows.md)** — ⚠️ Migrate from deprecated `AddFlows()` to `AddFlow<>()`
+- **[Namespace Collisions](NAMESPACE_COLLISIONS.md)** — Handling flows with same names in different namespaces
+- **[Streaming Guide](../benchmarks/FlowT.Benchmarks/docs/Streaming-Benchmarks.md)** — IAsyncEnumerable streaming patterns
 
 ### 📊 Performance & Benchmarks
-- **[Benchmark Suite](../benchmarks/FlowT.Benchmarks/README.md)** - Comprehensive performance analysis
-- **[Benchmark Results](../benchmarks/FlowT.Benchmarks/docs/results/)** - Detailed measurements
-- **[Run Scripts](../benchmarks/FlowT.Benchmarks/scripts/)** - Execute benchmarks locally
+- **[Benchmark Suite](../benchmarks/FlowT.Benchmarks/README.md)** — Comprehensive performance analysis
+- **[Benchmark Results](../benchmarks/FlowT.Benchmarks/docs/results/)** — Detailed measurements
+- **[Run Scripts](../benchmarks/FlowT.Benchmarks/scripts/)** — Execute benchmarks locally
 
-**Key Comparisons:**
-- [DispatchR Comparison](../benchmarks/FlowT.Benchmarks/docs/DispatchR-Comparison.md) - FlowT vs closest competitor
-- [MediatR Comparison](../benchmarks/FlowT.Benchmarks/docs/results/MediatR-Comparison.md) - FlowT vs most popular
-- [Extreme Benchmarks](../benchmarks/FlowT.Benchmarks/EXTREME_README.md) - Stress tests & load scenarios
+**Quick Comparisons:**
+- [vs DispatchR](../benchmarks/FlowT.Benchmarks/docs/DispatchR-Comparison.md) — Closest competitor analysis
+- [vs MediatR](../benchmarks/FlowT.Benchmarks/docs/results/MediatR-Comparison.md) — Most popular framework
+- [Extreme Tests](../benchmarks/FlowT.Benchmarks/EXTREME_README.md) — Stress tests & load scenarios
 
 ### 🛡️ Code Quality & Safety
-- **[Analyzer Documentation](../src/FlowT.Analyzers/README.md)** - 20 Roslyn diagnostic rules
-- **[Thread Safety Patterns](BEST_PRACTICES.md#-architecture)** - Singleton safety guide
+- **[Analyzer Documentation](../src/FlowT.Analyzers/README.md)** — 26 Roslyn diagnostic rules
+- **[Thread Safety Patterns](BEST_PRACTICES.md#-architecture)** — Singleton safety guide
 
 **Analyzer Categories:**
-- **11 Errors** - Build fails (thread-safety, DI anti-patterns, data leaks)
-- **6 Warnings** - Should fix (async issues, locking problems)
-- **3 Info** - Suggestions (cancellation, empty catch blocks)
+- 🔴 **14 Errors** — Build fails (thread-safety, DI anti-patterns, data leaks)
+- ⚠️ **9 Warnings** — Should fix (async issues, locking problems)
+- ℹ️ **3 Info** — Suggestions (cancellation, empty catch blocks)
 
 ### 🧪 Testing & Examples
-- **[Unit Tests](../tests/FlowT.Tests/)** - 112+ tests with full coverage
-- **[Sample Application](../samples/FlowT.SampleApp/)** - Complete working example
-  - ⚠️ **Note:** Sample app is outdated, will be updated soon
+- **[Unit Tests](../tests/FlowT.Tests/)** — 206+ tests with full coverage
+- **[Sample Application](../samples/FlowT.SampleApp/)** — Complete working example
 
 ---
 
-## 📂 Documentation Structure
+## 📋 Documentation Conventions
 
-```
-docs/
-├── index.md (this file)          # Documentation hub & navigation
-├── BEST_PRACTICES.md             # Thread-safety & performance guide
-├── FLOWCONTEXT.md                # Complete FlowContext guide (includes named keys)
-├── MIGRATION_AddFlows.md         # Migration guide
-├── NAMESPACE_COLLISIONS.md       # Namespace collision handling
-├── PLUGINS.md                    # Plugin system guide (FlowPlugin, AddFlowPlugin)
-├── FlowT.links                   # Direct API links (auto-generated)
-└── api/                          # Auto-generated API reference
-    ├── index.md                  # API entry point
-    ├── FlowT.md                  # Root namespace
-    ├── FlowT.Abstractions.md     # Base classes
-    ├── FlowT.Contracts.md        # Interfaces
-    └── ...                       # Individual type documentation
-```
+To maintain consistency across FlowT documentation:
+
+### File Structure
+- **README.md** — Entry point for each project/folder
+- **docs/** — Detailed guides and reference material
+- **api/** — Auto-generated API documentation
+
+### Linking Patterns
+- Use **relative paths** for internal links: `../folder/file.md`
+- Use **descriptive link text**: `[Guide Name](path)` not `[click here](path)`
+- **Benchmark results** live in `benchmarks/.../docs/results/`
+- **API docs** are auto-generated — don't edit `docs/api/` manually
+
+### Content Guidelines
+- **Code examples**: Use C# syntax highlighting with ```csharp
+- **Tables**: Keep benchmark tables in dedicated benchmark docs, use summaries in main README
+- **Icons**: Use emoji sparingly for visual scanning (✨ new, ⚠️ warning, 🔴 error)
+- **Version info**: Include "Last Updated" date in guide files
 
 ---
 
@@ -124,4 +128,4 @@ This will:
 
 ---
 
-**Last Updated:** 2025-01-16
+**Last Updated:** 2026-03-24

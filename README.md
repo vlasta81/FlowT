@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![.NET](https://img.shields.io/badge/.NET-10.0-purple.svg)](https://dotnet.microsoft.com/)
 [![Build](https://img.shields.io/badge/Build-Passing-brightgreen.svg)](https://github.com/vlasta81/FlowT)
-[![Tests](https://img.shields.io/badge/Tests-206%20Passing-brightgreen.svg)](tests/FlowT.Tests/)
+[![Tests](https://img.shields.io/badge/Tests-206+%20Passing-brightgreen.svg)](tests/FlowT.Tests/)
 [![Analyzers](https://img.shields.io/badge/Analyzers-26%20Rules-blue.svg)](src/FlowT.Analyzers/README.md)
 
 **FlowT** is a high-performance orchestration library for .NET that implements the Chain of Responsibility pattern with a fluent API. Build maintainable, testable, and **ultra-fast** pipelines with specifications, policies, and handlers.
@@ -39,68 +39,46 @@
   - `FlowPlugin` abstract base for automatic `FlowContext` binding
 - 📊 **Named Keys** - Store multiple values of same type with optional string keys
 - 🎭 **Scoped Services** - Safe `ctx.Service<DbContext>()` usage in singleton handlers
-- 🧪 **100% Tested** - 206 tests with full coverage
+- 🧪 **100% Tested** - 206+ unit tests with full coverage
 - 🏗️ **CQRS Ready** - Commands, Queries, Events with minimal boilerplate
 
 ---
 
-## 📊 Performance Comparison
+## 📊 Performance
 
-Benchmark results on .NET 10 (Intel Core i5-7600K 3.80GHz):
+**FlowT is the fastest .NET orchestration library** — optimized for high-throughput scenarios with singleton architecture and cached pipelines.
 
-### FlowT vs Competitors (All Frameworks)
+### Key Metrics
 
-| Scenario | FlowT | **DispatchR** | MediatR | **Speedup vs #2** |
-|----------|-------|---------------|---------|-------------------|
-| Simple handler | **30.8 ns** | 86.4 ns | 280 ns | **2.81× faster** |
-| Handler + Policy/Behavior | **60.9 ns** | 98.3 ns | 309 ns | **1.61× faster** |
-| Handler + Validation | **45.3 ns** | 82.8 ns | 300 ns | **1.83× faster** |
+| Metric | Result |
+|--------|--------|
+| ⚡ **Speed vs DispatchR** | **1.6-2.8× faster** |
+| ⚡ **Speed vs MediatR** | **9× faster** |
+| 💾 **Memory vs MediatR** | **84% less allocation** |
+| 🧵 **Thread Safety** | Lock-free, compile-time verified |
 
-**Memory Allocations:**
+### Performance Highlights
 
-| Scenario | FlowT | **DispatchR** | MediatR |
-|----------|-------|---------------|---------|
-| Simple handler | 144 B | **104 B** ✅ | 896 B |
-| Handler + Policy/Behavior | 232 B | **208 B** ✅ | 984 B |
-| Handler + Validation | 144 B | **112 B** ✅ | 904 B |
+- 🚀 **Simple handler**: ~30 ns execution time
+- 🔄 **Pipeline scaling**: Linear (10× components = 10× time)
+- 📦 **Large payloads**: Zero overhead for 10 MB+ data
+- 🔁 **Concurrent requests**: Perfect scaling, no contention
 
-**Key Insights:**
-- 🥇 **FlowT** - Fastest overall (2.7× faster than #2)
-- 🥈 **DispatchR** - Best memory efficiency (22-28% less than FlowT)
-- 🥉 **MediatR** - Popular but 3.2× slower than DispatchR
+> 📊 **Detailed benchmarks**: [FlowT.Benchmarks/README.md](benchmarks/FlowT.Benchmarks/README.md)  
+> 🔥 **Extreme load tests**: [FlowT.Benchmarks/docs/Extreme-Benchmarks.md](benchmarks/FlowT.Benchmarks/docs/Extreme-Benchmarks.md)  
+> 📁 **Raw results**: [FlowT.Benchmarks/docs/results/](benchmarks/FlowT.Benchmarks/docs/results/)
 
-### Extreme Load Scenarios
+### Quick Comparison
 
-| Scenario | Mean | Allocated | Notes |
-|----------|------|-----------|-------|
-| **10 specs + 10 policies + 10 keys** | 959 ns | 464 B | Excellent linear scaling (30x components = 30x time) |
-| **Large payload (10 MB + 10k items)** | 4.6 ms | 208 B | Zero overhead for large data processing |
-| **100 concurrent executions** | 15.5 ms | 68 KB | Perfect thread-safety, no contention |
-| **Deep nesting (10 policies + 10 MB)** | 4.6 ms | 304 B | Policies add < 0.01 ms overhead |
+| Framework | Relative Speed | Memory Efficiency | Best For |
+|-----------|---------------|-------------------|----------|
+| **FlowT** 🥇 | **Fastest** | Excellent | High-performance orchestration |
+| **DispatchR** 🥈 | 2.7× slower | **Best** | Memory-constrained scenarios |
+| MediatR 🥉 | 9× slower | Baseline | Legacy compatibility |
 
-### Complete Framework Ranking
+> 💡 **Trade-off**: FlowT uses ~28% more memory than DispatchR for 2.7× speed gain + advanced features (analyzers, modules, type-safe interrupts).
 
-| Rank | Framework | Speed vs FlowT | Memory vs FlowT | Notes |
-|------|-----------|----------------|-----------------|-------|
-| 🥇 | **FlowT** | **Baseline** | **Baseline** | Singleton architecture, fastest overall |
-| 🥈 | **DispatchR** | **2.7× slower** | **0.72× (28% less)** | Zero-allocation design, excellent memory |
-| 🥉 | MediatR | 9.2× slower | 6.2× more | Most popular, but slower |
-| 4️⃣ | WolverineFx | 13.5× slower | 5× more | Feature-rich but heavier |
-| 5️⃣ | Mediator.Net | 47× slower | 15× more | Legacy design |
-| 6️⃣ | Brighter | 77× slower | 25× more | Messaging-focused |
-
-**Key takeaways:**
-- ⚡ FlowT is **1.6-2.8× faster** than DispatchR (closest competitor)
-- ⚡ FlowT is **9-77× faster** than other popular frameworks
-- 💾 DispatchR has **best memory efficiency** (28% less than FlowT)
-- 💾 FlowT allocates **76-84% less memory** than MediatR/others
-- 📈 **Perfect linear scaling** - 10× components = 10× time (no exponential growth)
-- 🔥 **Zero overhead for large payloads** - 10 policies add < 0.2% to 10 MB processing
-- 🧵 **Excellent concurrent performance** - 100 parallel requests scale linearly
-- 🎯 Performance advantage increases with pipeline complexity
-
-> 📖 Full benchmark results: [benchmarks/FlowT.Benchmarks/README.md](benchmarks/FlowT.Benchmarks/README.md)  
-> 🔥 Extreme benchmarks: [benchmarks/FlowT.Benchmarks/EXTREME_README.md](benchmarks/FlowT.Benchmarks/EXTREME_README.md)
+> 📖 **Complete framework comparison**: [DispatchR Deep Dive](benchmarks/FlowT.Benchmarks/docs/DispatchR-Comparison.md)
 
 ---
 
@@ -601,7 +579,6 @@ public class BadHandler : IFlowHandler<Request, Response>
 - **[FlowContext Complete Guide](docs/FLOWCONTEXT.md)** - ⭐ Full API reference, patterns & named keys
 - **[Plugin System Guide](docs/PLUGINS.md)** - PerFlow plugins, `FlowPlugin` base class, `AddFlowPlugin`
 - **[FlowT.links](docs/FlowT.links)** - Direct links to all API types and members
-- **Generate docs:** Run `.\tasks.ps1 docs` to rebuild API docs
 
 ### 📊 Performance & Benchmarks
 - **[Benchmark Suite](benchmarks/FlowT.Benchmarks/README.md)** - Comprehensive performance testing
@@ -643,45 +620,33 @@ public class BadHandler : IFlowHandler<Request, Response>
 
 ## 🎯 Why FlowT?
 
-### vs DispatchR (Fastest Competitor)
-| Feature | FlowT | DispatchR |
-|---------|-------|-----------|
-| **Performance** | **2.7× faster** | Baseline (2nd fastest) |
-| **Memory** | 144-232 B | **104-208 B (28% less)** ✅ |
-| **Lifetime** | Singleton (cached) | Singleton |
-| **Compile-time safety** | ✅ 26 analyzers | ❌ None |
-| **Modules** | ✅ Built-in | ❌ Manual |
-| **Type-safe interrupts** | ✅ FlowInterrupt | ❌ Exceptions |
-| **Named keys** | ✅ Yes | ❌ No |
-| **Return types** | Task/ValueTask/Sync | ValueTask only |
+FlowT is designed for **high-performance orchestration** with compile-time safety and developer-friendly APIs.
 
-**Verdict:** FlowT trades 28% more memory for 2.7× speed + advanced features (analyzers, modules, interrupts)
+### Key Differentiators
 
-### vs MediatR
-| Feature | FlowT | MediatR |
-|---------|-------|---------|
-| **Performance** | **9.2× faster** | Baseline |
-| **Memory** | **84% less allocation** | Baseline |
-| **Lifetime** | Singleton (cached) | Transient/Scoped |
-| **Compile-time safety** | ✅ 26 analyzers | ❌ None |
-| **Modules** | ✅ Built-in | ❌ Manual |
-| **Type-safe interrupts** | ✅ FlowInterrupt | ❌ Exceptions |
-| **Named keys** | ✅ Yes | ❌ No |
+| Feature | Benefit |
+|---------|--------|
+| ⚡ **Singleton Architecture** | Cached pipelines, 2.7× faster than DispatchR |
+| 🛡️ **26 Roslyn Analyzers** | Catch threading/DI issues at compile-time |
+| 🧩 **IFlowModule System** | Clean vertical slice organization |
+| 🔍 **FlowInterrupt** | Type-safe error handling without exceptions |
+| 🔌 **Plugin System** | PerFlow services with 8.7× warm-path speedup |
+| 💾 **Named Keys** | Store multiple values of same type in FlowContext |
 
-### vs Wolverine
-| Feature | FlowT | Wolverine |
-|---------|-------|-----------|
-| **Performance** | Singleton (fastest) | Scoped |
-| **Simplicity** | Lightweight | Feature-rich |
-| **Learning curve** | Low | Medium |
-| **Compile-time safety** | ✅ 26 analyzers | ❌ None |
+### Framework Comparison
 
-### vs Brighter
-| Feature | FlowT | Brighter |
-|---------|-------|----------|
-| **Performance** | **77× faster** | Transient |
-| **Focus** | Orchestration | Messaging |
-| **Complexity** | Simple | Complex |
+**Choose FlowT when you need:**
+- Maximum performance for high-throughput scenarios
+- Compile-time safety for thread-safe singleton components
+- Clean modular architecture with auto-discovery
+
+**Consider alternatives when:**
+- Memory is the absolute priority → [DispatchR](https://github.com/samvasta/DispatchR) (28% less memory)
+- You need legacy MediatR compatibility → [MediatR](https://github.com/jbogard/MediatR)
+- You need full messaging infrastructure → [Brighter](https://github.com/BrighterCommand/Brighter)
+
+> 📊 **Detailed comparisons**: [Benchmark Suite](benchmarks/FlowT.Benchmarks/README.md)  
+> 🔍 **DispatchR deep dive**: [DispatchR-Comparison.md](benchmarks/FlowT.Benchmarks/docs/DispatchR-Comparison.md)
 
 ---
 

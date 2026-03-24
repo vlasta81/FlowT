@@ -9,7 +9,7 @@
    id="svg1"
    inkscape:version="1.4.3 (0d15f75, 2025-12-25)"
    sodipodi:docname="FlowT.svg"
-   inkscape:export-filename="FlowT.png"
+   inkscape:export-filename="FlowT2.png"
    inkscape:export-xdpi="300"
    inkscape:export-ydpi="300"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -27,8 +27,8 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="0.35945918"
-     inkscape:cx="954.21128"
-     inkscape:cy="529.96282"
+     inkscape:cx="954.21127"
+     inkscape:cy="532.74478"
      inkscape:window-width="1920"
      inkscape:window-height="1009"
      inkscape:window-x="-8"
@@ -48,38 +48,43 @@
      inkscape:label="Vrstva 1"
      inkscape:groupmode="layer"
      id="layer1">
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:282.222px;font-family:Rubik;-inkscape-font-specification:'Rubik Bold';writing-mode:lr-tb;direction:ltr;fill:#000000;stroke-width:0.264583"
-       x="60.958889"
-       y="248.7778"
-       id="text2"><tspan
-         sodipodi:role="line"
-         id="tspan2"
-         style="font-size:282.222px;stroke-width:0.264583"
+    <g
+       id="g1"
+       transform="translate(-23.475285)"
+       style="fill:#000000;fill-opacity:1;stroke:#ececec;stroke-opacity:1;stroke-width:4;stroke-dasharray:none">
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:282.222px;font-family:Rubik;-inkscape-font-specification:'Rubik Bold';writing-mode:lr-tb;direction:ltr;fill:#000000;stroke-width:4;fill-opacity:1;stroke:#ececec;stroke-opacity:1;stroke-dasharray:none"
          x="60.958889"
-         y="248.7778">T</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:211.667px;font-family:Rubik;-inkscape-font-specification:'Rubik Bold';writing-mode:lr-tb;direction:ltr;fill:#000000;stroke-width:0.264583"
-       x="174.0901"
-       y="192.47955"
-       id="text3"><tspan
-         sodipodi:role="line"
-         id="tspan3"
-         style="font-size:211.667px;stroke-width:0.264583"
+         y="248.7778"
+         id="text2"><tspan
+           sodipodi:role="line"
+           id="tspan2"
+           style="font-size:282.222px;stroke-width:4;fill:#000000;fill-opacity:1;stroke:#ececec;stroke-opacity:1;stroke-dasharray:none"
+           x="60.958889"
+           y="248.7778">T</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:211.667px;font-family:Rubik;-inkscape-font-specification:'Rubik Bold';writing-mode:lr-tb;direction:ltr;fill:#000000;stroke-width:4;fill-opacity:1;stroke:#ececec;stroke-opacity:1;stroke-dasharray:none"
          x="174.0901"
-         y="192.47955">~</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:211.667px;font-family:Rubik;-inkscape-font-specification:'Rubik Bold';writing-mode:lr-tb;direction:ltr;fill:#000000;stroke-width:0.264583"
-       x="174.0901"
-       y="249.19109"
-       id="text3-8"><tspan
-         sodipodi:role="line"
-         id="tspan3-2"
-         style="font-size:211.667px;stroke-width:0.264583"
+         y="192.47955"
+         id="text3"><tspan
+           sodipodi:role="line"
+           id="tspan3"
+           style="font-size:211.667px;stroke-width:4;fill:#000000;fill-opacity:1;stroke:#ececec;stroke-opacity:1;stroke-dasharray:none"
+           x="174.0901"
+           y="192.47955">~</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:211.667px;font-family:Rubik;-inkscape-font-specification:'Rubik Bold';writing-mode:lr-tb;direction:ltr;fill:#000000;stroke-width:4;fill-opacity:1;stroke:#ececec;stroke-opacity:1;stroke-dasharray:none"
          x="174.0901"
-         y="249.19109">~</tspan></text>
+         y="249.19109"
+         id="text3-8"><tspan
+           sodipodi:role="line"
+           id="tspan3-2"
+           style="font-size:211.667px;stroke-width:4;fill:#000000;fill-opacity:1;stroke:#ececec;stroke-opacity:1;stroke-dasharray:none"
+           x="174.0901"
+           y="249.19109">~</tspan></text>
+    </g>
   </g>
 </svg>
