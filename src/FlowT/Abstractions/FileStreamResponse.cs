@@ -64,7 +64,7 @@ namespace FlowT.Abstractions
     /// <item><description>In-memory buffers - defeats streaming purpose</description></item>
     /// </list>
     /// </remarks>
-    public class FileStreamResponse : IDisposable
+    public sealed class FileStreamResponse : IDisposable
     {
         /// <summary>
         /// Gets or initializes the stream containing the file content.

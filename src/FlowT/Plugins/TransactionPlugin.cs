@@ -98,7 +98,7 @@ namespace FlowT.Plugins
     /// services.AddFlowPlugin&lt;ITransactionPlugin, EfCoreTransactionPlugin&gt;();
     /// </code>
     /// </example>
-    public abstract class FlowTransactionPlugin : FlowPlugin, ITransactionPlugin
+    public abstract class TransactionPlugin : FlowPlugin, ITransactionPlugin
     {
         /// <inheritdoc />
         public bool IsActive { get; protected set; }

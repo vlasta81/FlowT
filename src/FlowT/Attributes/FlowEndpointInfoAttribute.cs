@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using FlowT.Contracts;
 using FlowT.Extensions;
 
