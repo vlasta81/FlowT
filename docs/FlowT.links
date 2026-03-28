@@ -58,11 +58,11 @@ M:FlowT.Plugins.ITransactionPlugin.BeginAsync(System.Threading.CancellationToken
 M:FlowT.Plugins.ITransactionPlugin.CommitAsync(System.Threading.CancellationToken)|ITransactionPlugin.CommitAsync.POHH5V5FS278DV41Z3OFWY659.md|CommitAsync(CancellationToken)
 M:FlowT.Plugins.ITransactionPlugin.RollbackAsync(System.Threading.CancellationToken)|ITransactionPlugin.RollbackAsync.BWVSHBYF5S0FPTV4HXEEPD8E9.md|RollbackAsync(CancellationToken)
 T:FlowT.Plugins.ITransactionPlugin|ITransactionPlugin.md|ITransactionPlugin
-P:FlowT.Plugins.FlowTransactionPlugin.IsActive|FlowTransactionPlugin.IsActive.md|IsActive
-M:FlowT.Plugins.FlowTransactionPlugin.BeginAsync(System.Threading.CancellationToken)|FlowTransactionPlugin.BeginAsync.H96ZSN403FF8O1OGHHHKIMR8D.md|BeginAsync(CancellationToken)
-M:FlowT.Plugins.FlowTransactionPlugin.CommitAsync(System.Threading.CancellationToken)|FlowTransactionPlugin.CommitAsync.JM16GUNNG830XWX4FCKPUUTO4.md|CommitAsync(CancellationToken)
-M:FlowT.Plugins.FlowTransactionPlugin.RollbackAsync(System.Threading.CancellationToken)|FlowTransactionPlugin.RollbackAsync.H9406Y6BANJM4EFTFP610UME6.md|RollbackAsync(CancellationToken)
-T:FlowT.Plugins.FlowTransactionPlugin|FlowTransactionPlugin.md|FlowTransactionPlugin
+P:FlowT.Plugins.TransactionPlugin.IsActive|TransactionPlugin.IsActive.md|IsActive
+M:FlowT.Plugins.TransactionPlugin.BeginAsync(System.Threading.CancellationToken)|TransactionPlugin.BeginAsync.C2N56R88EL4XPTPTTHYK9HKT7.md|BeginAsync(CancellationToken)
+M:FlowT.Plugins.TransactionPlugin.CommitAsync(System.Threading.CancellationToken)|TransactionPlugin.CommitAsync.KTDCXMFMAZ5PG3BAFA9Y78WU6.md|CommitAsync(CancellationToken)
+M:FlowT.Plugins.TransactionPlugin.RollbackAsync(System.Threading.CancellationToken)|TransactionPlugin.RollbackAsync.JH6Q4H1ZHMZOOU6IDECQ4RHD1.md|RollbackAsync(CancellationToken)
+T:FlowT.Plugins.TransactionPlugin|TransactionPlugin.md|TransactionPlugin
 P:FlowT.Plugins.IUserIdentityPlugin.UserId|IUserIdentityPlugin.UserId.md|UserId
 P:FlowT.Plugins.IUserIdentityPlugin.Email|IUserIdentityPlugin.Email.md|Email
 P:FlowT.Plugins.IUserIdentityPlugin.IsAuthenticated|IUserIdentityPlugin.IsAuthenticated.md|IsAuthenticated

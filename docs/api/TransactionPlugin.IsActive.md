@@ -1,4 +1,4 @@
-## FlowTransactionPlugin\.IsActive Property
+## TransactionPlugin\.IsActive Property
 
 Gets a value indicating whether a transaction is currently active\.
 Set to `true` after [BeginAsync\(CancellationToken\)](ITransactionPlugin.BeginAsync.68EP3056CKK4WKJMTJMX9YH56.md 'FlowT\.Plugins\.ITransactionPlugin\.BeginAsync\(System\.Threading\.CancellationToken\)') and `false` after

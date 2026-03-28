@@ -1,4 +1,4 @@
-using FlowT;
+﻿using FlowT;
 using FlowT.Extensions;
 using FlowT.Plugins;
 using FlowT.Tests.Helpers;
@@ -284,13 +284,13 @@ public class BuiltInPluginTests : FlowTestBase
     [Fact]
     public void FlowTransactionPlugin_IsAbstract()
     {
-        Assert.True(typeof(FlowTransactionPlugin).IsAbstract);
+        Assert.True(typeof(TransactionPlugin).IsAbstract);
     }
 
     [Fact]
     public void FlowTransactionPlugin_ImplementsITransactionPlugin()
     {
-        Assert.True(typeof(ITransactionPlugin).IsAssignableFrom(typeof(FlowTransactionPlugin)));
+        Assert.True(typeof(ITransactionPlugin).IsAssignableFrom(typeof(TransactionPlugin)));
     }
 
     [Fact]
@@ -385,7 +385,7 @@ public class BuiltInPluginTests : FlowTestBase
 
     // ── Test transaction plugin ─────────────────────────────────────────────────
 
-    private sealed class TestTransactionPlugin : FlowTransactionPlugin
+    private sealed class TestTransactionPlugin : TransactionPlugin
     {
         public override ValueTask BeginAsync(CancellationToken cancellationToken = default)
         {

@@ -572,7 +572,8 @@ public class BadHandler : IFlowHandler<Request, Response>
 ### 📘 Getting Started
 - **[Quick Start](#-quick-start)** - 5-minute installation and basic example
 - **[Core Concepts](#-core-concepts)** - Modules, Flows, Context, Specifications, Policies
-- **[Migration Guide: AddFlows() → AddFlow<>()](docs/MIGRATION_AddFlows.md)** - ⚠️ Migrate from deprecated AddFlows()
+- **[Migration: AddFlows() → AddFlow<>()](docs/MIGRATION_AddFlows.md)** - ⚠️ Migrate from deprecated AddFlows()
+- **[Migration: UserIdentityPlugin Removal](docs/MIGRATION_UserIdentityPlugin.md)** - ⚠️ v1.2.0 plugin removal guide
 
 ### 📚 API Reference
 - **[API Documentation](docs/api/index.md)** - Complete API reference (auto-generated from XML docs)

@@ -42,7 +42,7 @@ public class CustomStreamResponse : IStreamableResponse
 
 When a flow's `TResponse` implements this interface, `MapFlow` automatically selects
 `Results.Stream()` for the endpoint — no manual streaming boilerplate required.
-For a ready-made implementation, use [PagedStreamResponse&lt;T&gt;](https://learn.microsoft.com/en-us/dotnet/api/pagedstreamresponse<t> 'PagedStreamResponse\<T\>') or subclass `StreamableResponse`.
+For a ready-made implementation, use [PagedStreamResponse&lt;T&gt;](PagedStreamResponse_T_.md 'FlowT\.Abstractions\.PagedStreamResponse\<T\>') or subclass `StreamableResponse`.
 Implement this interface directly only when you need a fully custom JSON structure.
 
 <strong>Use cases:</strong>
@@ -52,7 +52,7 @@ Implement this interface directly only when you need a fully custom JSON structu
 - Custom response structures combining buffered metadata with streamed collections
 
 <strong>Alternatives:</strong>
-- For pure streaming without metadata, use [IAsyncEnumerable&lt;T&gt;](https://learn.microsoft.com/en-us/dotnet/api/iasyncenumerable<t> 'IAsyncEnumerable\<T\>') as TResponse directly
+- For pure streaming without metadata, use [System\.Collections\.Generic\.IAsyncEnumerable&lt;&gt;](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.iasyncenumerable-1 'System\.Collections\.Generic\.IAsyncEnumerable\`1') as TResponse directly
 - For small datasets (less than 1000 items), use standard buffered responses (List, Array)
 
 | Methods | |

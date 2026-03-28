@@ -1,34 +1,278 @@
-# FlowT - Core Library
+# FlowT - High-Performance Orchestration Library for .NET
 
-The main FlowT orchestration library for .NET.
+[![NuGet](https://img.shields.io/nuget/v/FlowT.svg)](https://www.nuget.org/packages/FlowT/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![.NET](https://img.shields.io/badge/.NET-10.0-purple.svg)](https://dotnet.microsoft.com/)
+
+**FlowT** is a high-performance orchestration library for .NET that implements the Chain of Responsibility pattern with a fluent API. Build maintainable, testable, and **ultra-fast** pipelines with specifications, policies, and handlers.
+
+> 📚 **Full Documentation:** https://github.com/vlasta81/FlowT
 
 ---
 
 ## 📦 Package Information
 
-**Package:** FlowT  
-**NuGet:** https://www.nuget.org/packages/FlowT/  
-**Targets:**
-- ✅ .NET 10.0 (Primary)
-- ✅ .NET Standard 2.0 (Compatibility)
+| Property | Value |
+|----------|-------|
+| **Package** | FlowT |
+| **NuGet** | https://www.nuget.org/packages/FlowT/ |
+| **Targets** | .NET 10.0 (Primary), .NET Standard 2.0 (Compatibility) |
+| **Dependencies** | None (zero external dependencies) |
+| **License** | MIT |
 
 ---
 
-## 📚 Documentation
+## ✨ Key Features
 
-- **[Main README](../../README.md)** - Quick start and overview
-- **[API Reference](../../docs/api/index.md)** - Complete API documentation
-- **[Best Practices](../../docs/BEST_PRACTICES.md)** - Thread-safety and performance
-- **[Tests](../../tests/FlowT.Tests/)** - 112+ unit tests with examples
+### 🚀 Performance
+- ⚡ **2.7× faster than DispatchR** - The fastest .NET orchestration library
+- ⚡ **9× faster than MediatR** - Singleton architecture with cached pipelines
+- 💾 **84% less memory than MediatR** - Zero-allocation fast paths
+- 🔥 **Thread-safe** - Lock-free operations with compile-time safety
+
+### 🎯 Developer Experience
+- 🧩 **Modular Architecture** - `IFlowModule` for clean feature organization
+- 🔄 **Chain of Responsibility** - Composable pipeline with specs, policies, handlers
+- 🎨 **Fluent API** - Intuitive pipeline configuration
+- 📝 **Automatic Context** - No manual FlowContext creation needed
+- 🛡️ **26 Roslyn Analyzers** - Compile-time safety for threading & DI
+
+### 💡 Advanced Features
+- 🔍 **FlowInterrupt** - Type-safe error handling without exceptions
+- 🔌 **Plugin System** - PerFlow services with 8.7× warm-path speedup
+- 📊 **Named Keys** - Store multiple values of same type
+- 🎭 **Scoped Services** - Safe `ctx.Service<T>()` in singleton handlers
 
 ---
 
-## 🛡️ Thread Safety
+## 🚀 Quick Start
 
-FlowT components are **registered as singletons** for performance. Use **[FlowT.Analyzers](../FlowT.Analyzers/README.md)** to catch threading issues at compile-time (20 diagnostic rules).
+### Installation
+
+```bash
+dotnet add package FlowT
+```
+
+### Basic Example
+
+```csharp
+// 1. Define request/response
+public record CreateUserRequest(string Email, string Name);
+public record CreateUserResponse(Guid Id, string Email);
+
+// 2. Create handler
+public class CreateUserHandler : IFlowHandler<CreateUserRequest, CreateUserResponse>
+{
+    public async ValueTask<CreateUserResponse> HandleAsync(
+        CreateUserRequest request, FlowContext context)
+    {
+        var db = context.Service<AppDbContext>();
+        var user = new User { Email = request.Email, Name = request.Name };
+        db.Users.Add(user);
+        await db.SaveChangesAsync(context.CancellationToken);
+        return new CreateUserResponse(user.Id, user.Email);
+    }
+}
+
+// 3. Define flow with pipeline
+[FlowDefinition]
+public class CreateUserFlow : FlowDefinition<CreateUserRequest, CreateUserResponse>
+{
+    protected override void Configure(IFlowBuilder<CreateUserRequest, CreateUserResponse> flow)
+    {
+        flow
+            .Check<ValidateEmailSpecification>()
+            .Use<LoggingPolicy>()
+            .OnInterrupt(interrupt => 
+                new CreateUserResponse(Guid.Empty, interrupt.Message))
+            .Handle<CreateUserHandler>();
+    }
+}
+
+// 4. Register module
+[FlowModule]
+public class UserModule : IFlowModule
+{
+    public void Register(IServiceCollection services)
+    {
+        services.AddFlow<CreateUserFlow, CreateUserRequest, CreateUserResponse>();
+    }
+
+    public void MapEndpoints(IEndpointRouteBuilder app)
+    {
+        app.MapPost("/api/users", async (
+            CreateUserRequest request,
+            CreateUserFlow flow,
+            HttpContext httpContext) =>
+        {
+            return await flow.ExecuteAsync(request, httpContext);
+        });
+    }
+}
+
+// 5. In Program.cs
+builder.Services.AddFlowModules(typeof(Program).Assembly);
+app.MapFlowModules();
+```
+
+---
+
+## 📊 Performance
+
+| Metric | Result |
+|--------|--------|
+| Speed vs DispatchR | **1.6-2.8× faster** |
+| Speed vs MediatR | **9× faster** |
+| Memory vs MediatR | **84% less** |
+
+> 📊 **Detailed Benchmarks:** https://github.com/vlasta81/FlowT/tree/main/benchmarks/FlowT.Benchmarks
+
+---
+
+## 📚 Core Concepts
+
+### Modules (`IFlowModule`)
+Organize features into cohesive modules with `[FlowModule]` attribute for auto-discovery.
+
+### Flows (`FlowDefinition<TRequest, TResponse>`)
+Define reusable orchestration pipelines with `[FlowDefinition]` attribute.
+
+### Context (`FlowContext`)
+Per-request execution context with scoped service resolution, storage, and events.
+
+### Specifications (`IFlowSpecification<TRequest>`)
+Reusable validation and business rules that can interrupt flow with `FlowInterrupt`.
+
+### Policies (`FlowPolicy<TRequest, TResponse>`)
+Cross-cutting concerns as reusable middleware (logging, caching, transactions).
+
+### Plugins (`Plugin<T>()`)
+PerFlow services shared across all pipeline stages with automatic caching.
+
+> 📖 **Complete Guide:** https://github.com/vlasta81/FlowT/blob/main/README.md#-core-concepts
+
+---
+
+## 🛡️ Compile-Time Safety
+
+FlowT includes **26 Roslyn analyzers** that catch issues at compile-time:
+
+### 🔴 Errors (Build fails - must fix!)
+- **FlowT002**: Non-thread-safe collections (List, Dictionary, etc.)
+- **FlowT003**: Captive scoped dependencies (DbContext in constructor)
+- **FlowT004**: Static mutable state
+- **FlowT006**: FlowContext stored in field
+- **FlowT007**: Request/Response objects in fields
+- **FlowT010**: Thread.Sleep() in async methods
+- **FlowT011**: Missing .Handle<T>() in FlowDefinition.Configure()
+- **FlowT012**: IServiceProvider stored in field
+- **FlowT013**: CancellationTokenSource stored in field
+- **FlowT015**: Mutable public/internal properties
+- **FlowT018**: Lazy<T> without thread-safety mode
+- **FlowT019**: State leak types (StringBuilder, Stream, Stopwatch, arrays)
+- **FlowT021**: FlowPlugin stored in singleton field
+- **FlowT022**: Multiple .Handle<T>() calls in Configure()
+
+### ⚠️ Warnings
+- **FlowT001**: Mutable instance fields
+- **FlowT005**: Async void methods
+- **FlowT008**: Lock on `this` or `typeof(T)`
+- **FlowT010**: Synchronous blocking (.Result, .Wait())
+- **FlowT016**: Task/ValueTask storage
+- **FlowT017**: Manual Thread creation
+- **FlowT020**: ConfigureAwait(false) loses HttpContext/FlowContext
+- **FlowT023**: new HttpClient() in flow component (socket exhaustion)
+- **FlowT024**: Synchronous file I/O in async flow method
+
+### ℹ️ Info (Suggestions)
+- **FlowT009**: Missing CancellationToken propagation
+- **FlowT014**: Empty catch blocks
+- **FlowT025**: Direct IServiceProvider access (prefer context.Service<T>())
+
+> 📖 **All Analyzer Rules:** https://github.com/vlasta81/FlowT/blob/main/src/FlowT.Analyzers/README.md
+
+**Example:**
+```csharp
+// ❌ FlowT003: Build fails!
+public class BadHandler : IFlowHandler<Request, Response>
+{
+    private readonly AppDbContext _db; // Captive dependency!
+    public BadHandler(AppDbContext db) { _db = db; }
+}
+
+// ✅ Correct pattern
+public class GoodHandler : IFlowHandler<Request, Response>
+{
+    public async ValueTask<Response> HandleAsync(Request req, FlowContext ctx)
+    {
+        var db = ctx.Service<AppDbContext>(); // Safe!
+        return await db.ProcessAsync(req);
+    }
+}
+```
+
+---
+
+## 🔄 Migration Guides
+
+### UserIdentityPlugin Removal (v1.2.0)
+The `UserIdentityPlugin` and `IUserIdentityPlugin` interface have been removed. User identity functionality is now provided by built-in methods on `FlowContext`:
+
+| Old Plugin Method | New Built-in Method |
+|------------------|---------------------|
+| `context.Plugin<IUserIdentityPlugin>().UserId` | `context.GetUserId()` |
+| `context.Plugin<IUserIdentityPlugin>().Email` | `context.GetUser()?.Email` |
+| `context.Plugin<IUserIdentityPlugin>().IsAuthenticated` | `context.IsAuthenticated()` |
+| `context.Plugin<IUserIdentityPlugin>().IsInRole("Admin")` | `context.IsInRole("Admin")` |
+| `context.Plugin<IUserIdentityPlugin>().Principal` | `context.GetUser()` |
+
+> 📖 **Migration Guide:** https://github.com/vlasta81/FlowT/blob/main/docs/MIGRATION_UserIdentityPlugin.md
+
+---
+
+## 📖 Documentation
+
+| Resource | Link |
+|----------|------|
+| **Full README** | https://github.com/vlasta81/FlowT |
+| **API Reference** | https://github.com/vlasta81/FlowT/tree/main/docs/api |
+| **Best Practices** | https://github.com/vlasta81/FlowT/blob/main/docs/BEST_PRACTICES.md |
+| **FlowContext Guide** | https://github.com/vlasta81/FlowT/blob/main/docs/FLOWCONTEXT.md |
+| **Plugin System** | https://github.com/vlasta81/FlowT/blob/main/docs/PLUGINS.md |
+| **Benchmarks** | https://github.com/vlasta81/FlowT/tree/main/benchmarks/FlowT.Benchmarks |
+| **Sample App** | https://github.com/vlasta81/FlowT/tree/main/samples/FlowT.SampleApp |
+| **Analyzers** | https://github.com/vlasta81/FlowT/tree/main/src/FlowT.Analyzers |
+
+---
+
+## 🧪 Testing
+
+- **206+ unit tests** with full coverage
+- xUnit test framework
+- Thread-safety and concurrency tests
+- Analyzer verification tests
+
+> 📖 **Test Suite:** https://github.com/vlasta81/FlowT/tree/main/tests/FlowT.Tests
+
+---
+
+## 🤝 Contributing
+
+Found a bug or have a feature request? Please open an issue:
+https://github.com/vlasta81/FlowT/issues
+
+### Deprecation Policy
+For future breaking changes, FlowT follows a deprecation-first approach:
+1. Features are marked `[Obsolete]` with migration guidance in a minor version
+2. Deprecated features are removed in the next major version
+3. Migration guides are provided in `docs/MIGRATION_*.md`
 
 ---
 
 ## 📄 License
 
-MIT License - see [LICENSE](../../LICENSE) file for details.
+MIT License - see [LICENSE](../../LICENSE.txt) file for details.
+
+---
+
+**Made with ❤️ by [vlasta81](https://github.com/vlasta81)**

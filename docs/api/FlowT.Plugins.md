@@ -1,15 +1,15 @@
 ## FlowT\.Plugins Namespace
 - **[CorrelationPlugin](CorrelationPlugin.md 'FlowT\.Plugins\.CorrelationPlugin')**
   - **[CorrelationId](CorrelationPlugin.CorrelationId.md 'FlowT\.Plugins\.CorrelationPlugin\.CorrelationId')**
-- **[FlowTransactionPlugin](FlowTransactionPlugin.md 'FlowT\.Plugins\.FlowTransactionPlugin')**
-  - **[IsActive](FlowTransactionPlugin.IsActive.md 'FlowT\.Plugins\.FlowTransactionPlugin\.IsActive')**
-  - **[BeginAsync\(CancellationToken\)](FlowTransactionPlugin.BeginAsync.H96ZSN403FF8O1OGHHHKIMR8D.md 'FlowT\.Plugins\.FlowTransactionPlugin\.BeginAsync\(System\.Threading\.CancellationToken\)')**
-  - **[CommitAsync\(CancellationToken\)](FlowTransactionPlugin.CommitAsync.JM16GUNNG830XWX4FCKPUUTO4.md 'FlowT\.Plugins\.FlowTransactionPlugin\.CommitAsync\(System\.Threading\.CancellationToken\)')**
-  - **[RollbackAsync\(CancellationToken\)](FlowTransactionPlugin.RollbackAsync.H9406Y6BANJM4EFTFP610UME6.md 'FlowT\.Plugins\.FlowTransactionPlugin\.RollbackAsync\(System\.Threading\.CancellationToken\)')**
 - **[RetryStatePlugin](RetryStatePlugin.md 'FlowT\.Plugins\.RetryStatePlugin')**
   - **[AttemptNumber](RetryStatePlugin.AttemptNumber.md 'FlowT\.Plugins\.RetryStatePlugin\.AttemptNumber')**
   - **[RegisterAttempt\(\)](RetryStatePlugin.RegisterAttempt().md 'FlowT\.Plugins\.RetryStatePlugin\.RegisterAttempt\(\)')**
   - **[ShouldRetry\(int\)](RetryStatePlugin.ShouldRetry.MD22918TZKO7C11L1AJFQ9XY3.md 'FlowT\.Plugins\.RetryStatePlugin\.ShouldRetry\(int\)')**
+- **[TransactionPlugin](TransactionPlugin.md 'FlowT\.Plugins\.TransactionPlugin')**
+  - **[IsActive](TransactionPlugin.IsActive.md 'FlowT\.Plugins\.TransactionPlugin\.IsActive')**
+  - **[BeginAsync\(CancellationToken\)](TransactionPlugin.BeginAsync.C2N56R88EL4XPTPTTHYK9HKT7.md 'FlowT\.Plugins\.TransactionPlugin\.BeginAsync\(System\.Threading\.CancellationToken\)')**
+  - **[CommitAsync\(CancellationToken\)](TransactionPlugin.CommitAsync.KTDCXMFMAZ5PG3BAFA9Y78WU6.md 'FlowT\.Plugins\.TransactionPlugin\.CommitAsync\(System\.Threading\.CancellationToken\)')**
+  - **[RollbackAsync\(CancellationToken\)](TransactionPlugin.RollbackAsync.JH6Q4H1ZHMZOOU6IDECQ4RHD1.md 'FlowT\.Plugins\.TransactionPlugin\.RollbackAsync\(System\.Threading\.CancellationToken\)')**
 - **[UserIdentityPlugin](UserIdentityPlugin.md 'FlowT\.Plugins\.UserIdentityPlugin')**
   - **[Email](UserIdentityPlugin.Email.md 'FlowT\.Plugins\.UserIdentityPlugin\.Email')**
   - **[IsAuthenticated](UserIdentityPlugin.IsAuthenticated.md 'FlowT\.Plugins\.UserIdentityPlugin\.IsAuthenticated')**

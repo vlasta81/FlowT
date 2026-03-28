@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.2.0] - 2026-03-29
+
+### Removed
+- **UserIdentityPlugin**: Removed `UserIdentityPlugin.cs` and `IUserIdentityPlugin` interface — user identity functionality is now provided by the core library's built-in user handling via `FlowContext.GetUser()` and `FlowContext.IsAuthenticated()`
+- **Documentation cleanup**: Removed UserIdentityPlugin API reference files from `docs/api/`
+- **Icon consolidation**: Kept only `icon.png` for NuGet package; backed up other icon variants
+
+### Changed
+- **NuGet package**: Unified `README.md` in `src/FlowT/` for both project and NuGet usage; updated `.csproj` reference
+- **Documentation structure**: Streamlined API reference to remove obsolete plugin documentation
+- **Migration guide**: Added `docs/MIGRATION_UserIdentityPlugin.md` with step-by-step migration instructions
+
+### Added
+- **Migration documentation**: `docs/MIGRATION_UserIdentityPlugin.md` — complete guide for transitioning from the removed plugin to built-in `FlowContext` methods
+- **Analyzer documentation**: Updated `src/FlowT.Analyzers/README.md` to reflect all 26 diagnostic rules (14 errors, 9 warnings, 3 info)
+
+---
+
 ## [1.1.2] - 2026-03-22
 
 ### Added

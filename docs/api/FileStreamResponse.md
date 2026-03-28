@@ -4,7 +4,7 @@ Represents a file streaming response for large file downloads\.
 Use this when you need to stream binary files efficiently without loading them into memory\.
 
 ```csharp
-public class FileStreamResponse : System.IDisposable
+public sealed class FileStreamResponse : System.IDisposable
 ```
 
 Inheritance [System\.Object](https://learn.microsoft.com/en-us/dotnet/api/system.object 'System\.Object') &#129106; FileStreamResponse

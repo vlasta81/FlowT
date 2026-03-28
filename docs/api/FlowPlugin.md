@@ -12,8 +12,8 @@ Inheritance [System\.Object](https://learn.microsoft.com/en-us/dotnet/api/system
 
 Derived  
 &#8627; [CorrelationPlugin](CorrelationPlugin.md 'FlowT\.Plugins\.CorrelationPlugin')  
-&#8627; [FlowTransactionPlugin](FlowTransactionPlugin.md 'FlowT\.Plugins\.FlowTransactionPlugin')  
 &#8627; [RetryStatePlugin](RetryStatePlugin.md 'FlowT\.Plugins\.RetryStatePlugin')  
+&#8627; [TransactionPlugin](TransactionPlugin.md 'FlowT\.Plugins\.TransactionPlugin')  
 &#8627; [UserIdentityPlugin](UserIdentityPlugin.md 'FlowT\.Plugins\.UserIdentityPlugin')
 
 ### Remarks

@@ -1,4 +1,4 @@
-## FlowTransactionPlugin\.CommitAsync\(CancellationToken\) Method
+## TransactionPlugin\.CommitAsync\(CancellationToken\) Method
 
 Commits the active transaction asynchronously\.
 
@@ -7,7 +7,7 @@ public abstract System.Threading.Tasks.ValueTask CommitAsync(System.Threading.Ca
 ```
 #### Parameters
 
-<a name='FlowT.Plugins.FlowTransactionPlugin.CommitAsync(System.Threading.CancellationToken).cancellationToken'></a>
+<a name='FlowT.Plugins.TransactionPlugin.CommitAsync(System.Threading.CancellationToken).cancellationToken'></a>
 
 `cancellationToken` [System\.Threading\.CancellationToken](https://learn.microsoft.com/en-us/dotnet/api/system.threading.cancellationtoken 'System\.Threading\.CancellationToken')
 

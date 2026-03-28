@@ -1,13 +1,13 @@
-## FlowTransactionPlugin\.RollbackAsync\(CancellationToken\) Method
+## TransactionPlugin\.BeginAsync\(CancellationToken\) Method
 
-Rolls back the active transaction asynchronously\.
+Begins a new transaction asynchronously\.
 
 ```csharp
-public abstract System.Threading.Tasks.ValueTask RollbackAsync(System.Threading.CancellationToken cancellationToken=default(System.Threading.CancellationToken));
+public abstract System.Threading.Tasks.ValueTask BeginAsync(System.Threading.CancellationToken cancellationToken=default(System.Threading.CancellationToken));
 ```
 #### Parameters
 
-<a name='FlowT.Plugins.FlowTransactionPlugin.RollbackAsync(System.Threading.CancellationToken).cancellationToken'></a>
+<a name='FlowT.Plugins.TransactionPlugin.BeginAsync(System.Threading.CancellationToken).cancellationToken'></a>
 
 `cancellationToken` [System\.Threading\.CancellationToken](https://learn.microsoft.com/en-us/dotnet/api/system.threading.cancellationtoken 'System\.Threading\.CancellationToken')
 
