@@ -450,21 +450,9 @@ FlowT ships four ready-to-use plugins for common cross-cutting concerns. Registe
 
 ```csharp
 // Register in Program.cs or module
-services.AddFlowPlugin<IUserIdentityPlugin, UserIdentityPlugin>();
 services.AddFlowPlugin<ICorrelationPlugin,  CorrelationPlugin>();
 services.AddFlowPlugin<IRetryStatePlugin,   RetryStatePlugin>();
 services.AddFlowPlugin<ITransactionPlugin,  MyEfCoreTransactionPlugin>(); // your concrete impl
-```
-
-**`IUserIdentityPlugin`** — claims parsed once, cached for the flow:
-```csharp
-var identity = context.Plugin<IUserIdentityPlugin>();
-if (!identity.IsAuthenticated)
-    return FlowInterrupt<object?>.Fail("Unauthorized", 401);
-
-var userId  = identity.UserId;           // Guid?   from NameIdentifier claim
-var email   = identity.Email;            // string? from Email claim
-var isAdmin = identity.IsInRole("Admin");
 ```
 
 **`ICorrelationPlugin`** — reads `X-Correlation-Id` header, falls back to `FlowId`:
