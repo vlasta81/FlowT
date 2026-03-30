@@ -444,7 +444,6 @@ FlowT ships four ready-to-use plugins for common cross-cutting concerns. Registe
 
 | Plugin | Interface | Implementation | Purpose |
 |--------|-----------|----------------|---------|
-| User Identity | `IUserIdentityPlugin` | `UserIdentityPlugin` | Parse `ClaimsPrincipal` once per flow |
 | Correlation | `ICorrelationPlugin` | `CorrelationPlugin` | Stable correlation ID from header or FlowId |
 | Retry State | `IRetryStatePlugin` | `RetryStatePlugin` | Thread-safe attempt counter for retry policies |
 | Transaction | `ITransactionPlugin` | `FlowTransactionPlugin` (abstract) | Coordinate DB transactions across pipeline stages |
