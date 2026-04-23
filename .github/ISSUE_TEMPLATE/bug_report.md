@@ -1,32 +1,64 @@
 ---
 name: Bug report
-about: Create a report to help us improve
-title: ''
-labels: ''
-assignees: ''
-
+about: Report unexpected behavior in FlowT pipeline, specifications, policies, plugins, or analyzers
+title: '[BUG] '
+labels: 'bug'
+assignees: 'vlasta81'
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+## Describe the bug
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+A clear and concise description of the unexpected behavior.
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+## Affected area
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+- [ ] `FlowDefinition` / pipeline execution
+- [ ] `IFlowSpecification` / `FlowSpecification`
+- [ ] `IFlowPolicy`
+- [ ] `IFlowHandler`
+- [ ] Plugin system (`context.Plugin<T>()`)
+- [ ] `FlowContext` / named keys
+- [ ] Roslyn Analyzers
+- [ ] Streaming (`PagedStreamResponse`)
+- [ ] Other: ___
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+## To reproduce
+
+Minimal code example that reproduces the issue:
+
+```csharp
+// Your FlowDefinition / handler / spec / policy here
+```
+
+Steps:
+1. 
+2. 
+3. 
+
+## Expected behavior
+
+What you expected to happen.
+
+## Actual behavior
+
+What actually happened. Include exception message and stack trace if applicable:
+
+```
+// Exception / stack trace here
+```
+
+## Environment
+
+| | |
+|---|---|
+| FlowT version | e.g. 1.3.0 |
+| .NET version | e.g. .NET 10 |
+| OS | e.g. Windows 11 |
+| IDE | e.g. Visual Studio 2026 |
+
+## Additional context
+
+Any other relevant information, links, or screenshots.
 
 **Smartphone (please complete the following information):**
  - Device: [e.g. iPhone6]
