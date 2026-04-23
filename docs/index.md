@@ -38,16 +38,16 @@ Welcome to the **FlowT** documentation! This is your central navigation point fo
 - [Extreme Tests](../benchmarks/FlowT.Benchmarks/EXTREME_README.md) — Stress tests & load scenarios
 
 ### 🛡️ Code Quality & Safety
-- **[Analyzer Documentation](../src/FlowT.Analyzers/README.md)** — 26 Roslyn diagnostic rules
+- **[Analyzer Documentation](../src/FlowT.Analyzers/README.md)** — 27 Roslyn diagnostic rules
 - **[Thread Safety Patterns](BEST_PRACTICES.md#-architecture)** — Singleton safety guide
 
 **Analyzer Categories:**
-- 🔴 **14 Errors** — Build fails (thread-safety, DI anti-patterns, data leaks)
-- ⚠️ **9 Warnings** — Should fix (async issues, locking problems)
+- 🔴 **15 Errors** — Build fails (thread-safety, DI anti-patterns, data leaks)
+- ⚠️ **9 Warnings** — Should fix (async issues, locking problems, synchronous blocking)
 - ℹ️ **3 Info** — Suggestions (cancellation, empty catch blocks)
 
 ### 🧪 Testing & Examples
-- **[Unit Tests](../tests/FlowT.Tests/)** — 206+ tests with full coverage
+- **[Unit Tests](../tests/FlowT.Tests/)** — 277+ tests with full coverage
 - **[Sample Application](../samples/FlowT.SampleApp/)** — Complete working example
 
 ---
@@ -128,4 +128,4 @@ This will:
 
 ---
 
-**Last Updated:** 2026-03-24
+**Last Updated:** 2026-04-23

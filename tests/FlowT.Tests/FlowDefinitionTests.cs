@@ -1,4 +1,4 @@
-using FlowT;
+﻿using FlowT;
 using FlowT.Abstractions;
 using FlowT.Contracts;
 using Microsoft.Extensions.DependencyInjection;
@@ -141,6 +141,44 @@ public class FlowDefinitionTests
         Assert.Equal("Early result", result.Message);
     }
 
+    [Fact]
+    public async Task ExecuteAsync_WithServiceProvider_ExecutesFlow()
+    {
+        var services = CreateServices();
+        var flow = services.GetRequiredService<SimpleFlow>();
+
+        var result = await flow.ExecuteAsync(
+            new SimpleRequest { Value = "ViaServiceProvider" },
+            services,
+            CancellationToken.None);
+
+        Assert.Equal("Handled: ViaServiceProvider", result.Message);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_WithServiceProvider_ThrowsOnCancellation()
+    {
+        var services = CreateServices();
+        var flow = services.GetRequiredService<CancellableFlow>();
+
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
+            flow.ExecuteAsync(new SimpleRequest { Value = "test" }, services, cts.Token).AsTask());
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_ThrowsInvalidOperationException_WhenInterruptHasNoMapperAndResponseNotCastable()
+    {
+        var services = CreateServices();
+        var flow = services.GetRequiredService<FlowWithNoMapperNoCompatibleResponse>();
+        var context = CreateContext(services);
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            flow.ExecuteAsync(new SimpleRequest { Value = "Invalid" }, context).AsTask());
+    }
+
     // Helper methods
     private static IServiceProvider CreateServices()
     {
@@ -156,6 +194,7 @@ public class FlowDefinitionTests
         services.AddTransient<EarlyReturnSpecification>();
         services.AddTransient<OrderedSpec1>();
         services.AddTransient<OrderedSpec2>();
+        services.AddTransient<CancellableHandler>();
 
         // Register flows
         services.AddSingleton<SimpleFlow>();
@@ -167,6 +206,8 @@ public class FlowDefinitionTests
         services.AddSingleton<FlowWithoutHandler>();
         services.AddSingleton<FlowUsingContext>();
         services.AddSingleton<FlowWithEarlyReturn>();
+        services.AddSingleton<CancellableFlow>();
+        services.AddSingleton<FlowWithNoMapperNoCompatibleResponse>();
 
         return services.BuildServiceProvider();
     }
@@ -383,6 +424,35 @@ public class FlowDefinitionTests
                     FlowInterrupt<object?>.Stop(response));
             }
             return ValueTask.FromResult<FlowInterrupt<object?>?>(null);
+        }
+    }
+
+    // Flow that checks cancellation in handler
+    public class CancellableFlow : FlowDefinition<SimpleRequest, SimpleResponse>
+    {
+        protected override void Configure(IFlowBuilder<SimpleRequest, SimpleResponse> flow)
+        {
+            flow.Handle<CancellableHandler>();
+        }
+    }
+
+    public class CancellableHandler : IFlowHandler<SimpleRequest, SimpleResponse>
+    {
+        public ValueTask<SimpleResponse> HandleAsync(SimpleRequest request, FlowContext context)
+        {
+            context.ThrowIfCancellationRequested();
+            return ValueTask.FromResult(new SimpleResponse { Message = "Handled" });
+        }
+    }
+
+    // Flow with a failing spec but no interrupt mapper and response type is not castable from interrupt response
+    public class FlowWithNoMapperNoCompatibleResponse : FlowDefinition<SimpleRequest, SimpleResponse>
+    {
+        protected override void Configure(IFlowBuilder<SimpleRequest, SimpleResponse> flow)
+        {
+            flow.Check<FailingSpecification>()
+                .Handle<SimpleHandler>();
+            // No OnInterrupt mapper; FailingSpecification returns Fail(message) with null Response
         }
     }
 }

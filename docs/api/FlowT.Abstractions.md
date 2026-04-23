@@ -18,6 +18,11 @@
   - **[Next](FlowPolicy_TRequest,TResponse_.Next.md 'FlowT\.Abstractions\.FlowPolicy\<TRequest,TResponse\>\.Next')**
   - **[HandleAsync\(TRequest, FlowContext\)](FlowPolicy_TRequest,TResponse_.HandleAsync.ZEI5927PM8BELMIBZRCA8CSYA.md 'FlowT\.Abstractions\.FlowPolicy\<TRequest,TResponse\>\.HandleAsync\(TRequest, FlowT\.FlowContext\)')**
   - **[SetNext\(IFlowHandler&lt;TRequest,TResponse&gt;\)](FlowPolicy_TRequest,TResponse_.SetNext.KX0NCCWVOD11RV5WS8287E3M6.md 'FlowT\.Abstractions\.FlowPolicy\<TRequest,TResponse\>\.SetNext\(FlowT\.Contracts\.IFlowHandler\<TRequest,TResponse\>\)')**
+- **[FlowSpecification&lt;TRequest&gt;](FlowSpecification_TRequest_.md 'FlowT\.Abstractions\.FlowSpecification\<TRequest\>')**
+  - **[CheckAsync\(TRequest, FlowContext\)](FlowSpecification_TRequest_.CheckAsync.QTHZIQ37Y78AUXMZKAI84M628.md 'FlowT\.Abstractions\.FlowSpecification\<TRequest\>\.CheckAsync\(TRequest, FlowT\.FlowContext\)')**
+  - **[Continue\(\)](FlowSpecification_TRequest_.Continue().md 'FlowT\.Abstractions\.FlowSpecification\<TRequest\>\.Continue\(\)')**
+  - **[Fail\(string, int\)](FlowSpecification_TRequest_.Fail.589T1QQR653WCCGCXHV5Y2NM5.md 'FlowT\.Abstractions\.FlowSpecification\<TRequest\>\.Fail\(string, int\)')**
+  - **[Stop\(object, int\)](FlowSpecification_TRequest_.Stop.MHKQRHPAVHV9WNGC3IEG2VOJ7.md 'FlowT\.Abstractions\.FlowSpecification\<TRequest\>\.Stop\(object, int\)')**
 - **[PagedStreamResponse&lt;T&gt;](PagedStreamResponse_T_.md 'FlowT\.Abstractions\.PagedStreamResponse\<T\>')**
   - **[HasMore](PagedStreamResponse_T_.HasMore.md 'FlowT\.Abstractions\.PagedStreamResponse\<T\>\.HasMore')**
   - **[Items](PagedStreamResponse_T_.Items.md 'FlowT\.Abstractions\.PagedStreamResponse\<T\>\.Items')**

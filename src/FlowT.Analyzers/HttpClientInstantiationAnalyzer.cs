@@ -1,4 +1,4 @@
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -81,7 +81,7 @@ namespace FlowT.Analyzers
             INamedTypeSymbol? baseType = type.BaseType;
             while (baseType is not null)
             {
-                if (baseType.Name == "FlowPolicy")
+                if (baseType.Name is "FlowPolicy" or "FlowSpecification")
                     return true;
                 baseType = baseType.BaseType;
             }

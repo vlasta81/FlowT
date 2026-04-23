@@ -1,9 +1,5 @@
 # FlowT - High-Performance Orchestration Library for .NET
 
-[![NuGet](https://img.shields.io/nuget/v/FlowT.svg)](https://www.nuget.org/packages/FlowT/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![.NET](https://img.shields.io/badge/.NET-10.0-purple.svg)](https://dotnet.microsoft.com/)
-
 **FlowT** is a high-performance orchestration library for .NET that implements the Chain of Responsibility pattern with a fluent API. Build maintainable, testable, and **ultra-fast** pipelines with specifications, policies, and handlers.
 
 > 📚 **Full Documentation:** https://github.com/vlasta81/FlowT
@@ -18,6 +14,7 @@
 | **NuGet** | https://www.nuget.org/packages/FlowT/ |
 | **Targets** | .NET 10.0 (Primary), .NET Standard 2.0 (Compatibility) |
 | **Dependencies** | None (zero external dependencies) |
+| **Built-in plugins** | 10 (AuditPlugin, TenantPlugin, IdempotencyPlugin, PerformancePlugin, FlowScopePlugin, FeatureFlagPlugin, CorrelationPlugin, UserIdentityPlugin, RetryStatePlugin, TransactionPlugin) |
 | **License** | MIT |
 
 ---
@@ -35,13 +32,20 @@
 - 🔄 **Chain of Responsibility** - Composable pipeline with specs, policies, handlers
 - 🎨 **Fluent API** - Intuitive pipeline configuration
 - 📝 **Automatic Context** - No manual FlowContext creation needed
-- 🛡️ **26 Roslyn Analyzers** - Compile-time safety for threading & DI
+- 🛡️ **27 Roslyn Analyzers** - Compile-time safety for threading & DI
 
 ### 💡 Advanced Features
 - 🔍 **FlowInterrupt** - Type-safe error handling without exceptions
-- 🔌 **Plugin System** - PerFlow services with 8.7× warm-path speedup
+- 🧩 **`FlowSpecification<TRequest>`** - Optional abstract base class: `Continue()`, `Fail()`, `Stop()` helpers (zero-allocation cached path)
+- 🔌 **Plugin System** - PerFlow services with 8.7× warm-path speedup, 10 built-in plugins
 - 📊 **Named Keys** - Store multiple values of same type
 - 🎭 **Scoped Services** - Safe `ctx.Service<T>()` in singleton handlers
+- 🏷️ **Feature Flags** - `FeatureFlagPlugin` wraps `IVariantFeatureManager` with per-flow cache
+- 📝 **Audit Trail** - `AuditPlugin` accumulates structured events per flow execution
+- ⏱️ **Performance Metrics** - `PerformancePlugin` measures named code sections with `Stopwatch`
+- 🏢 **Multi-tenancy** - `TenantPlugin` resolves tenant from claim → header → route → default
+- 🔑 **Idempotency** - `IdempotencyPlugin` reads `X-Idempotency-Key` header once per flow
+- 🔭 **DI Scope Control** - `FlowScopePlugin` for explicit scopes in background/non-HTTP flows
 
 ---
 
@@ -140,14 +144,62 @@ Define reusable orchestration pipelines with `[FlowDefinition]` attribute.
 ### Context (`FlowContext`)
 Per-request execution context with scoped service resolution, storage, and events.
 
-### Specifications (`IFlowSpecification<TRequest>`)
-Reusable validation and business rules that can interrupt flow with `FlowInterrupt`.
+### Specifications (`IFlowSpecification<TRequest>` / `FlowSpecification<TRequest>`)
+Reusable validation and business rules that can interrupt flow with `FlowInterrupt`. Inherit from `FlowSpecification<TRequest>` for `Continue()`, `Fail()`, and `Stop()` helpers.
 
 ### Policies (`FlowPolicy<TRequest, TResponse>`)
 Cross-cutting concerns as reusable middleware (logging, caching, transactions).
 
 ### Plugins (`Plugin<T>()`)
 PerFlow services shared across all pipeline stages with automatic caching.
+Register with `services.AddFlowPlugin<IMyPlugin, MyPlugin>()`, resolve with `context.Plugin<IMyPlugin>()`.
+
+#### Built-in Plugins
+
+| Plugin | Interface | Description |
+|--------|-----------|-------------|
+| `AuditPlugin` | `IAuditPlugin` | Accumulates structured `AuditEntry` records per flow execution |
+| `TenantPlugin` | `ITenantPlugin` | Resolves tenant from claim `tid` → `X-Tenant-Id` header → route → `"default"` |
+| `IdempotencyPlugin` | `IIdempotencyPlugin` | Reads `X-Idempotency-Key` header once per flow |
+| `PerformancePlugin` | `IPerformancePlugin` | Measures named sections with `Stopwatch`; results in `Elapsed` dictionary |
+| `FlowScopePlugin` | `IFlowScopePlugin` | Creates an explicit `IServiceScope` — useful in non-HTTP/background flows |
+| `FeatureFlagPlugin` | `IFeatureFlagPlugin` | Evaluates feature flags via `IVariantFeatureManager` with per-flow caching |
+| `CorrelationPlugin` | `ICorrelationPlugin` | Reads `X-Correlation-Id` header; falls back to `FlowId` |
+| `UserIdentityPlugin` | `IUserIdentityPlugin` | Exposes `ClaimsPrincipal`, `UserId`, `Email`, `IsAuthenticated`, `IsInRole` |
+| `RetryStatePlugin` | `IRetryStatePlugin` | Tracks retry attempt counter for retry policies |
+| `TransactionPlugin` | `ITransactionPlugin` (abstract) | Base for custom transaction implementations (`BeginAsync`, `CommitAsync`, `RollbackAsync`) |
+
+#### Example — FeatureFlagPlugin + AuditPlugin
+
+```csharp
+// appsettings.json
+{
+  "FeatureManagement": {
+    "NewCheckout": true
+  }
+}
+
+// Program.cs
+builder.Services.AddFeatureManagement();
+builder.Services.AddFlowPlugin<IFeatureFlagPlugin, FeatureFlagPlugin>();
+builder.Services.AddFlowPlugin<IAuditPlugin, AuditPlugin>();
+
+// Handler
+public async ValueTask<Response> HandleAsync(Request req, FlowContext ctx)
+{
+    var ff = ctx.Plugin<IFeatureFlagPlugin>();
+    if (!await ff.IsEnabledAsync("NewCheckout", ctx.CancellationToken))
+        return new Response { Skipped = true };
+
+    var audit = ctx.Plugin<IAuditPlugin>();
+    audit.Record("CheckoutStarted", new { req.UserId });
+
+    // ... business logic ...
+
+    audit.Record("CheckoutCompleted", new { req.UserId, OrderId = order.Id });
+    return new Response { OrderId = order.Id };
+}
+```
 
 > 📖 **Complete Guide:** https://github.com/vlasta81/FlowT/blob/main/README.md#-core-concepts
 
@@ -155,7 +207,7 @@ PerFlow services shared across all pipeline stages with automatic caching.
 
 ## 🛡️ Compile-Time Safety
 
-FlowT includes **26 Roslyn analyzers** that catch issues at compile-time:
+FlowT includes **27 Roslyn analyzers** that catch issues at compile-time:
 
 ### 🔴 Errors (Build fails - must fix!)
 - **FlowT002**: Non-thread-safe collections (List, Dictionary, etc.)
@@ -172,6 +224,7 @@ FlowT includes **26 Roslyn analyzers** that catch issues at compile-time:
 - **FlowT019**: State leak types (StringBuilder, Stream, Stopwatch, arrays)
 - **FlowT021**: FlowPlugin stored in singleton field
 - **FlowT022**: Multiple .Handle<T>() calls in Configure()
+- **FlowT026**: Thread.Sleep() in synchronous flow methods
 
 ### ⚠️ Warnings
 - **FlowT001**: Mutable instance fields
@@ -247,7 +300,7 @@ The `UserIdentityPlugin` and `IUserIdentityPlugin` interface have been removed. 
 
 ## 🧪 Testing
 
-- **206+ unit tests** with full coverage
+- **277+ unit tests** with full coverage
 - xUnit test framework
 - Thread-safety and concurrency tests
 - Analyzer verification tests

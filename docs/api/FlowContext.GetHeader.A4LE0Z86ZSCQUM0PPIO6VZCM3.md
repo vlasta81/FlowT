@@ -20,7 +20,7 @@ The first value of the specified header, or `null` if not found\.
 
 ### Remarks
 
-This is a convenience method equivalent to `context.HttpContext?.Request.Headers[name].FirstOrDefault()`.
+This is a convenience method equivalent to `(string?)context.HttpContext?.Request.Headers[name]`.
 Use this to access custom headers, authentication tokens, content negotiation, etc.
 
 If the header has multiple values, only the first value is returned.

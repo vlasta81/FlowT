@@ -1,4 +1,4 @@
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -15,6 +15,7 @@ namespace FlowT.Analyzers
     public class SynchronousBlockingAnalyzer : DiagnosticAnalyzer
     {
         public const string DiagnosticId = "FlowT010";
+        public const string ThreadSleepDiagnosticId = "FlowT026";
 
         private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
             id: DiagnosticId,
@@ -27,7 +28,7 @@ namespace FlowT.Analyzers
                         "Use 'await' and 'await Task.Delay()' instead to maintain asynchronous flow.");
 
         private static readonly DiagnosticDescriptor ThreadSleepRule = new DiagnosticDescriptor(
-            id: DiagnosticId,
+            id: ThreadSleepDiagnosticId,
             title: "Thread.Sleep in async method",
             messageFormat: "Using 'Thread.Sleep()' blocks the thread pool in async method '{0}'. Use 'await Task.Delay()' instead.",
             category: "FlowT.AsyncPatterns",
@@ -137,7 +138,7 @@ namespace FlowT.Analyzers
             INamedTypeSymbol? baseType = type.BaseType;
             while (baseType is not null)
             {
-                if (baseType.Name == "FlowPolicy")
+                if (baseType.Name is "FlowPolicy" or "FlowSpecification")
                     return true;
                 baseType = baseType.BaseType;
             }

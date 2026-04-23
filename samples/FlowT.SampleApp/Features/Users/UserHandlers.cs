@@ -1,5 +1,6 @@
-using FlowT.Abstractions;
+﻿using FlowT.Abstractions;
 using FlowT.Contracts;
+using FlowT.Plugins;
 using FlowT.SampleApp.Domain;
 using FlowT.SampleApp.Infrastructure;
 using System.Text.Json;
@@ -29,6 +30,12 @@ public class CreateUserHandler : IFlowHandler<CreateUserRequest, CreateUserRespo
         // This is thread-safe even though handler is singleton
         var userRepo = context.Service<IUserRepository>();
 
+        // PerformancePlugin: track how long the database write takes
+        var perf = context.Plugin<IPerformancePlugin>();
+
+        // AuditPlugin: build a structured audit trail for this flow execution
+        var audit = context.Plugin<IAuditPlugin>();
+
         // Create user entity
         var user = new User
         {
@@ -40,15 +47,25 @@ public class CreateUserHandler : IFlowHandler<CreateUserRequest, CreateUserRespo
             IsActive = true
         };
 
-        // Save to repository (respects cancellation token)
-        await userRepo.CreateAsync(user, context.CancellationToken);
+        // Measure the repository call — result available in perf.Elapsed after the using block
+        using (perf.Measure("db-create-user"))
+        {
+            await userRepo.CreateAsync(user, context.CancellationToken);
+        }
+
+        // Record audit entry — can be flushed to a persistent store after the flow
+        audit.Record("UserCreated", new { user.Id, user.Email });
 
         _logger.LogInformation(
-            "User created: {UserId} ({Email}) by flow {FlowId}",
+            "User created: {UserId} ({Email}) by flow {FlowId} — db write: {Elapsed}ms",
             user.Id,
             user.Email,
-            context.GetFlowIdString()
+            context.FlowIdString,
+            perf.Elapsed["db-create-user"].TotalMilliseconds
         );
+
+        foreach (var entry in audit.Entries)
+            _logger.LogDebug("[Audit] {Action} at {Timestamp}", entry.Action, entry.Timestamp);
 
         // Store created user in context for potential use by subsequent policies
         context.Set(user, key: "created-user");

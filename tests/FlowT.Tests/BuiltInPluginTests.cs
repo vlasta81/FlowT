@@ -139,7 +139,7 @@ public class BuiltInPluginTests : FlowTestBase
             s.AddFlowPlugin<ICorrelationPlugin, CorrelationPlugin>());
         var context = CreateContext(provider);
 
-        Assert.Equal(context.GetFlowIdString(), context.Plugin<ICorrelationPlugin>().CorrelationId);
+        Assert.Equal(context.FlowIdString, context.Plugin<ICorrelationPlugin>().CorrelationId);
     }
 
     [Fact]
@@ -161,7 +161,7 @@ public class BuiltInPluginTests : FlowTestBase
             s.AddFlowPlugin<ICorrelationPlugin, CorrelationPlugin>());
         var context = CreateContextWithHttp(provider, new DefaultHttpContext());
 
-        Assert.Equal(context.GetFlowIdString(), context.Plugin<ICorrelationPlugin>().CorrelationId);
+        Assert.Equal(context.FlowIdString, context.Plugin<ICorrelationPlugin>().CorrelationId);
     }
 
     [Fact]

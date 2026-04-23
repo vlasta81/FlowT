@@ -1,7 +1,8 @@
-using FlowT.Abstractions;
+﻿using FlowT.Abstractions;
 using FlowT.Attributes;
 using FlowT.Contracts;
 using FlowT.Extensions;
+using FlowT.Plugins;
 using FlowT.SampleApp;
 using FlowT.SampleApp.Domain;
 using FlowT.SampleApp.Infrastructure;
@@ -163,6 +164,37 @@ public class CheckOrderValueSpecification : IFlowSpecification<CreateOrderReques
 
 // ===== HANDLER =====
 
+/// <summary>
+/// Guards access to the new order workflow behind a feature flag.
+/// When <c>NewOrderWorkflow</c> is disabled in <c>appsettings.json</c>, the order is rejected
+/// with a 503 so the caller knows to fall back to the legacy path.
+/// Demonstrates <see cref="IFeatureFlagPlugin"/>: async evaluation with per-flow caching.
+/// </summary>
+public class FeatureFlagOrderSpecification : IFlowSpecification<CreateOrderRequest>
+{
+    public async ValueTask<FlowInterrupt<object?>?> CheckAsync(
+        CreateOrderRequest request,
+        FlowContext context)
+    {
+        var ff = context.Plugin<IFeatureFlagPlugin>();
+
+        // Result is cached for this flow — safe to call multiple times
+        var enabled = await ff.IsEnabledAsync("NewOrderWorkflow", context.CancellationToken);
+
+        if (!enabled)
+        {
+            return FlowInterrupt<object?>.Fail(
+                "Order creation via the new workflow is currently disabled.",
+                StatusCodes.Status503ServiceUnavailable
+            );
+        }
+
+        return null;
+    }
+}
+
+// ===== HANDLER =====
+
 public class CreateOrderHandler : IFlowHandler<CreateOrderRequest, CreateOrderResponse>
 {
     private readonly ILogger<CreateOrderHandler> _logger;
@@ -183,6 +215,19 @@ public class CreateOrderHandler : IFlowHandler<CreateOrderRequest, CreateOrderRe
             : throw new InvalidOperationException("Validated items not found");
         var totalAmount = context.TryGet<decimal>(out var total, key: "order:total-amount") ? total : 0m;
         var requiresApproval = context.TryGet<bool>(out var approval, key: "order:requires-approval") && approval;
+
+        // IdempotencyPlugin: log when the caller supplies a deduplication key.
+        // In production you would check a cache/store here to return the previous response.
+        var idempotency = context.Plugin<IIdempotencyPlugin>();
+        if (idempotency.HasKey)
+            _logger.LogInformation("Idempotency key present: {Key} — check cache before persisting", idempotency.Key);
+
+        // TenantPlugin: resolve tenant from claim ‘tid’ → X-Tenant-Id header → route → “default”
+        var tenant = context.Plugin<ITenantPlugin>();
+        _logger.LogInformation("Processing order for tenant: {TenantId}", tenant.TenantId);
+
+        // AuditPlugin: accumulate structured entries for the lifetime of this flow
+        var audit = context.Plugin<IAuditPlugin>();
 
         // Create order
         var order = new Order
@@ -215,6 +260,10 @@ public class CreateOrderHandler : IFlowHandler<CreateOrderRequest, CreateOrderRe
             ? $"Order created with status Pending (requires approval for ${totalAmount:F2})"
             : $"Order created successfully";
 
+        // Record audit entries
+        audit.Record(requiresApproval ? "OrderRequiresApproval" : "OrderCreated",
+            new { OrderId = order.Id, UserId = user.Id, TotalAmount = totalAmount, order.Status });
+
         _logger.LogInformation(
             "Order {OrderId} created for user {UserId}: {ItemCount} items, total ${TotalAmount:F2}, status: {Status}",
             order.Id,
@@ -223,6 +272,26 @@ public class CreateOrderHandler : IFlowHandler<CreateOrderRequest, CreateOrderRe
             totalAmount,
             order.Status
         );
+
+        foreach (var entry in audit.Entries)
+            _logger.LogDebug("[Audit] {Action} at {Timestamp}", entry.Action, entry.Timestamp);
+
+        // FlowScopePlugin: demonstrates creating an explicit DI scope within a flow.
+        // In HTTP flows ASP.NET Core already provides a request scope, so the value here
+        // is educational — showing the pattern used in background jobs / hosted services
+        // where no ambient scope exists. The scope is disposed after use.
+        var scopePlugin = context.Plugin<IFlowScopePlugin>();
+        try
+        {
+            var scopedLogger = scopePlugin.ScopedServices
+                .GetRequiredService<ILogger<CreateOrderHandler>>();
+            scopedLogger.LogDebug(
+                "FlowScopePlugin: scoped logger resolved for order {OrderId}", order.Id);
+        }
+        finally
+        {
+            scopePlugin.Dispose();
+        }
 
         // Publish background event (fire-and-forget)
         _ = context.PublishInBackground(new OrderCreatedEvent(order.Id, user.Id, totalAmount), context.CancellationToken);
@@ -234,6 +303,33 @@ public class CreateOrderHandler : IFlowHandler<CreateOrderRequest, CreateOrderRe
 // ===== EVENTS =====
 
 public record OrderCreatedEvent(Guid OrderId, Guid UserId, decimal TotalAmount);
+
+/// <summary>
+/// Background event handler for <see cref="OrderCreatedEvent"/>.
+/// Demonstrates <see cref="IEventHandler{TEvent}"/>: handles domain events published
+/// via <see cref="FlowContext.PublishInBackground{TEvent}"/>.
+/// </summary>
+public class OrderCreatedEventHandler : IEventHandler<OrderCreatedEvent>
+{
+    private readonly ILogger<OrderCreatedEventHandler> _logger;
+
+    public OrderCreatedEventHandler(ILogger<OrderCreatedEventHandler> logger)
+    {
+        _logger = logger;
+    }
+
+    public async Task HandleAsync(OrderCreatedEvent eventData, CancellationToken cancellationToken)
+    {
+        _logger.LogInformation(
+            "Background: processing OrderCreated event for order {OrderId}, user {UserId}, total ${TotalAmount:F2}",
+            eventData.OrderId,
+            eventData.UserId,
+            eventData.TotalAmount);
+
+        // Simulate async work (e.g. send notification, update read model)
+        await Task.Delay(1, cancellationToken);
+    }
+}
 
 // ===== FLOW =====
 
@@ -247,6 +343,8 @@ public class CreateOrderFlow : FlowDefinition<CreateOrderRequest, CreateOrderRes
             .Check<ValidateUserForOrderSpecification>()
             .Check<ValidateOrderItemsSpecification>()
             .Check<CheckOrderValueSpecification>()
+            // FeatureFlagPlugin: gate the new order workflow behind a feature flag
+            .Check<FeatureFlagOrderSpecification>()
 
             // Policies (cross-cutting concerns)
             .Use<LoggingPolicy<CreateOrderRequest, CreateOrderResponse>>()
@@ -270,6 +368,7 @@ public class OrderModule : IFlowModule
     public void Register(IServiceCollection services)
     {
         services.AddFlow<CreateOrderFlow, CreateOrderRequest, CreateOrderResponse>();
+        services.AddSingleton<IEventHandler<OrderCreatedEvent>, OrderCreatedEventHandler>();
     }
 
     public void MapEndpoints(IEndpointRouteBuilder app)
@@ -287,7 +386,7 @@ public class OrderModule : IFlowModule
         })
         .WithName("CreateOrder")
         .WithSummary("Create a new order with validation")
-        .WithDescription("Demonstrates complex validation pipeline with FlowInterrupt: user validation, stock checks, and business rules")
+        .WithDescription("Demonstrates complex validation pipeline with FlowInterrupt, IdempotencyPlugin, TenantPlugin, AuditPlugin and FeatureFlagPlugin")
         .Produces<CreateOrderResponse>(StatusCodes.Status201Created)
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status403Forbidden)

@@ -28,55 +28,72 @@ Tests FlowT's internal components and operations:
 
 | Benchmark | Description | Documentation |
 |-----------|-------------|---------------|
-| **FlowContext** | Context operations (Set/Get/Push/Pop/Named keys) | [📖 View Results](docs/results/FlowContext.md) |
-| **FlowPipeline** | Pipeline execution (Specs, Policies, Handlers) | [📖 View Results](docs/results/FlowPipeline.md) |
-| **Allocations** | Memory efficiency & throughput | [📖 View Results](docs/results/Allocations.md) |
-| **Named Keys** | Named keys overhead vs default keys | [📖 View Results](docs/results/NamedKeys.md) |
+| **FlowContext** | Context operations (Set/Get/Push/Pop/Named keys, Service\<T\>) | [📖 View Results](docs/results/FlowT.Benchmarks.FlowContextBenchmarks-report-github.md) |
+| **FlowPipeline** | Pipeline execution (Specs, Policies, Handlers) | [📖 View Results](docs/results/FlowT.Benchmarks.FlowPipelineBenchmarks-report-github.md) |
+| **Allocations** | Memory efficiency & throughput | [📖 View Results](docs/results/FlowT.Benchmarks.AllocationBenchmarks-report-github.md) |
+| **Named Keys** | Named keys overhead vs default keys | [📖 View Results](docs/results/FlowT.Benchmarks.NamedKeysComparisonBenchmarks-report-github.md) |
+| **Plugin System** | Plugin resolution, PerFlow caching | [📖 View Results](docs/results/FlowT.Benchmarks.PluginBenchmarks-report-github.md) |
+| **Cancellation** ✨ | CancellationToken overhead measurement | [📖 View Results](docs/results/FlowT.Benchmarks.CancellationBenchmarks-report-github.md) |
+| **Publish Events** ✨ | PublishAsync vs PublishInBackground cost | [📖 View Results](docs/results/FlowT.Benchmarks.PublishEventBenchmarks-report-github.md) |
+| **Timers** ✨ | StartTimer cold/warm paths | [📖 View Results](docs/results/FlowT.Benchmarks.TimerBenchmarks-report-github.md) |
 
 ### 2️⃣ **Framework Comparison Benchmarks**
 Head-to-head comparisons with popular mediator frameworks:
 
 | Framework | Speed vs FlowT | Memory vs FlowT | Documentation |
 |-----------|----------------|-----------------|---------------|
-| **DispatchR** | 2.7× slower | 28% less | [📖 Detailed Analysis](docs/DispatchR-Comparison.md) |
-| **MediatR** | 9× slower | 6× more | [📖 View Results](docs/results/MediatR-Comparison.md) |
-| **Mediator.Net** | 47× slower | 15× more | [📖 View Results](docs/results/MediatorNet-Comparison.md) |
-| **WolverineFx** | 13.5× slower | 5× more | [📖 View Results](docs/results/WolverineFx-Comparison.md) |
-| **Brighter** | 77× slower | 25× more | [📖 View Results](docs/results/Brighter-Comparison.md) |
+| **DispatchR** | 2.9× slower | −28% (less!) | [📖 Detailed Analysis](docs/DispatchR-Comparison.md) |
+| **MediatR** | 9× slower | 6.2× more | [📖 View Results](docs/results/FlowT.Benchmarks.FlowTvsMediatRBenchmarks-report-github.md) |
+| **Mediator.Net** | 54× slower | 14.9× more | [📖 View Results](docs/results/FlowT.Benchmarks.FlowTvsMediatorNetBenchmarks-report-github.md) |
+| **WolverineFx** | 14× slower | 5.6× more | [📖 View Results](docs/results/FlowT.Benchmarks.FlowTvsWolverineFxBenchmarks-report-github.md) |
+| **Brighter** | 82× slower | 33× more | [📖 View Results](docs/results/FlowT.Benchmarks.FlowTvsBrighterBenchmarks-report-github.md) |
 
-**Key Takeaway:** FlowT is the fastest .NET mediator framework, with DispatchR as a close second optimizing for memory.
+**Key Takeaway:** FlowT is the fastest .NET mediator framework. DispatchR allocates slightly less memory but is 2.9× slower.
 
 ### 3️⃣ **Extreme Load Benchmarks**
 Stress tests validating FlowT's behavior under extreme conditions:
 
 | Test | Description | Result | Documentation |
 |------|-------------|--------|---------------|
-| **Extreme Pipeline** | 10 specs + 10 policies + 10 keys | 959 ns | [📖 View Results](docs/results/Extreme-Pipeline.md) |
-| **Large Payload** | 10 MB data + 10k items | 4.6 ms | [📖 View Results](docs/results/Extreme-Payload.md) |
-| **Concurrent Execution** | 100 parallel requests | 15.5 ms | [📖 View Results](docs/results/Extreme-Concurrency.md) |
-| **Deep Nesting** | 10 policies + 10 MB payload | 4.6 ms | [📖 View Results](docs/results/Extreme-Nesting.md) |
+| **Extreme Pipeline** | 10 specs + 10 policies + 10 keys | **1.040 μs / 464 B** | [📖 View Results](docs/results/FlowT.Benchmarks.ExtremePipelineBenchmarks-report-github.md) |
+| **Large Payload** | 10 MB data + 10k items | **4.546 ms / 208 B** | [📖 View Results](docs/results/FlowT.Benchmarks.ExtremePipelineBenchmarks-report-github.md) |
+| **Concurrent Execution** | 100 parallel requests | **15.712 ms / 70 KB** | [📖 View Results](docs/results/FlowT.Benchmarks.ExtremePipelineBenchmarks-report-github.md) |
+| **Deep Nesting** | 10 policies + 10 MB payload | **4.602 ms / 304 B** | [📖 View Results](docs/results/FlowT.Benchmarks.ExtremePipelineBenchmarks-report-github.md) |
 
-**Key Takeaway:** FlowT exhibits perfect linear scaling with zero overhead for large payloads.
+**Key Takeaway:** FlowT exhibits perfect linear scaling with zero framework overhead for large payloads.
 
 ### 4️⃣ **Streaming Response Benchmarks**
 Performance analysis of streaming vs buffered responses:
 
 | Benchmark | Description | Key Metrics | Documentation |
 |-----------|-------------|-------------|---------------|
-| **StreamingBenchmarks** | Buffered vs streaming (100, 1k, 10k items) | 300× apparent slowdown (Task.Yield artifact) | [📖 View Results](docs/results/FlowT.Benchmarks.StreamingBenchmarks.md) |
-| **StreamingComparisonBenchmarks** | Isolate real overhead (no Task.Yield) | **25× real overhead**, 96% memory reduction | [📖 View Results](docs/results/FlowT.Benchmarks.StreamingComparisonBenchmarks.md) |
+| **StreamingBenchmarks** | Buffered vs streaming (100, 1k, 10k items) | 156–314× apparent slowdown (Task.Yield artifact) | [📖 View Results](docs/results/FlowT.Benchmarks.StreamingBenchmarks-report-github.md) |
+| **StreamingComparisonBenchmarks** | Isolate real overhead (Sync vs Async) | **28.5× real overhead**, 96% memory reduction | [📖 View Results](docs/results/FlowT.Benchmarks.StreamingComparisonBenchmarks-report-github.md) |
 
-**Key Findings:**
-- ⚡ **Real overhead: 25×** (not 300×) - 18 ns per item vs 200 ns Task.Yield artifact
-- 💾 **Memory: 96% reduction** - 8,296 B → 336 B (constant regardless of dataset size)
-- 🚀 **TTFB: 1000× faster** - Progressive delivery vs waiting for all queries
-- ♾️ **Scalability: Unlimited** - Handle millions of items without OOM
+**Key Findings (23.04.2026, .NET 10.0.6):**
+- ⚡ **Real overhead: 28.5×** (Sync, no Task.Yield) — IAsyncEnumerable infrastructure cost
+- 💾 **Memory: 96% reduction** — 8,296 B → 336 B constant (1,000 items)
+- 🚀 **TTFB: 1000× faster** — progressive delivery vs waiting for full dataset
+- ♾️ **Scalability: Constant memory** — 664 B for 10,000 items vs 80,296 B buffered
 
 **When to use streaming:**
 - Large datasets (>1,000 items)
 - Memory-constrained environments
 - Real-time dashboards/feeds
 - Infinite scroll/pagination
+
+### 5️⃣ **Plugin System Benchmarks**
+Performance analysis of the plugin system with PerFlow caching:
+
+| Benchmark | Description | Key Metrics | Documentation |
+|-----------|-------------|-------------|---------------|
+| **PluginBenchmarks** | Cold/warm access, 3-type scenario, pipeline integration | **7.6 ns warm / 191 ns cold** | [📖 View Results](docs/results/FlowT.Benchmarks.PluginBenchmarks-report-github.md) |
+
+**Key Findings:**
+- ⚡ **Warm: 7.6 ns / 0 B** — per-flow cache, zero allocations on repeat access
+- 💾 **Cold: 191 ns / 472 B** — first access including lazy dict allocation
+- 🔄 **25× cold-to-warm speedup** — PerFlow cache eliminates DI resolution on repeat calls
+- 📦 **FlowPlugin overhead vs plain: ~5 ns / 8 B** — negligible abstraction cost
 
 **Documentation:** [📖 Streaming Benchmarks Guide](docs/Streaming-Benchmarks.md) - Complete analysis, decision guide, real-world examples
 
@@ -416,7 +433,7 @@ When adding benchmarks:
 
 ---
 
-**Last Updated:** 2026-03-21  
-**FlowT Version:** Latest  
+**Last Updated:** 2026-04-23  
+**FlowT Version:** 1.2.0  
 **BenchmarkDotNet Version:** 0.15.8  
-**Target Framework:** .NET 10.0.5
+**Target Framework:** .NET 10.0.6

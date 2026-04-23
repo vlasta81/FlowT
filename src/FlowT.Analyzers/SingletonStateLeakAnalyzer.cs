@@ -1,4 +1,4 @@
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -32,21 +32,18 @@ namespace FlowT.Analyzers
             => ImmutableArray.Create(Rule);
 
         // Common mutable types that indicate state leak risk
-        private static readonly string[] MutableStateTypes = new[]
-        {
+        private static readonly string[] MutableStateTypes =
+        [
             "StringBuilder",
             "MemoryStream",
             "StreamWriter",
             "StreamReader",
-            "HttpClient", // if configured per-request
+            "HttpClient",
             "Stopwatch",
             "Timer",
-            "Random", // not thread-safe
-            "StringBuilder",
-            "ArraySegment",
-            "Memory",
-            "Span"
-        };
+            "Random",
+            "ArraySegment"
+        ];
 
         public override void Initialize(AnalysisContext context)
         {
@@ -108,7 +105,6 @@ namespace FlowT.Analyzers
         {
             return type.AllInterfaces.Any(i =>
                 i.Name == "IFlowHandler" ||
-                i.Name == "IHandler" ||
                 i.Name == "IFlowSpecification") ||
                 InheritsFromFlowPolicy(type);
         }
@@ -118,7 +114,7 @@ namespace FlowT.Analyzers
             INamedTypeSymbol? baseType = type.BaseType;
             while (baseType is not null)
             {
-                if (baseType.Name == "FlowPolicy")
+                if (baseType.Name is "FlowPolicy" or "FlowSpecification")
                     return true;
                 baseType = baseType.BaseType;
             }

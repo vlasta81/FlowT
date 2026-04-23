@@ -1,4 +1,4 @@
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using System.Collections.Immutable;
 using System.Linq;
@@ -85,7 +85,7 @@ namespace FlowT.Analyzers
             INamedTypeSymbol? baseType = type.BaseType;
             while (baseType != null)
             {
-                if (baseType.Name == "FlowPolicy")
+                if (baseType.Name is "FlowPolicy" or "FlowSpecification")
                     return true;
                 baseType = baseType.BaseType;
             }

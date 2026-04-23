@@ -1,3 +1,4 @@
+#Requires -PSEdition Core
 <#
 .SYNOPSIS
     Runs streaming benchmarks comparing buffered (List) vs streaming (PagedStreamResponse) performance.
@@ -5,6 +6,9 @@
 .DESCRIPTION
     Executes BenchmarkDotNet for streaming response benchmarks.
     Compares memory efficiency and throughput for different dataset sizes (100, 1k, 10k items).
+
+.PARAMETER Suite
+    Which streaming suite to run: All, Streaming, Comparison. Defaults to All.
 
 .PARAMETER Export
     If specified, exports results to markdown files in BenchmarkDotNet.Artifacts\results.
@@ -26,6 +30,10 @@
 #>
 
 param(
+    [Parameter(HelpMessage = "Which streaming suite to run: All, Streaming, Comparison")]
+    [ValidateSet("All", "Streaming", "Comparison")]
+    [string]$Suite = "All",
+
     [Parameter(HelpMessage = "Export results to markdown files")]
     [switch]$Export,
 
@@ -37,7 +45,8 @@ $ErrorActionPreference = "Stop"
 $PSScriptLocation = Split-Path -Parent $MyInvocation.MyCommand.Path
 $ProjectRoot = Split-Path -Parent $PSScriptLocation
 $BenchmarkProject = Join-Path $ProjectRoot "FlowT.Benchmarks.csproj"
-$ResultsDir = Join-Path $ProjectRoot "BenchmarkDotNet.Artifacts\results"
+$timestamp = if ($env:FLOWTBENCH_TIMESTAMP) { $env:FLOWTBENCH_TIMESTAMP } else { Get-Date -Format "yyyy-MM-dd_HH-mm" }
+$RunDir = Join-Path $ProjectRoot "BenchmarkDotNet.Artifacts\runs\$timestamp"
 
 Write-Host "================================================" -ForegroundColor Cyan
 Write-Host "   FlowT Streaming Benchmarks" -ForegroundColor Cyan
@@ -51,27 +60,41 @@ if (-not (Test-Path $BenchmarkProject)) {
 }
 
 # Create results directory if exporting
-if ($Export -and -not (Test-Path $ResultsDir)) {
-    Write-Host "Creating results directory: $ResultsDir" -ForegroundColor Yellow
-    New-Item -ItemType Directory -Path $ResultsDir -Force | Out-Null
+if ($Export -and -not (Test-Path $RunDir)) {
+    Write-Host "Creating run directory: $RunDir" -ForegroundColor Yellow
+    New-Item -ItemType Directory -Path $RunDir -Force | Out-Null
 }
 
 # Build arguments
 $arguments = @(
     "run",
     "-c", "Release",
-    "--project", $BenchmarkProject,
-    "--filter", "*StreamingBenchmarks*"
+    "--project", $BenchmarkProject
 )
+
+# Both StreamingBenchmarks and StreamingComparisonBenchmarks match *Streaming*
+$filter = switch ($Suite) {
+    "Streaming"  { "*StreamingBenchmarks*" }
+    "Comparison" { "*StreamingComparisonBenchmarks*" }
+    default      { "*Streaming*" }
+}
+$arguments += "--filter", $filter
 
 if ($Quick) {
     Write-Host "Running in QUICK mode (fewer iterations)..." -ForegroundColor Yellow
     $arguments += "--job", "short"
 }
 
+if ($Export) {
+    $arguments += "--exporters", "markdown"
+}
+
+$arguments += "--artifacts", $RunDir
+
 Write-Host "Starting streaming benchmarks..." -ForegroundColor Green
-Write-Host "This will compare:"
+Write-Host "This will compare:" -ForegroundColor Green
 Write-Host "  - Buffered (List<T>) vs Streaming (PagedStreamResponse<T>)" -ForegroundColor Cyan
+Write-Host "  - StreamingComparison: Pure Sync vs Async Simulation overhead" -ForegroundColor Cyan
 Write-Host "  - Dataset sizes: 100, 1,000, 10,000 items" -ForegroundColor Cyan
 Write-Host "  - Metrics: Execution time + Memory allocations" -ForegroundColor Cyan
 Write-Host ""
@@ -94,14 +117,14 @@ Write-Host "================================================" -ForegroundColor G
 if ($Export) {
     Write-Host ""
     Write-Host "Results are available at:" -ForegroundColor Cyan
-    Write-Host "  $ResultsDir" -ForegroundColor White
+    Write-Host "  $RunDir\results\" -ForegroundColor White
     Write-Host ""
     Write-Host "Markdown files:" -ForegroundColor Cyan
 
-    $artifactsDir = Join-Path $ProjectRoot "BenchmarkDotNet.Artifacts\results"
+    $resultsPath = Join-Path $RunDir "results"
 
-    if (Test-Path $artifactsDir) {
-        $markdownFiles = Get-ChildItem -Path $artifactsDir -Filter "*.md" | 
+    if (Test-Path $resultsPath) {
+        $markdownFiles = Get-ChildItem -Path $resultsPath -Filter "*.md" |
             Where-Object { $_.Name -like "*StreamingBenchmarks*" }
 
         if ($markdownFiles.Count -gt 0) {
@@ -114,13 +137,13 @@ if ($Export) {
         }
     }
     else {
-        Write-Host "  ⚠ Artifacts directory not found" -ForegroundColor Yellow
+        Write-Host "  ⚠ Results directory not found" -ForegroundColor Yellow
     }
 }
 
 Write-Host ""
 Write-Host "View detailed results in:" -ForegroundColor Cyan
-Write-Host "  $ProjectRoot\BenchmarkDotNet.Artifacts\results" -ForegroundColor White
+Write-Host "  $RunDir\results\" -ForegroundColor White
 Write-Host ""
 
 # Display summary

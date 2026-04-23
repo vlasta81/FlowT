@@ -3,11 +3,11 @@
   - **[FlowContext](FlowContext.md 'FlowT\.FlowContext')**
     - **[CancellationToken](FlowContext.CancellationToken.md 'FlowT\.FlowContext\.CancellationToken')**
     - **[FlowId](FlowContext.FlowId.md 'FlowT\.FlowContext\.FlowId')**
+    - **[FlowIdString](FlowContext.FlowIdString.md 'FlowT\.FlowContext\.FlowIdString')**
     - **[HttpContext](FlowContext.HttpContext.md 'FlowT\.FlowContext\.HttpContext')**
     - **[Services](FlowContext.Services.md 'FlowT\.FlowContext\.Services')**
     - **[StartedAt](FlowContext.StartedAt.md 'FlowT\.FlowContext\.StartedAt')**
     - **[GetClientIpAddress\(\)](FlowContext.GetClientIpAddress().md 'FlowT\.FlowContext\.GetClientIpAddress\(\)')**
-    - **[GetFlowIdString\(\)](FlowContext.GetFlowIdString().md 'FlowT\.FlowContext\.GetFlowIdString\(\)')**
     - **[GetHeader\(string\)](FlowContext.GetHeader.A4LE0Z86ZSCQUM0PPIO6VZCM3.md 'FlowT\.FlowContext\.GetHeader\(string\)')**
     - **[GetOrAdd&lt;T,TArg&gt;\(TArg, Func&lt;TArg,T&gt;, string\)](FlowContext.GetOrAdd.md#FlowT.FlowContext.GetOrAdd_T,TArg_(TArg,System.Func_TArg,T_,string) 'FlowT\.FlowContext\.GetOrAdd\<T,TArg\>\(TArg, System\.Func\<TArg,T\>, string\)')**
     - **[GetOrAdd&lt;T&gt;\(Func&lt;T&gt;, string\)](FlowContext.GetOrAdd.md#FlowT.FlowContext.GetOrAdd_T_(System.Func_T_,string) 'FlowT\.FlowContext\.GetOrAdd\<T\>\(System\.Func\<T\>, string\)')**
@@ -64,6 +64,11 @@
     - **[Next](FlowPolicy_TRequest,TResponse_.Next.md 'FlowT\.Abstractions\.FlowPolicy\<TRequest,TResponse\>\.Next')**
     - **[HandleAsync\(TRequest, FlowContext\)](FlowPolicy_TRequest,TResponse_.HandleAsync.ZEI5927PM8BELMIBZRCA8CSYA.md 'FlowT\.Abstractions\.FlowPolicy\<TRequest,TResponse\>\.HandleAsync\(TRequest, FlowT\.FlowContext\)')**
     - **[SetNext\(IFlowHandler&lt;TRequest,TResponse&gt;\)](FlowPolicy_TRequest,TResponse_.SetNext.KX0NCCWVOD11RV5WS8287E3M6.md 'FlowT\.Abstractions\.FlowPolicy\<TRequest,TResponse\>\.SetNext\(FlowT\.Contracts\.IFlowHandler\<TRequest,TResponse\>\)')**
+  - **[FlowSpecification&lt;TRequest&gt;](FlowSpecification_TRequest_.md 'FlowT\.Abstractions\.FlowSpecification\<TRequest\>')**
+    - **[CheckAsync\(TRequest, FlowContext\)](FlowSpecification_TRequest_.CheckAsync.QTHZIQ37Y78AUXMZKAI84M628.md 'FlowT\.Abstractions\.FlowSpecification\<TRequest\>\.CheckAsync\(TRequest, FlowT\.FlowContext\)')**
+    - **[Continue\(\)](FlowSpecification_TRequest_.Continue().md 'FlowT\.Abstractions\.FlowSpecification\<TRequest\>\.Continue\(\)')**
+    - **[Fail\(string, int\)](FlowSpecification_TRequest_.Fail.589T1QQR653WCCGCXHV5Y2NM5.md 'FlowT\.Abstractions\.FlowSpecification\<TRequest\>\.Fail\(string, int\)')**
+    - **[Stop\(object, int\)](FlowSpecification_TRequest_.Stop.MHKQRHPAVHV9WNGC3IEG2VOJ7.md 'FlowT\.Abstractions\.FlowSpecification\<TRequest\>\.Stop\(object, int\)')**
   - **[PagedStreamResponse&lt;T&gt;](PagedStreamResponse_T_.md 'FlowT\.Abstractions\.PagedStreamResponse\<T\>')**
     - **[HasMore](PagedStreamResponse_T_.HasMore.md 'FlowT\.Abstractions\.PagedStreamResponse\<T\>\.HasMore')**
     - **[Items](PagedStreamResponse_T_.Items.md 'FlowT\.Abstractions\.PagedStreamResponse\<T\>\.Items')**
@@ -120,12 +125,37 @@
     - **[AddFlowPlugin&lt;TPlugin,TImpl&gt;\(this IServiceCollection\)](FlowServiceCollectionExtensions.AddFlowPlugin.AIKE926MLT8W26WTMAF968EMC.md 'FlowT\.Extensions\.FlowServiceCollectionExtensions\.AddFlowPlugin\<TPlugin,TImpl\>\(this Microsoft\.Extensions\.DependencyInjection\.IServiceCollection\)')**
     - **[AddFlows\(this IServiceCollection, Assembly\[\]\)](FlowServiceCollectionExtensions.AddFlows.X7RY68MYH6QHDKD789FMOXD6C.md 'FlowT\.Extensions\.FlowServiceCollectionExtensions\.AddFlows\(this Microsoft\.Extensions\.DependencyInjection\.IServiceCollection, System\.Reflection\.Assembly\[\]\)')**
 - **[FlowT\.Plugins](FlowT.Plugins.md 'FlowT\.Plugins')**
+  - **[AuditEntry](AuditEntry.md 'FlowT\.Plugins\.AuditEntry')**
+    - **[AuditEntry\(string, DateTimeOffset, object\)](AuditEntry..ctor.6XM5CYBAL37CF0QF6W0EGPY71.md 'FlowT\.Plugins\.AuditEntry\.AuditEntry\(string, System\.DateTimeOffset, object\)')**
+    - **[Action](AuditEntry.Action.md 'FlowT\.Plugins\.AuditEntry\.Action')**
+    - **[Data](AuditEntry.Data.md 'FlowT\.Plugins\.AuditEntry\.Data')**
+    - **[Timestamp](AuditEntry.Timestamp.md 'FlowT\.Plugins\.AuditEntry\.Timestamp')**
+  - **[AuditPlugin](AuditPlugin.md 'FlowT\.Plugins\.AuditPlugin')**
+    - **[Entries](AuditPlugin.Entries.md 'FlowT\.Plugins\.AuditPlugin\.Entries')**
+    - **[Record\(string, object\)](AuditPlugin.Record.B5PAARKFM8KLYUVGYWBQE9MZB.md 'FlowT\.Plugins\.AuditPlugin\.Record\(string, object\)')**
   - **[CorrelationPlugin](CorrelationPlugin.md 'FlowT\.Plugins\.CorrelationPlugin')**
     - **[CorrelationId](CorrelationPlugin.CorrelationId.md 'FlowT\.Plugins\.CorrelationPlugin\.CorrelationId')**
+  - **[FeatureFlagPlugin](FeatureFlagPlugin.md 'FlowT\.Plugins\.FeatureFlagPlugin')**
+    - **[FeatureFlagPlugin\(IVariantFeatureManager\)](FeatureFlagPlugin..ctor.L1U582XFGDLAG0YUXKE4I56M8.md 'FlowT\.Plugins\.FeatureFlagPlugin\.FeatureFlagPlugin\(Microsoft\.FeatureManagement\.IVariantFeatureManager\)')**
+    - **[Cache](FeatureFlagPlugin.Cache.md 'FlowT\.Plugins\.FeatureFlagPlugin\.Cache')**
+    - **[IsEnabledAsync\(string, CancellationToken\)](FeatureFlagPlugin.IsEnabledAsync.md#FlowT.Plugins.FeatureFlagPlugin.IsEnabledAsync(string,System.Threading.CancellationToken) 'FlowT\.Plugins\.FeatureFlagPlugin\.IsEnabledAsync\(string, System\.Threading\.CancellationToken\)')**
+    - **[IsEnabledAsync&lt;TContext&gt;\(string, TContext, CancellationToken\)](FeatureFlagPlugin.IsEnabledAsync.md#FlowT.Plugins.FeatureFlagPlugin.IsEnabledAsync_TContext_(string,TContext,System.Threading.CancellationToken) 'FlowT\.Plugins\.FeatureFlagPlugin\.IsEnabledAsync\<TContext\>\(string, TContext, System\.Threading\.CancellationToken\)')**
+    - **[TryGetCached\(string, bool\)](FeatureFlagPlugin.TryGetCached.2QXFRJSTSI8AY1A19G6KYNTLC.md 'FlowT\.Plugins\.FeatureFlagPlugin\.TryGetCached\(string, bool\)')**
+  - **[FlowScopePlugin](FlowScopePlugin.md 'FlowT\.Plugins\.FlowScopePlugin')**
+    - **[ScopedServices](FlowScopePlugin.ScopedServices.md 'FlowT\.Plugins\.FlowScopePlugin\.ScopedServices')**
+    - **[Dispose\(\)](FlowScopePlugin.Dispose().md 'FlowT\.Plugins\.FlowScopePlugin\.Dispose\(\)')**
+  - **[IdempotencyPlugin](IdempotencyPlugin.md 'FlowT\.Plugins\.IdempotencyPlugin')**
+    - **[HasKey](IdempotencyPlugin.HasKey.md 'FlowT\.Plugins\.IdempotencyPlugin\.HasKey')**
+    - **[Key](IdempotencyPlugin.Key.md 'FlowT\.Plugins\.IdempotencyPlugin\.Key')**
+  - **[PerformancePlugin](PerformancePlugin.md 'FlowT\.Plugins\.PerformancePlugin')**
+    - **[Elapsed](PerformancePlugin.Elapsed.md 'FlowT\.Plugins\.PerformancePlugin\.Elapsed')**
+    - **[Measure\(string\)](PerformancePlugin.Measure.NAOATR8OHSI8XP6NLYV5DLVI8.md 'FlowT\.Plugins\.PerformancePlugin\.Measure\(string\)')**
   - **[RetryStatePlugin](RetryStatePlugin.md 'FlowT\.Plugins\.RetryStatePlugin')**
     - **[AttemptNumber](RetryStatePlugin.AttemptNumber.md 'FlowT\.Plugins\.RetryStatePlugin\.AttemptNumber')**
     - **[RegisterAttempt\(\)](RetryStatePlugin.RegisterAttempt().md 'FlowT\.Plugins\.RetryStatePlugin\.RegisterAttempt\(\)')**
     - **[ShouldRetry\(int\)](RetryStatePlugin.ShouldRetry.MD22918TZKO7C11L1AJFQ9XY3.md 'FlowT\.Plugins\.RetryStatePlugin\.ShouldRetry\(int\)')**
+  - **[TenantPlugin](TenantPlugin.md 'FlowT\.Plugins\.TenantPlugin')**
+    - **[TenantId](TenantPlugin.TenantId.md 'FlowT\.Plugins\.TenantPlugin\.TenantId')**
   - **[TransactionPlugin](TransactionPlugin.md 'FlowT\.Plugins\.TransactionPlugin')**
     - **[IsActive](TransactionPlugin.IsActive.md 'FlowT\.Plugins\.TransactionPlugin\.IsActive')**
     - **[BeginAsync\(CancellationToken\)](TransactionPlugin.BeginAsync.C2N56R88EL4XPTPTTHYK9HKT7.md 'FlowT\.Plugins\.TransactionPlugin\.BeginAsync\(System\.Threading\.CancellationToken\)')**
@@ -137,12 +167,30 @@
     - **[Principal](UserIdentityPlugin.Principal.md 'FlowT\.Plugins\.UserIdentityPlugin\.Principal')**
     - **[UserId](UserIdentityPlugin.UserId.md 'FlowT\.Plugins\.UserIdentityPlugin\.UserId')**
     - **[IsInRole\(string\)](UserIdentityPlugin.IsInRole.3E0H6HI61SIPILR853PLYIM58.md 'FlowT\.Plugins\.UserIdentityPlugin\.IsInRole\(string\)')**
+  - **[IAuditPlugin](IAuditPlugin.md 'FlowT\.Plugins\.IAuditPlugin')**
+    - **[Entries](IAuditPlugin.Entries.md 'FlowT\.Plugins\.IAuditPlugin\.Entries')**
+    - **[Record\(string, object\)](IAuditPlugin.Record.CPBI7WB2DHPIVIB2PA59KA7M4.md 'FlowT\.Plugins\.IAuditPlugin\.Record\(string, object\)')**
   - **[ICorrelationPlugin](ICorrelationPlugin.md 'FlowT\.Plugins\.ICorrelationPlugin')**
     - **[CorrelationId](ICorrelationPlugin.CorrelationId.md 'FlowT\.Plugins\.ICorrelationPlugin\.CorrelationId')**
+  - **[IFeatureFlagPlugin](IFeatureFlagPlugin.md 'FlowT\.Plugins\.IFeatureFlagPlugin')**
+    - **[Cache](IFeatureFlagPlugin.Cache.md 'FlowT\.Plugins\.IFeatureFlagPlugin\.Cache')**
+    - **[IsEnabledAsync\(string, CancellationToken\)](IFeatureFlagPlugin.IsEnabledAsync.md#FlowT.Plugins.IFeatureFlagPlugin.IsEnabledAsync(string,System.Threading.CancellationToken) 'FlowT\.Plugins\.IFeatureFlagPlugin\.IsEnabledAsync\(string, System\.Threading\.CancellationToken\)')**
+    - **[IsEnabledAsync&lt;TContext&gt;\(string, TContext, CancellationToken\)](IFeatureFlagPlugin.IsEnabledAsync.md#FlowT.Plugins.IFeatureFlagPlugin.IsEnabledAsync_TContext_(string,TContext,System.Threading.CancellationToken) 'FlowT\.Plugins\.IFeatureFlagPlugin\.IsEnabledAsync\<TContext\>\(string, TContext, System\.Threading\.CancellationToken\)')**
+    - **[TryGetCached\(string, bool\)](IFeatureFlagPlugin.TryGetCached.PQSZEZ2NK94F8EXHUNDIM13O7.md 'FlowT\.Plugins\.IFeatureFlagPlugin\.TryGetCached\(string, bool\)')**
+  - **[IFlowScopePlugin](IFlowScopePlugin.md 'FlowT\.Plugins\.IFlowScopePlugin')**
+    - **[ScopedServices](IFlowScopePlugin.ScopedServices.md 'FlowT\.Plugins\.IFlowScopePlugin\.ScopedServices')**
+  - **[IIdempotencyPlugin](IIdempotencyPlugin.md 'FlowT\.Plugins\.IIdempotencyPlugin')**
+    - **[HasKey](IIdempotencyPlugin.HasKey.md 'FlowT\.Plugins\.IIdempotencyPlugin\.HasKey')**
+    - **[Key](IIdempotencyPlugin.Key.md 'FlowT\.Plugins\.IIdempotencyPlugin\.Key')**
+  - **[IPerformancePlugin](IPerformancePlugin.md 'FlowT\.Plugins\.IPerformancePlugin')**
+    - **[Elapsed](IPerformancePlugin.Elapsed.md 'FlowT\.Plugins\.IPerformancePlugin\.Elapsed')**
+    - **[Measure\(string\)](IPerformancePlugin.Measure.W43THU3IS803EZSGSK4BM774F.md 'FlowT\.Plugins\.IPerformancePlugin\.Measure\(string\)')**
   - **[IRetryStatePlugin](IRetryStatePlugin.md 'FlowT\.Plugins\.IRetryStatePlugin')**
     - **[AttemptNumber](IRetryStatePlugin.AttemptNumber.md 'FlowT\.Plugins\.IRetryStatePlugin\.AttemptNumber')**
     - **[RegisterAttempt\(\)](IRetryStatePlugin.RegisterAttempt().md 'FlowT\.Plugins\.IRetryStatePlugin\.RegisterAttempt\(\)')**
     - **[ShouldRetry\(int\)](IRetryStatePlugin.ShouldRetry.2TH4BANNUE8NHZ0RIT7QBT8O.md 'FlowT\.Plugins\.IRetryStatePlugin\.ShouldRetry\(int\)')**
+  - **[ITenantPlugin](ITenantPlugin.md 'FlowT\.Plugins\.ITenantPlugin')**
+    - **[TenantId](ITenantPlugin.TenantId.md 'FlowT\.Plugins\.ITenantPlugin\.TenantId')**
   - **[ITransactionPlugin](ITransactionPlugin.md 'FlowT\.Plugins\.ITransactionPlugin')**
     - **[IsActive](ITransactionPlugin.IsActive.md 'FlowT\.Plugins\.ITransactionPlugin\.IsActive')**
     - **[BeginAsync\(CancellationToken\)](ITransactionPlugin.BeginAsync.68EP3056CKK4WKJMTJMX9YH56.md 'FlowT\.Plugins\.ITransactionPlugin\.BeginAsync\(System\.Threading\.CancellationToken\)')**

@@ -13,4 +13,4 @@ Implements [ICorrelationPlugin](ICorrelationPlugin.md 'FlowT\.Plugins\.ICorrelat
 
 | Properties | |
 | :--- | :--- |
-| [CorrelationId](CorrelationPlugin.CorrelationId.md 'FlowT\.Plugins\.CorrelationPlugin\.CorrelationId') | Gets the correlation ID for the current flow execution\. Resolved from the `X-Correlation-Id` request header when available; falls back to the flow's own ID \([GetFlowIdString\(\)](FlowContext.GetFlowIdString().md 'FlowT\.FlowContext\.GetFlowIdString\(\)')\)\. |
+| [CorrelationId](CorrelationPlugin.CorrelationId.md 'FlowT\.Plugins\.CorrelationPlugin\.CorrelationId') | Gets the correlation ID for the current flow execution\. Resolved from the `X-Correlation-Id` request header when available; falls back to the flow's own ID \([FlowIdString](FlowContext.FlowIdString.md 'FlowT\.FlowContext\.FlowIdString')\)\. |

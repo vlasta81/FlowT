@@ -1,3 +1,4 @@
+#Requires -PSEdition Core
 # FlowT Comparison Benchmarks Runner
 # Compares FlowT with competing frameworks: DispatchR, MediatR, Mediator.Net, WolverineFx, Brighter
 
@@ -96,6 +97,13 @@ if ($LASTEXITCODE -ne 0) {
 Write-Host "✅ Build successful!" -ForegroundColor Green
 Write-Host ""
 
+# Create timestamped output directory for this run
+$timestamp = if ($env:FLOWTBENCH_TIMESTAMP) { $env:FLOWTBENCH_TIMESTAMP } else { Get-Date -Format "yyyy-MM-dd_HH-mm" }
+$RunDir = Join-Path $scriptPath "BenchmarkDotNet.Artifacts\runs\$timestamp"
+New-Item -ItemType Directory -Path $RunDir -Force | Out-Null
+Write-Host "📂 Run output: $RunDir" -ForegroundColor DarkGray
+Write-Host ""
+
 # Determine filter
 $filter = switch ($Framework) {
     "DispatchR" { 
@@ -150,8 +158,10 @@ if ($Quick) {
 
 if ($Export) {
     $benchmarkArgs += "--exporters", "markdown", "html", "csv"
-    Write-Host "📊 Results will be exported to: BenchmarkDotNet.Artifacts/results/" -ForegroundColor Cyan
+    Write-Host "📊 Results will be exported to: $RunDir\results\" -ForegroundColor Cyan
 }
+
+$benchmarkArgs += "--artifacts", $RunDir
 
 Write-Host ""
 Write-Host "Running: dotnet $($benchmarkArgs -join ' ')" -ForegroundColor DarkGray
@@ -167,9 +177,8 @@ if ($LASTEXITCODE -eq 0) {
     Write-Host "========================================" -ForegroundColor Green
 
     if ($Export) {
-        $resultsDir = Join-Path $scriptPath "BenchmarkDotNet.Artifacts\results"
         Write-Host ""
-        Write-Host "📁 Results saved to: $resultsDir" -ForegroundColor Cyan
+        Write-Host "📁 Results saved to: $RunDir\results\" -ForegroundColor Cyan
     }
 
     Write-Host ""

@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.Claims;
@@ -20,8 +20,10 @@ namespace FlowT
     /// One instance is created per flow execution and passed through the entire pipeline chain.
     /// </summary>
     /// <remarks>
-    /// The context uses a type-keyed dictionary for storing arbitrary data. All operations on <see cref="Set{T}"/>, <see cref="TryGet{T}"/>, 
-    /// and <see cref="GetOrAdd{T}(Func{T},string)"/> are thread-safe. For parallel scenarios, use the lock-free fast path or explicit locking.
+    /// The context uses a type-keyed dictionary for storing arbitrary data.
+    /// All operations on <see cref="Set{T}"/>, <see cref="TryGet{T}"/>,
+    /// and <see cref="GetOrAdd{T}(Func{T},string)"/> are thread-safe and protected by an internal lock.
+    /// Timer values recorded via <see cref="StartTimer"/> are stored in a dedicated dictionary separate from general-purpose storage.
     /// </remarks>
     public sealed class FlowContext
     {
@@ -109,8 +111,7 @@ namespace FlowT
         /// Gets the flow ID as a string in format "N" (32 digits without hyphens).
         /// Useful for logging and correlation.
         /// </summary>
-        /// <returns>The flow ID as a 32-character hexadecimal string.</returns>
-        public string GetFlowIdString() => FlowId.ToString("N");
+        public string FlowIdString => FlowId.ToString("N");
 
         /// <summary>
         /// Gets the UTC timestamp when this flow execution started.
@@ -162,6 +163,10 @@ namespace FlowT
         /// automatically after creation via an internal call, giving the plugin full access to this context
         /// through its <c>protected Context</c> property.
         /// </para>
+        /// <para>
+        /// <strong>Thread safety:</strong> After the plugin is created, subsequent calls use a lockless read path for performance.
+        /// The first-time creation is protected by a lock to prevent duplicate initialization.
+        /// </para>
         /// <code>
         /// var metrics = context.Plugin&lt;IRequestMetrics&gt;();
         /// metrics.RecordDbQuery(elapsed);
@@ -169,8 +174,13 @@ namespace FlowT
         /// </remarks>
         public T Plugin<T>() where T : class
         {
+            if (_plugins is { } dict && dict.TryGetValue(typeof(T), out object? cached) && cached is T existing)
+            {
+                return existing;
+            }
             lock (_syncLock)
             {
+                _plugins ??= new Dictionary<Type, object?>();
                 ref object? entry = ref CollectionsMarshal.GetValueRefOrAddDefault(_plugins, typeof(T), out bool exists);
                 if (!exists)
                 {
@@ -184,11 +194,11 @@ namespace FlowT
         }
 
         private readonly Dictionary<CompositeKey, object?> _items = new();
-        private readonly Dictionary<Type, object?> _plugins = new();
+        private Dictionary<Type, object?>? _plugins;
         private readonly Lock _syncLock = new();
+        private Dictionary<string, long>? _timers;
 
-        // Special key for timer dictionary storage
-        private static readonly CompositeKey TimerStorageKey = new(typeof(Dictionary<string, long>), "__timers__");
+        private static readonly CookieOptions _defaultCookieOptions = new();
 
         /// <summary>
         /// Stores a value in the context's shared state, keyed by its type and optional string key.
@@ -214,7 +224,7 @@ namespace FlowT
 
         /// <summary>
         /// Attempts to retrieve a value from the context's shared state.
-        /// Uses a double-check lock pattern for optimal read performance in the common case.
+        /// This method is thread-safe.
         /// </summary>
         /// <typeparam name="T">The type of value to retrieve.</typeparam>
         /// <param name="value">When this method returns, contains the value if found; otherwise, the default value for <typeparamref name="T"/>.</param>
@@ -227,16 +237,11 @@ namespace FlowT
         public bool TryGet<T>(out T value, string? key = null)
         {
             CompositeKey composite = new CompositeKey(typeof(T), key);
-            if (_items.TryGetValue(composite, out var obj) && obj is T typed)
-            {
-                value = typed;
-                return true;
-            }
             lock (_syncLock)
             {
-                if (_items.TryGetValue(composite, out obj) && obj is T typed2)
+                if (_items.TryGetValue(composite, out var obj) && obj is T typed)
                 {
-                    value = typed2;
+                    value = typed;
                     return true;
                 }
             }
@@ -334,17 +339,10 @@ namespace FlowT
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task PublishAsync<TEvent>(TEvent eventData, CancellationToken cancellationToken)
         {
-            IEnumerable<IEventHandler<TEvent>> handlers = Services.GetServices<IEventHandler<TEvent>>();
-            using IEnumerator<IEventHandler<TEvent>> e = handlers.GetEnumerator();
-            if (!e.MoveNext())
+            foreach (IEventHandler<TEvent> handler in Services.GetServices<IEventHandler<TEvent>>())
             {
-                return;
+                await handler.HandleAsync(eventData, cancellationToken).ConfigureAwait(false);
             }
-            do
-            {
-                await e.Current.HandleAsync(eventData, cancellationToken).ConfigureAwait(false);
-            }
-            while (e.MoveNext());
         }
 
         /// <summary>
@@ -354,8 +352,23 @@ namespace FlowT
         /// <typeparam name="TEvent">The type of event to publish.</typeparam>
         /// <param name="eventData">The event data to pass to handlers.</param>
         /// <param name="cancellationToken">A cancellation token to observe.</param>
-        /// <returns>A task representing the background operation (typically not awaited).</returns>
-        public Task PublishInBackground<TEvent>(TEvent eventData, CancellationToken cancellationToken) => Task.Run(async () => await PublishAsync(eventData, cancellationToken).ConfigureAwait(false), cancellationToken);
+        /// <returns>A task representing the background operation. The returned task is typically not awaited by callers.</returns>
+        /// <remarks>
+        /// Any exception thrown by an event handler is caught and logged via <see cref="Microsoft.Extensions.Logging.ILoggerFactory"/>
+        /// resolved from <see cref="Services"/>. If no logger factory is registered the exception is silently discarded.
+        /// The background work is dispatched via <see cref="System.Threading.Tasks.Task.Run(System.Func{System.Threading.Tasks.Task?}, System.Threading.CancellationToken)"/>
+        /// and respects the provided <paramref name="cancellationToken"/>.
+        /// </remarks>
+        public Task PublishInBackground<TEvent>(TEvent eventData, CancellationToken cancellationToken)
+        {
+            ILogger? logger = Services.GetService<ILoggerFactory>()
+                ?.CreateLogger(nameof(FlowContext));
+            Task work = Task.Run(() => PublishAsync(eventData, cancellationToken), cancellationToken);
+            _ = work.ContinueWith(
+                t => logger?.LogError(t.Exception, "Unhandled exception in background event handler for {EventType}.", typeof(TEvent).Name),
+                TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously);
+            return work;
+        }
 
         /// <summary>
         /// Throws an <see cref="OperationCanceledException"/> if cancellation has been requested.
@@ -420,7 +433,7 @@ namespace FlowT
         /// <returns>The first value of the specified header, or <c>null</c> if not found.</returns>
         /// <remarks>
         /// <para>
-        /// This is a convenience method equivalent to <c>context.HttpContext?.Request.Headers[name].FirstOrDefault()</c>.
+        /// This is a convenience method equivalent to <c>(string?)context.HttpContext?.Request.Headers[name]</c>.
         /// Use this to access custom headers, authentication tokens, content negotiation, etc.
         /// </para>
         /// <para>
@@ -471,7 +484,7 @@ namespace FlowT
         /// </code>
         /// </example>
         /// </remarks>
-        public string? GetHeader(string name) => HttpContext?.Request.Headers[name].FirstOrDefault();
+        public string? GetHeader(string name) => (string?)HttpContext?.Request.Headers[name];
 
         /// <summary>
         /// Gets the value of a specific query string parameter.
@@ -481,7 +494,7 @@ namespace FlowT
         /// <returns>The first value of the specified query parameter, or <c>null</c> if not found.</returns>
         /// <remarks>
         /// <para>
-        /// This is a convenience method equivalent to <c>context.HttpContext?.Request.Query[name].FirstOrDefault()</c>.
+        /// This is a convenience method equivalent to <c>(string?)context.HttpContext?.Request.Query[name]</c>.
         /// Use this to access query string parameters from the URL.
         /// </para>
         /// <para>
@@ -521,7 +534,7 @@ namespace FlowT
         /// </code>
         /// </example>
         /// </remarks>
-        public string? GetQueryParam(string name) => HttpContext?.Request.Query[name].FirstOrDefault();
+        public string? GetQueryParam(string name) => (string?)HttpContext?.Request.Query[name];
 
         /// <summary>
         /// Gets the value of a specific route parameter.
@@ -659,7 +672,7 @@ namespace FlowT
         /// </remarks>
         public void SetCookie(string key, string value, CookieOptions? options = null)
         {
-            HttpContext?.Response.Cookies.Append(key, value, options ?? new CookieOptions());
+            HttpContext?.Response.Cookies.Append(key, value, options ?? _defaultCookieOptions);
         }
 
         /// <summary>
@@ -746,26 +759,16 @@ namespace FlowT
             }
 
             /// <summary>
-            /// Calculates the elapsed time and stores it in the context under the timer's key.
-            /// Elapsed time is stored as <see cref="Stopwatch"/> ticks (not TimeSpan) for maximum precision.
+            /// Calculates the elapsed time and stores it in the context's timer dictionary under the timer's key.
+            /// Elapsed time is stored as <see cref="Stopwatch"/> ticks (not <see cref="System.TimeSpan"/>) for maximum precision.
+            /// Convert to <see cref="System.TimeSpan"/> via <see cref="Stopwatch.GetElapsedTime(long)"/> when needed.
             /// </summary>
             public void Dispose()
             {
                 long elapsed = Stopwatch.GetTimestamp() - _start;
                 lock (_ctx._syncLock)
                 {
-                    ref object? entry = ref CollectionsMarshal.GetValueRefOrAddDefault(_ctx._items, TimerStorageKey, out bool exists);
-                    Dictionary<string, long> timers;
-                    if (!exists)
-                    {
-                        timers = new Dictionary<string, long>();
-                        entry = timers;
-                    }
-                    else
-                    {
-                        timers = (Dictionary<string, long>)entry!;
-                    }
-                    timers[_key] = elapsed;
+                    (_ctx._timers ??= new Dictionary<string, long>())[_key] = elapsed;
                 }
             }
         }

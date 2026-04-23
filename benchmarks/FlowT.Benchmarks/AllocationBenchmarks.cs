@@ -110,6 +110,32 @@ public class AllocationBenchmarks
         return ctx;
     }
 
+    [Benchmark(Description = "Context creation + StartTimer (first timer)")]
+    public FlowContext ContextWithTimer()
+    {
+        var ctx = new FlowContext
+        {
+            Services = _services,
+            CancellationToken = CancellationToken.None
+        };
+        using (ctx.StartTimer("request"))
+        {
+            // measures full lifetime: context alloc + dict alloc + timestamp capture + elapsed write
+        }
+        return ctx;
+    }
+
+    [Benchmark(Description = "Fresh context per call, execute flow")]
+    public async Task<MinimalResponse> FreshContextPerCall_Execute()
+    {
+        var ctx = new FlowContext
+        {
+            Services = _services,
+            CancellationToken = CancellationToken.None
+        };
+        return await _minimalFlow.ExecuteAsync(_request, ctx);
+    }
+
     // Minimal types for low-allocation testing
     public record MinimalRequest
     {

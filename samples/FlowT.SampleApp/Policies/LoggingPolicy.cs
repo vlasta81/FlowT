@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using FlowT.Abstractions;
 
 namespace FlowT.SampleApp.Policies;
@@ -17,7 +17,7 @@ public class LoggingPolicy<TRequest, TResponse> : FlowPolicy<TRequest, TResponse
 
     public override async ValueTask<TResponse> HandleAsync(TRequest request, FlowContext context)
     {
-        var flowId = context.GetFlowIdString();
+        var flowId = context.FlowIdString;
         var requestType = typeof(TRequest).Name;
 
         _logger.LogInformation("[{FlowId}] Starting {RequestType}", flowId, requestType);

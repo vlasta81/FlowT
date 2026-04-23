@@ -11,7 +11,7 @@ Derived
 &#8627; [TransactionPlugin](TransactionPlugin.md 'FlowT\.Plugins\.TransactionPlugin')
 
 ### Remarks
-Implement this interface via [FlowTransactionPlugin](https://learn.microsoft.com/en-us/dotnet/api/flowtransactionplugin 'FlowTransactionPlugin') for a specific database provider\.
+Implement this interface with a concrete class for a specific database provider\.
 Because the plugin is PerFlow, a policy can begin a transaction that the handler participates in
 without any direct coupling between the two\.
 

@@ -11,7 +11,7 @@ namespace FlowT.Plugins
     /// Resolution order:
     /// <list type="number">
     /// <item><description>Value of the <c>X-Correlation-Id</c> request header (when an <see cref="FlowContext.HttpContext"/> is present).</description></item>
-    /// <item><description>The flow's own ID via <see cref="FlowContext.GetFlowIdString()"/> (non-HTTP scenarios or missing header).</description></item>
+    /// <item><description>The flow's own ID via <see cref="FlowContext.FlowIdString"/> (non-HTTP scenarios or missing header).</description></item>
     /// </list>
     /// Register via <c>services.AddFlowPlugin&lt;ICorrelationPlugin, CorrelationPlugin&gt;()</c>.
     /// <para>
@@ -27,7 +27,7 @@ namespace FlowT.Plugins
         /// <summary>
         /// Gets the correlation ID for the current flow execution.
         /// Resolved from the <c>X-Correlation-Id</c> request header when available;
-        /// falls back to the flow's own ID (<see cref="FlowContext.GetFlowIdString()"/>).
+        /// falls back to the flow's own ID (<see cref="FlowContext.FlowIdString"/>).
         /// </summary>
         string CorrelationId { get; }
     }
@@ -53,7 +53,7 @@ namespace FlowT.Plugins
                     && http.Request.Headers.TryGetValue("X-Correlation-Id", out var values)
                     && values.Count > 0
                         ? values[0]!
-                        : Context.GetFlowIdString();
+                        : Context.FlowIdString;
 
                 return _id;
             }

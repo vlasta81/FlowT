@@ -20,7 +20,7 @@ The first value of the specified query parameter, or `null` if not found\.
 
 ### Remarks
 
-This is a convenience method equivalent to `context.HttpContext?.Request.Query[name].FirstOrDefault()`.
+This is a convenience method equivalent to `(string?)context.HttpContext?.Request.Query[name]`.
 Use this to access query string parameters from the URL.
 
 If the parameter has multiple values, only the first value is returned.

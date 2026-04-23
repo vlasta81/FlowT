@@ -14,6 +14,8 @@ Modern ASP.NET Core 10 sample application demonstrating **FlowT** orchestration 
 - **Policies** - Cross-cutting concerns (logging, caching, validation)
 - **Handlers** - Business logic with safe scoped service resolution
 - **FlowContext** - Named keys, service resolution, events, timing
+- **Plugin system** - `context.Plugin<T>()` for per-flow cached plugin access (e.g. feature flags)
+- **Streaming responses** - `PagedStreamResponse<T>` with `IAsyncEnumerable<T>` and `MapFlow` endpoint extension
 
 ### ✅ Best Practices
 - **Singleton Handlers** - Safe usage with `context.Service<T>()` for scoped dependencies
@@ -83,17 +85,20 @@ curl -X POST https://localhost:7000/api/users \
 
 ### 2. Product Module (`Features/Products`)
 
-Simple product catalog management.
+Simple product catalog management with streaming support.
 
 **Endpoints:**
 - `GET /api/products` - List all products (pre-seeded data)
 - `GET /api/products/{id}` - Get product by ID
 - `POST /api/products` - Create product
+- `GET /api/products/stream` - Stream paginated products (`PagedStreamResponse<T>` demo)
 
 **Demonstrates:**
 - ✅ Simple flow with minimal policies
 - ✅ Basic validation
 - ✅ In-memory repository with seed data
+- ✅ **Streaming with `PagedStreamResponse<T>`** — metadata (total count, page info) sent first, items streamed progressively via `IAsyncEnumerable<T>`
+- ✅ **`MapFlow` extension** — auto-detects `IStreamableResponse` and calls `Results.Stream()` internally
 
 **Example Request:**
 ```bash
@@ -109,10 +114,13 @@ curl -X POST https://localhost:7000/api/products \
     "price": 349.99,
     "stockQuantity": 30
   }'
+
+# Stream products (paginated)
+curl "https://localhost:7000/api/products/stream?page=0&pageSize=10"
 ```
 
 **Key File:**
-- `ProductModule.cs` - Complete module in single file (simple example)
+- `ProductModule.cs` - Complete module in single file (simple example, includes streaming)
 
 ---
 
@@ -125,10 +133,13 @@ Complex order creation with multi-step validation.
 
 **Demonstrates:**
 - ✅ **Multi-step validation pipeline**
-  1. User exists and is active
-  2. Products exist with sufficient stock
-  3. Business rule: Orders > $1000 require approval
+  1. Feature flag check (new workflow enabled?)
+  2. User exists and is active
+  3. Products exist with sufficient stock
+  4. Business rule: Orders > $1000 require approval
+- ✅ **Plugin system** (`context.Plugin<T>()`) — `FeatureFlagOrderSpecification` calls `IFeatureFlagPlugin.IsEnabledAsync()` with per-flow result caching
 - ✅ **FlowInterrupt at multiple stages**
+  - 503 if new order workflow feature flag is disabled
   - 404 if user/product not found
   - 403 if user is inactive
   - 409 if insufficient stock
@@ -156,6 +167,8 @@ curl -X POST https://localhost:7000/api/orders \
 ```
 Request
   ↓
+FeatureFlagOrderSpecification (NewOrderWorkflow enabled? → 503 if not)
+  ↓ (pass)
 ValidateUserForOrderSpecification (user exists? active?)
   ↓ (pass) → store user in context with key "order:user"
 ValidateOrderItemsSpecification (products exist? stock ok?)
@@ -232,6 +245,21 @@ using (context.StartTimer("database-query"))
     data = await db.Query();
 }
 // elapsed time is stored in context under the given key
+```
+
+### Plugins
+```csharp
+// Access a plugin — result is cached for the lifetime of this flow
+var ff = context.Plugin<IFeatureFlagPlugin>();
+var enabled = await ff.IsEnabledAsync("NewOrderWorkflow", context.CancellationToken);
+
+if (!enabled)
+{
+    return FlowInterrupt<object?>.Fail(
+        "Feature is currently disabled.",
+        StatusCodes.Status503ServiceUnavailable
+    );
+}
 ```
 
 ### Flow Identification
@@ -413,6 +441,8 @@ public async Task CreateUserFlow_WithInvalidEmail_ShouldThrowFlowInterruptExcept
 6. ✅ **Pass data between pipeline stages via context** (avoids duplicate queries)
 7. ✅ **Singleton handlers are thread-safe** when following FlowT patterns
 8. ✅ **Analyzers catch mistakes at compile-time** (captive dependencies, thread-safety)
+9. ✅ **Use `context.Plugin<T>()`** for per-flow cached plugin access (feature flags, rate limiting, etc.)
+10. ✅ **Use `PagedStreamResponse<T>` + `MapFlow`** for streaming endpoints with progressive `IAsyncEnumerable<T>` delivery
 
 ---
 
@@ -423,4 +453,4 @@ https://github.com/vlasta81/FlowT/issues
 
 ---
 
-**Built with ❤️ using FlowT v1.1.0**
+**Built with ❤️ using FlowT v1.2.0**

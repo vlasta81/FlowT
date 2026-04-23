@@ -60,7 +60,7 @@ public class AuditPlugin : FlowPlugin, IAuditPlugin
 
         // ✅ Context is available here — injected by the framework
         _logger.LogInformation("[{FlowId}] Audit: {Action}",
-            Context.GetFlowIdString(), action);
+            Context.FlowIdString, action);
 
         // ✅ Write to flow state
         Context.Set(_entries.Count, key: "auditCount");
@@ -127,7 +127,7 @@ public T Plugin<T>() where T : notnull
 
 **Behaviour:**
 - First call: resolves `T` from DI, caches in the context, returns the instance
-- Subsequent calls: returns the **same cached instance** (zero allocation)
+- Subsequent calls: returns the **same cached instance** (zero allocation, lockless fast path)
 - If `T` inherits `FlowPlugin`: automatically calls `Initialize(this)` to bind `Context`
 - If `T` is not registered: throws `InvalidOperationException`
 
@@ -139,7 +139,7 @@ public T Plugin<T>() where T : notnull
 | Warm (cached lookup) | 23 ns | 0 B |
 | 3 plugin types, all warm | 68.6 ns | 0 B |
 
-> **8.7× speedup** after the first call. All repeated accesses cost only a locked dictionary lookup.
+> **8.7× speedup** after the first call. All repeated accesses use a lockless fast path with zero allocation.
 
 📖 **[Full Benchmark Results →](../benchmarks/FlowT.Benchmarks/docs/results/FlowT.Benchmarks.PluginBenchmarks.md)**
 
@@ -185,7 +185,7 @@ public class MetricPlugin : FlowPlugin, IMetricPlugin
         _metrics[name] = value;
 
         // Use FlowId for distributed tracing correlation
-        _client.Track(Context.GetFlowIdString(), name, value);
+        _client.Track(Context.FlowIdString, name, value);
     }
 }
 ```
@@ -268,19 +268,128 @@ var db = context.Service<AppDbContext>();
 
 ### Thread Safety
 
-`FlowContext` is **per-request** — it is not shared across concurrent requests. The plugin cache uses a lock only to prevent race conditions if the same `FlowContext` is somehow accessed concurrently (which should not happen in normal use).
+`FlowContext` is **per-request** — it is not shared across concurrent requests. The plugin resolution uses a lockless fast path for repeated lookups, with a lock only on the initial write, making warm-path access thread-safe and allocation-free.
 
 ---
 
 ## 🧪 Tests
 
-Plugin system is covered by **21 tests** in [`PluginTests.cs`](../tests/FlowT.Tests/PluginTests.cs):
+Plugin system is covered by **30+ tests** in [`PluginTests.cs`](../tests/FlowT.Tests/PluginTests.cs):
 
 - **AddFlowPlugin registration** (4) — DI registration, Transient lifetime, TryAdd semantics
 - **`Plugin<T>()` resolution & caching** (5) — return type, same instance, context isolation, error on missing type
 - **`FlowPlugin` context binding** (5) — Context injected, correct instance, state read/write via Context
 - **`FlowPlugin` accessibility** (4) — `Initialize` is `internal`, `Context` is `protected`
 - **Pipeline integration** (3) — shared instance across policy+handler, isolation between executions
+
+---
+
+## 📦 Built-in Plugins (`FlowT.Plugins`)
+
+FlowT ships **9 ready-to-use plugins** for common cross-cutting concerns. Register only the ones you need:
+
+| Plugin | Interface | Purpose |
+|--------|-----------|--------|
+| **Correlation** | `ICorrelationPlugin` | Stable correlation ID from header or FlowId |
+| **RetryState** | `IRetryStatePlugin` | Thread-safe attempt counter for retry policies |
+| **Transaction** | `ITransactionPlugin` | Coordinate DB transactions across pipeline stages |
+| **Audit** | `IAuditPlugin` | Accumulate structured audit entries per flow |
+| **FeatureFlag** | `IFeatureFlagPlugin` | Per-flow feature flag evaluation with result cache |
+| **FlowScope** | `IFlowScopePlugin` | Dedicated DI scope for non-HTTP scenarios |
+| **Idempotency** | `IIdempotencyPlugin` | Idempotency key from header (`Idempotency-Key`) |
+| **Performance** | `IPerformancePlugin` | Named `Stopwatch`-based section timing |
+| **Tenant** | `ITenantPlugin` | Tenant ID from claim / header / route / default |
+
+### `IAuditPlugin` — Structured Audit Trail
+
+Accumulates audit entries in memory for the duration of the flow. Flush to DB or a logging sink after the flow completes.
+
+```csharp
+services.AddFlowPlugin<IAuditPlugin, AuditPlugin>();
+
+// Usage
+var audit = context.Plugin<IAuditPlugin>();
+audit.Record("OrderCreated", new { orderId, userId });
+audit.Record("PaymentCharged");
+
+foreach (var entry in audit.Entries)
+    logger.LogInformation("[{Ts}] {Action} {Data}", entry.Timestamp, entry.Action, entry.Data);
+```
+
+### `IFeatureFlagPlugin` — Feature Flags (Microsoft.FeatureManagement)
+
+Evaluates feature flags once per flow and caches the result. Requires the `Microsoft.FeatureManagement.AspNetCore` NuGet package.
+
+```csharp
+// Package: dotnet add package Microsoft.FeatureManagement.AspNetCore
+builder.Services.AddFeatureManagement();             // MS FeatureManagement setup
+services.AddFlowPlugin<IFeatureFlagPlugin, FeatureFlagPlugin>();
+
+// Usage
+var flags = context.Plugin<IFeatureFlagPlugin>();
+if (await flags.IsEnabledAsync("NewCheckout", ct))
+    return await NewCheckoutFlow(request, context);
+```
+
+### `IFlowScopePlugin` — Dedicated DI Scope
+
+Creates a dedicated `IServiceScope` for the flow. Useful in background jobs / hosted services where ASP.NET Core does not manage a per-request scope automatically.
+
+```csharp
+services.AddFlowPlugin<IFlowScopePlugin, FlowScopePlugin>();
+
+// Usage — dispose the scope when the flow is finished
+var scopePlugin = context.Plugin<IFlowScopePlugin>();
+var db = scopePlugin.ScopedServices.GetRequiredService<AppDbContext>();
+// ... use db ...
+scopePlugin.Dispose();
+```
+
+> ⚠️ The plugin is **not** disposed automatically — the host (hosted service, pipeline) must call `Dispose()` after the flow.
+
+### `IIdempotencyPlugin` — Idempotency Key
+
+Reads the `Idempotency-Key` HTTP request header and exposes it for idempotent request handling.
+
+```csharp
+services.AddFlowPlugin<IIdempotencyPlugin, IdempotencyPlugin>();
+
+// Usage in a specification
+var idempotency = context.Plugin<IIdempotencyPlugin>();
+if (idempotency.HasKey && await store.ExistsAsync(idempotency.Key!, ct))
+    return FlowInterrupt<object?>.Stop(cachedResponse, 200);
+```
+
+### `IPerformancePlugin` — Named Section Timing
+
+Measures elapsed time for named code sections using `Stopwatch`. Results are available after each `Dispose()`.
+
+```csharp
+services.AddFlowPlugin<IPerformancePlugin, PerformancePlugin>();
+
+// Usage — IDisposable scope pattern
+var perf = context.Plugin<IPerformancePlugin>();
+using (perf.Measure("db-query"))
+    result = await db.Orders.FindAsync(id);
+
+using (perf.Measure("mapping"))
+    response = mapper.Map(result);
+
+foreach (var (name, elapsed) in perf.Elapsed)
+    logger.LogInformation("{Section}: {Ms} ms", name, elapsed.TotalMilliseconds);
+```
+
+### `ITenantPlugin` — Multi-Tenant ID Resolution
+
+Resolves the tenant identifier with the following priority order: `tid` claim → `X-Tenant-Id` header → `tenantId` route value → `"default"` fallback.
+
+```csharp
+services.AddFlowPlugin<ITenantPlugin, TenantPlugin>();
+
+// Usage
+var tenantId = context.Plugin<ITenantPlugin>().TenantId;
+var db = context.Service<ITenantDbFactory>().GetDatabase(tenantId);
+```
 
 ---
 

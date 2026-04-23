@@ -11,13 +11,16 @@ public sealed class FlowContext
 Inheritance [System\.Object](https://learn.microsoft.com/en-us/dotnet/api/system.object 'System\.Object') &#129106; FlowContext
 
 ### Remarks
-The context uses a type\-keyed dictionary for storing arbitrary data\. All operations on [Set&lt;T&gt;\(T, string\)](FlowContext.Set.LZGE5IPZA0GXP0P31NTUXUGV4.md 'FlowT\.FlowContext\.Set\<T\>\(T, string\)'), [TryGet&lt;T&gt;\(T, string\)](FlowContext.TryGet.4XAIGJ4SSSXL7SY4M9NPRD072.md 'FlowT\.FlowContext\.TryGet\<T\>\(T, string\)'), 
-and [GetOrAdd&lt;T&gt;\(Func&lt;T&gt;, string\)](FlowContext.GetOrAdd.md#FlowT.FlowContext.GetOrAdd_T_(System.Func_T_,string) 'FlowT\.FlowContext\.GetOrAdd\<T\>\(System\.Func\<T\>, string\)') are thread\-safe\. For parallel scenarios, use the lock\-free fast path or explicit locking\.
+The context uses a type\-keyed dictionary for storing arbitrary data\.
+All operations on [Set&lt;T&gt;\(T, string\)](FlowContext.Set.LZGE5IPZA0GXP0P31NTUXUGV4.md 'FlowT\.FlowContext\.Set\<T\>\(T, string\)'), [TryGet&lt;T&gt;\(T, string\)](FlowContext.TryGet.4XAIGJ4SSSXL7SY4M9NPRD072.md 'FlowT\.FlowContext\.TryGet\<T\>\(T, string\)'),
+and [GetOrAdd&lt;T&gt;\(Func&lt;T&gt;, string\)](FlowContext.GetOrAdd.md#FlowT.FlowContext.GetOrAdd_T_(System.Func_T_,string) 'FlowT\.FlowContext\.GetOrAdd\<T\>\(System\.Func\<T\>, string\)') are thread\-safe and protected by an internal lock\.
+Timer values recorded via [StartTimer\(string\)](FlowContext.StartTimer.O49H5630KGO18IC0310CZ9BBC.md 'FlowT\.FlowContext\.StartTimer\(string\)') are stored in a dedicated dictionary separate from general\-purpose storage\.
 
 | Properties | |
 | :--- | :--- |
 | [CancellationToken](FlowContext.CancellationToken.md 'FlowT\.FlowContext\.CancellationToken') | Gets the cancellation token for this flow execution\. Use this to observe cancellation requests from the client or timeout policies\. |
 | [FlowId](FlowContext.FlowId.md 'FlowT\.FlowContext\.FlowId') | Gets the unique identifier for this flow execution\. This ID is shared across the entire flow execution tree \(main flow and all sub\-flows\) for correlation\. |
+| [FlowIdString](FlowContext.FlowIdString.md 'FlowT\.FlowContext\.FlowIdString') | Gets the flow ID as a string in format "N" \(32 digits without hyphens\)\. Useful for logging and correlation\. |
 | [HttpContext](FlowContext.HttpContext.md 'FlowT\.FlowContext\.HttpContext') | Gets the HTTP context for this flow execution, if available\. This is `null` for non\-HTTP scenarios \(background jobs, console apps, Blazor WebAssembly, message queue handlers, unit tests\)\. |
 | [Services](FlowContext.Services.md 'FlowT\.FlowContext\.Services') | Gets the service provider for resolving dependencies\. |
 | [StartedAt](FlowContext.StartedAt.md 'FlowT\.FlowContext\.StartedAt') | Gets the UTC timestamp when this flow execution started\. |
@@ -25,7 +28,6 @@ and [GetOrAdd&lt;T&gt;\(Func&lt;T&gt;, string\)](FlowContext.GetOrAdd.md#FlowT.F
 | Methods | |
 | :--- | :--- |
 | [GetClientIpAddress\(\)](FlowContext.GetClientIpAddress().md 'FlowT\.FlowContext\.GetClientIpAddress\(\)') | Gets the client's IP address from the HTTP connection\. Returns `null` if [HttpContext](FlowContext.HttpContext.md 'FlowT\.FlowContext\.HttpContext') is not available \(non\-HTTP scenarios\) or the connection info is not available\. |
-| [GetFlowIdString\(\)](FlowContext.GetFlowIdString().md 'FlowT\.FlowContext\.GetFlowIdString\(\)') | Gets the flow ID as a string in format "N" \(32 digits without hyphens\)\. Useful for logging and correlation\. |
 | [GetHeader\(string\)](FlowContext.GetHeader.A4LE0Z86ZSCQUM0PPIO6VZCM3.md 'FlowT\.FlowContext\.GetHeader\(string\)') | Gets the value of a specific HTTP request header\. Returns `null` if [HttpContext](FlowContext.HttpContext.md 'FlowT\.FlowContext\.HttpContext') is not available \(non\-HTTP scenarios\) or the header is not present\. |
 | [GetOrAdd&lt;T,TArg&gt;\(TArg, Func&lt;TArg,T&gt;, string\)](FlowContext.GetOrAdd.md#FlowT.FlowContext.GetOrAdd_T,TArg_(TArg,System.Func_TArg,T_,string) 'FlowT\.FlowContext\.GetOrAdd\<T,TArg\>\(TArg, System\.Func\<TArg,T\>, string\)') | Gets an existing value from the context or adds a new one using the provided factory with an argument\. This overload avoids closure allocation when the factory needs a parameter\. |
 | [GetOrAdd&lt;T&gt;\(Func&lt;T&gt;, string\)](FlowContext.GetOrAdd.md#FlowT.FlowContext.GetOrAdd_T_(System.Func_T_,string) 'FlowT\.FlowContext\.GetOrAdd\<T\>\(System\.Func\<T\>, string\)') | Gets an existing value from the context or adds a new one using the provided factory\. This method is thread\-safe\. |
@@ -46,5 +48,5 @@ and [GetOrAdd&lt;T&gt;\(Func&lt;T&gt;, string\)](FlowContext.GetOrAdd.md#FlowT.F
 | [SetStatusCode\(int\)](FlowContext.SetStatusCode.ES7YACAKZB6SJOGWGSB9UJ0H3.md 'FlowT\.FlowContext\.SetStatusCode\(int\)') | Sets the HTTP response status code\. Does nothing if [HttpContext](FlowContext.HttpContext.md 'FlowT\.FlowContext\.HttpContext') is not available \(non\-HTTP scenarios\)\. |
 | [StartTimer\(string\)](FlowContext.StartTimer.O49H5630KGO18IC0310CZ9BBC.md 'FlowT\.FlowContext\.StartTimer\(string\)') | Starts a high\-precision timer for measuring elapsed time of an operation\. Returns a disposable that records the elapsed time when disposed\. Timers are stored in the context and can be retrieved for performance analysis\. |
 | [ThrowIfCancellationRequested\(\)](FlowContext.ThrowIfCancellationRequested().md 'FlowT\.FlowContext\.ThrowIfCancellationRequested\(\)') | Throws an [System\.OperationCanceledException](https://learn.microsoft.com/en-us/dotnet/api/system.operationcanceledexception 'System\.OperationCanceledException') if cancellation has been requested\. Convenience method for checking [CancellationToken](FlowContext.CancellationToken.md 'FlowT\.FlowContext\.CancellationToken')\. |
-| [TryGet&lt;T&gt;\(T, string\)](FlowContext.TryGet.4XAIGJ4SSSXL7SY4M9NPRD072.md 'FlowT\.FlowContext\.TryGet\<T\>\(T, string\)') | Attempts to retrieve a value from the context's shared state\. Uses a double\-check lock pattern for optimal read performance in the common case\. |
+| [TryGet&lt;T&gt;\(T, string\)](FlowContext.TryGet.4XAIGJ4SSSXL7SY4M9NPRD072.md 'FlowT\.FlowContext\.TryGet\<T\>\(T, string\)') | Attempts to retrieve a value from the context's shared state\. This method is thread\-safe\. |
 | [TryService&lt;T&gt;\(\)](FlowContext.TryService_T_().md 'FlowT\.FlowContext\.TryService\<T\>\(\)') | Attempts to resolve an optional service from the dependency injection container\. Returns `null` if the service is not registered\. |

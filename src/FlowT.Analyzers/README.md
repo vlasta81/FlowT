@@ -12,7 +12,7 @@ FlowT components (handlers, policies, specifications) are **registered as single
 - ❌ Storing request/response data leaks information between users
 - ❌ Non-thread-safe collections cause data corruption
 
-These analyzers **prevent common mistakes** before they reach production, with **26 diagnostic rules** that catch:
+These analyzers **prevent common mistakes** before they reach production, with **27 diagnostic rules** that catch:
 - 🛡️ **Thread safety violations** (mutable state, non-thread-safe collections, static fields)
 - 🔐 **Data leakage** (request/response storage, context capture, singleton state)
 - 💉 **DI anti-patterns** (captive dependencies, IServiceProvider storage)
@@ -29,15 +29,16 @@ These analyzers **prevent common mistakes** before they reach production, with *
 - **FlowT004**: Static mutable state
 - **FlowT006**: FlowContext stored in field
 - **FlowT007**: Request/Response objects in fields
-- **FlowT010**: Thread.Sleep() in async methods (thread pool starvation)
-- **FlowT011**: FlowDefinition Configure() missing .Handle<T>() ✨ NEW
+- **FlowT010**: Thread.Sleep() in async methods — use await Task.Delay() instead (thread pool starvation)
+- **FlowT011**: FlowDefinition Configure() missing .Handle<T>()
 - **FlowT012**: IServiceProvider stored in field
 - **FlowT013**: CancellationTokenSource stored in field
 - **FlowT015**: Mutable public/internal properties
 - **FlowT018**: Lazy<T> without explicit thread-safety mode
 - **FlowT019**: Potential state leak in singleton (StringBuilder, Stream, etc.)
-- **FlowT021**: FlowPlugin stored in singleton field ✨ NEW
-- **FlowT022**: Multiple .Handle<T>() calls in Configure() ✨ NEW
+- **FlowT021**: FlowPlugin stored in singleton field
+- **FlowT022**: Multiple .Handle<T>() calls in Configure()
+- **FlowT026**: Thread.Sleep() in synchronous flow methods
 
 ### ⚠️ Warnings (Should fix)
 - **FlowT001**: Mutable instance fields (race condition risk)
@@ -47,13 +48,13 @@ These analyzers **prevent common mistakes** before they reach production, with *
 - **FlowT016**: Task/ValueTask stored in field
 - **FlowT017**: Manual Thread creation (new Thread())
 - **FlowT020**: ConfigureAwait(false) can lose context
-- **FlowT023**: new HttpClient() in flow component ✨ NEW
-- **FlowT024**: Synchronous file I/O in async flow method ✨ NEW
+- **FlowT023**: new HttpClient() in flow component
+- **FlowT024**: Synchronous file I/O in async flow method
 
 ### ℹ️ Info (Suggestions)
 - **FlowT009**: Missing CancellationToken propagation
 - **FlowT014**: Empty catch blocks
-- **FlowT025**: Direct IServiceProvider access (prefer context.Service<T>()) ✨ NEW
+- **FlowT025**: Direct IServiceProvider access (prefer context.Service<T>())
 
 ---
 
@@ -586,7 +587,7 @@ dotnet_diagnostic.FlowT009.severity = suggestion
 # FlowT010: Synchronous blocking (Warning)
 dotnet_diagnostic.FlowT010.severity = warning
 
-# FlowT011: Missing .Handle<T>() in Configure() (Error - must fix!) ✨ NEW
+# FlowT011: Missing .Handle<T>() in Configure() (Error - must fix!)
 dotnet_diagnostic.FlowT011.severity = error
 
 # FlowT012: IServiceProvider in fields (Error - must fix!)
@@ -616,20 +617,23 @@ dotnet_diagnostic.FlowT019.severity = error
 # FlowT020: ConfigureAwait(false) can lose context (Warning)
 dotnet_diagnostic.FlowT020.severity = warning
 
-# FlowT021: FlowPlugin stored in singleton field (Error - must fix!) ✨ NEW
+# FlowT021: FlowPlugin stored in singleton field (Error - must fix!)
 dotnet_diagnostic.FlowT021.severity = error
 
-# FlowT022: Multiple .Handle<T>() calls in Configure() (Error - must fix!) ✨ NEW
+# FlowT022: Multiple .Handle<T>() calls in Configure() (Error - must fix!)
 dotnet_diagnostic.FlowT022.severity = error
 
-# FlowT023: new HttpClient() in flow component (Warning) ✨ NEW
+# FlowT023: new HttpClient() in flow component (Warning)
 dotnet_diagnostic.FlowT023.severity = warning
 
-# FlowT024: Synchronous file I/O in async method (Warning) ✨ NEW
+# FlowT024: Synchronous file I/O in async method (Warning)
 dotnet_diagnostic.FlowT024.severity = warning
 
-# FlowT025: Direct IServiceProvider access (Info - suggestion) ✨ NEW
+# FlowT025: Direct IServiceProvider access (Info - suggestion)
 dotnet_diagnostic.FlowT025.severity = suggestion
+
+# FlowT026: Thread.Sleep() in synchronous flow methods (Error - must fix!)
+dotnet_diagnostic.FlowT026.severity = error
 
 # Exclude test projects
 [**/*Tests/**/*.cs]
@@ -896,7 +900,7 @@ public class ConfigHandler : IFlowHandler<Request, Response>
 
 ---
 
-### FlowT019: Potential State Leak in Singleton 🔴 Error ✨ NEW
+### FlowT019: Potential State Leak in Singleton 🔴 Error
 
 **Problem:**
 ```csharp
@@ -968,7 +972,7 @@ public class LogHandler : IFlowHandler<Request, Response>
 
 ---
 
-### FlowT011: FlowDefinition Configure() Missing .Handle<T>() 🔴 Error ✨ NEW
+### FlowT011: FlowDefinition Configure() Missing .Handle<T>() 🔴 Error
 
 **Problem:**
 ```csharp
@@ -1077,7 +1081,10 @@ private async Task<int> CalculateSumAsync(int[] numbers)
 
 ---
 
-### FlowT021: FlowPlugin Stored in Singleton Field 🔴 Error ✨ NEW
+### FlowT021: FlowPlugin Stored in Singleton Field 🔴 Error
+
+Applies to all types derived from `FlowPlugin` or `FlowSpecification`, or implementing plugin interfaces:
+`IAuditPlugin`, `ITenantPlugin`, `IIdempotencyPlugin`, `IPerformancePlugin`, `IFlowScopePlugin`, `IFeatureFlagPlugin`, `ICorrelationPlugin`, `IUserIdentityPlugin`, `IRetryStatePlugin`, and custom plugins.
 
 **Problem:**
 ```csharp
@@ -1109,7 +1116,7 @@ public class AuditHandler : IFlowHandler<Request, Response>
 
 ---
 
-### FlowT022: Multiple .Handle<T>() Calls in Configure() 🔴 Error ✨ NEW
+### FlowT022: Multiple .Handle<T>() Calls in Configure() 🔴 Error
 
 **Problem:**
 ```csharp
@@ -1145,7 +1152,7 @@ public class SecondFlow : FlowDefinition<Request, Response>
 
 ---
 
-### FlowT023: HttpClient Instantiated Directly in Flow Component ⚠️ Warning ✨ NEW
+### FlowT023: HttpClient Instantiated Directly in Flow Component ⚠️ Warning
 
 **Problem:**
 ```csharp
@@ -1179,7 +1186,7 @@ public class ApiHandler : IFlowHandler<Request, Response>
 
 ---
 
-### FlowT024: Synchronous File I/O in Async Flow Method ⚠️ Warning ✨ NEW
+### FlowT024: Synchronous File I/O in Async Flow Method ⚠️ Warning
 
 **Problem:**
 ```csharp
@@ -1211,7 +1218,7 @@ public class ReportHandler : IFlowHandler<Request, Response>
 
 ---
 
-### FlowT025: Direct IServiceProvider Access in Flow Component ℹ️ Info ✨ NEW
+### FlowT025: Direct IServiceProvider Access in Flow Component ℹ️ Info
 
 **Problem:**
 ```csharp
@@ -1242,6 +1249,38 @@ public class UserHandler : IFlowHandler<Request, Response>
 
 ---
 
+### FlowT026: Thread.Sleep() in Synchronous Flow Methods 🔴 Error
+
+**Problem:**
+```csharp
+public class RetryPolicy : FlowPolicy<Request, Response>
+{
+    public override ValueTask<Response> HandleAsync(Request req, FlowContext ctx)
+    {
+        Thread.Sleep(500); // ❌ FlowT026: blocks thread pool thread in flow component
+        return Next!.HandleAsync(req, ctx);
+    }
+}
+```
+
+**Solution:**
+```csharp
+public class RetryPolicy : FlowPolicy<Request, Response>
+{
+    public override async ValueTask<Response> HandleAsync(Request req, FlowContext ctx)
+    {
+        await Task.Delay(500, ctx.CancellationToken); // ✅ Non-blocking async delay
+        return await Next!.HandleAsync(req, ctx);
+    }
+}
+```
+
+> **Why:** `Thread.Sleep()` blocks the calling thread for its entire duration, starving the .NET thread pool and severely degrading throughput in high-concurrency scenarios. Use `await Task.Delay()` with a `CancellationToken` so the delay can be cancelled and the thread is returned to the pool.
+
+> **Note:** FlowT010 covers `Thread.Sleep()` inside `async` methods. FlowT026 extends detection to synchronous flow methods (non-async `HandleAsync`, `CheckAsync` overrides in specs and policies).
+
+---
+
 ## 📊 Complete Analyzer Summary
 
 ### Singleton Safety (Prevent Data Leaks)
@@ -1254,13 +1293,13 @@ public class UserHandler : IFlowHandler<Request, Response>
 | FlowT007 | 🔴 Error | Request/Response objects in fields (user data leak) |
 | FlowT015 | 🔴 Error | Mutable public/internal properties (external modification) |
 | FlowT019 | 🔴 Error | Potential state leak (StringBuilder, Stream, Stopwatch, etc.) |
-| FlowT021 | 🔴 Error | **NEW** - FlowPlugin stored in singleton field (PerFlow lifetime violation) |
+| FlowT021 | 🔴 Error | FlowPlugin stored in singleton field (PerFlow lifetime violation) |
 
 ### Flow Configuration
 | Rule | Severity | Description |
 |------|----------|-------------|
-| FlowT011 | 🔴 Error | **NEW** - Configure() missing .Handle<T>() (no business logic) |
-| FlowT022 | 🔴 Error | **NEW** - Multiple .Handle<T>() calls (only one handler allowed) |
+| FlowT011 | 🔴 Error | Configure() missing .Handle<T>() (no business logic) |
+| FlowT022 | 🔴 Error | Multiple .Handle<T>() calls (only one handler allowed) |
 
 ### Dependency Injection (Prevent Captive Dependencies)
 | Rule | Severity | Description |
@@ -1268,7 +1307,7 @@ public class UserHandler : IFlowHandler<Request, Response>
 | FlowT003 | 🔴 Error | Captive scoped dependencies (DbContext, HttpContext) |
 | FlowT012 | 🔴 Error | IServiceProvider stored in field (wrong scope) |
 | FlowT013 | 🔴 Error | CancellationTokenSource stored in field (shared cancellation) |
-| FlowT025 | ℹ️ Info | **NEW** - Direct IServiceProvider access (prefer context.Service<T>()) |
+| FlowT025 | ℹ️ Info | Direct IServiceProvider access (prefer context.Service<T>()) |
 
 ### Async/Await Patterns
 | Rule | Severity | Description |
@@ -1278,7 +1317,7 @@ public class UserHandler : IFlowHandler<Request, Response>
 | FlowT010 | ⚠️ Warning | Synchronous blocking (.Result, .Wait(), .GetResult()) |
 | FlowT016 | ⚠️ Warning | Task/ValueTask stored in field (shared task) |
 | FlowT020 | ⚠️ Warning | ConfigureAwait(false) loses context (HttpContext null) |
-| FlowT024 | ⚠️ Warning | **NEW** - Synchronous file I/O in async method (thread pool block) |
+| FlowT024 | ⚠️ Warning | Synchronous file I/O in async method (thread pool block) |
 
 ### Threading & Concurrency
 | Rule | Severity | Description |
@@ -1286,18 +1325,19 @@ public class UserHandler : IFlowHandler<Request, Response>
 | FlowT008 | ⚠️ Warning | Lock on this/typeof (external deadlock risk) |
 | FlowT017 | ⚠️ Warning | Manual Thread creation (use Task.Run instead) |
 | FlowT018 | 🔴 Error | Lazy<T> without thread-safety mode (implicit behavior) |
+| FlowT026 | 🔴 Error | Thread.Sleep() in synchronous flow methods (thread pool starvation) |
 
 ### Best Practices
 | Rule | Severity | Description |
 |------|----------|-------------|
-| FlowT023 | ⚠️ Warning | **NEW** - new HttpClient() in flow component (socket exhaustion) |
+| FlowT023 | ⚠️ Warning | new HttpClient() in flow component (socket exhaustion) |
 
 ### Code Quality
 | Rule | Severity | Description |
 |------|----------|-------------|
 | FlowT014 | ℹ️ Info | Empty catch blocks (silent failures) |
 
-**Summary: 26 rules** - 14 Errors, 9 Warnings, 3 Info
+**Summary: 27 rules** - 15 Errors, 9 Warnings, 3 Info
 
 ---
 

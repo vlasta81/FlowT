@@ -4,8 +4,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![.NET](https://img.shields.io/badge/.NET-10.0-purple.svg)](https://dotnet.microsoft.com/)
 [![Build](https://img.shields.io/badge/Build-Passing-brightgreen.svg)](https://github.com/vlasta81/FlowT)
-[![Tests](https://img.shields.io/badge/Tests-206+%20Passing-brightgreen.svg)](tests/FlowT.Tests/)
-[![Analyzers](https://img.shields.io/badge/Analyzers-26%20Rules-blue.svg)](src/FlowT.Analyzers/README.md)
+[![Tests](https://img.shields.io/badge/Tests-265+%20Passing-brightgreen.svg)](tests/FlowT.Tests/)
+[![Analyzers](https://img.shields.io/badge/Analyzers-27%20Rules-blue.svg)](src/FlowT.Analyzers/README.md)
 
 **FlowT** is a high-performance orchestration library for .NET that implements the Chain of Responsibility pattern with a fluent API. Build maintainable, testable, and **ultra-fast** pipelines with specifications, policies, and handlers.
 
@@ -26,7 +26,7 @@
 - 🔄 **Chain of Responsibility** - Composable pipeline with specifications, policies, handlers
 - 🎨 **Fluent API** - Intuitive and expressive pipeline configuration
 - 📝 **Automatic Context Creation** - `ExecuteAsync(request, httpContext)` for web, `ExecuteAsync(request, services, ct)` for non-web - no manual FlowContext
-- 🛡️ **26 Roslyn Analyzers** - Compile-time safety preventing threading issues
+- 🛡️ **27 Roslyn Analyzers** - Compile-time safety preventing threading issues
 
 ### 💡 Advanced Capabilities
 - 🔍 **FlowInterrupt** - Type-safe error handling from specifications without exceptions
@@ -39,7 +39,7 @@
   - `FlowPlugin` abstract base for automatic `FlowContext` binding
 - 📊 **Named Keys** - Store multiple values of same type with optional string keys
 - 🎭 **Scoped Services** - Safe `ctx.Service<DbContext>()` usage in singleton handlers
-- 🧪 **100% Tested** - 206+ unit tests with full coverage
+- 🧪 **100% Tested** - 265+ unit tests with full coverage
 - 🏗️ **CQRS Ready** - Commands, Queries, Events with minimal boilerplate
 
 ---
@@ -277,33 +277,39 @@ public async ValueTask<Response> HandleAsync(Request req, FlowContext ctx)
 - 🌐 **HTTP Context** - Access to request/response (nullable)
 - 📢 **Events** - `PublishAsync()`, `PublishInBackground()`
 - ⏱️ **Timing** - `StartTimer()` returns `TimerDisposable` — measure via `using`
-- 🆔 **Flow ID** - `FlowId`, `GetFlowIdString()` for correlation/logging
+- 🆔 **Flow ID** - `FlowId`, `FlowIdString` for correlation/logging
 
 📚 **[Complete FlowContext Guide →](docs/FLOWCONTEXT.md)**
 
 ### 🔍 Specifications (`IFlowSpecification<TRequest>`)
-Reusable validation and business rules that can interrupt flow execution:
+Reusable validation and business rules that can interrupt flow execution.
+
+Inherit from **`FlowSpecification<TRequest>`** to use the `Continue()`, `Fail()`, and `Stop()` helpers — no `ValueTask.FromResult` boilerplate needed:
 
 ```csharp
+// ✅ Recommended: inherit FlowSpecification<T> for clean helpers
+public class ValidateEmailSpecification : FlowSpecification<CreateUserRequest>
+{
+    public override ValueTask<FlowInterrupt<object?>?> CheckAsync(
+        CreateUserRequest request, FlowContext context)
+    {
+        if (!IsValidEmail(request.Email))
+            return Fail("Email format is invalid", StatusCodes.Status400BadRequest);
+
+        return Continue(); // ✅ cached — zero allocation
+    }
+}
+
+// Also valid: implement IFlowSpecification<T> directly
 public class ValidateEmailSpecification : IFlowSpecification<CreateUserRequest>
 {
-    // ⚠️ Specs always return FlowInterrupt<object?> — the response type is erased at the interface level
     public ValueTask<FlowInterrupt<object?>?> CheckAsync(
         CreateUserRequest request, FlowContext context)
     {
         if (!IsValidEmail(request.Email))
-        {
-            // ✅ FlowInterrupt captures validation failure without exceptions
-            // Returns 400 Bad Request with error message
             return ValueTask.FromResult<FlowInterrupt<object?>?>(
-                FlowInterrupt<object?>.Fail(
-                    "Email format is invalid",
-                    StatusCodes.Status400BadRequest
-                )
-            );
-        }
+                FlowInterrupt<object?>.Fail("Email format is invalid", StatusCodes.Status400BadRequest));
 
-        // ✅ null = validation passed, continue pipeline
         return ValueTask.FromResult<FlowInterrupt<object?>?>(null);
     }
 }
@@ -312,7 +318,7 @@ public class ValidateEmailSpecification : IFlowSpecification<CreateUserRequest>
 **How FlowInterrupt works:**
 - **`Fail(message, statusCode)`** - Validation/business rule failure (400, 401, 409, etc.)
 - **`Stop(response, statusCode)`** - Early return with successful result (200, 201, 204)
-- **`null`** - Validation passed, continue to next step
+- **`null` / `Continue()`** - Validation passed, continue to next step
 - **No exceptions** - Clean error flow without try-catch overhead
 - **⚠️ `Fail()` requires `.OnInterrupt()`** — without it, failure silently returns `default!` (null), causing `NullReferenceException`
 
@@ -411,7 +417,7 @@ public class AuditPlugin : FlowPlugin, IAuditPlugin  // FlowPlugin → gets Cont
     public void Record(string action)
     {
         // ✅ FlowContext is automatically bound — no constructor injection needed
-        _logger.LogInformation("[{FlowId}] {Action}", Context.GetFlowIdString(), action);
+        _logger.LogInformation("[{FlowId}] {Action}", Context.FlowIdString, action);
     }
 }
 
@@ -440,19 +446,31 @@ public class AuditPolicy : FlowPolicy<Request, Response>
 📚 **[Complete Plugin System Guide →](docs/PLUGINS.md)**
 
 ### 🧩 Built-in Plugins (`FlowT.Plugins`)
-FlowT ships four ready-to-use plugins for common cross-cutting concerns. Register only the ones you need:
+FlowT ships **9 ready-to-use plugins** for common cross-cutting concerns. Register only the ones you need:
 
-| Plugin | Interface | Implementation | Purpose |
-|--------|-----------|----------------|---------|
-| Correlation | `ICorrelationPlugin` | `CorrelationPlugin` | Stable correlation ID from header or FlowId |
-| Retry State | `IRetryStatePlugin` | `RetryStatePlugin` | Thread-safe attempt counter for retry policies |
-| Transaction | `ITransactionPlugin` | `FlowTransactionPlugin` (abstract) | Coordinate DB transactions across pipeline stages |
+| Plugin | Interface | Purpose |
+|--------|-----------|---------|
+| **Correlation** | `ICorrelationPlugin` | Stable correlation ID from header or FlowId |
+| **RetryState** | `IRetryStatePlugin` | Thread-safe attempt counter for retry policies |
+| **Transaction** | `ITransactionPlugin` | Coordinate DB transactions across pipeline stages |
+| **Audit** | `IAuditPlugin` | Accumulate structured audit entries per flow |
+| **FeatureFlag** | `IFeatureFlagPlugin` | Per-flow feature flag evaluation with result cache |
+| **FlowScope** | `IFlowScopePlugin` | Dedicated DI scope for non-HTTP scenarios |
+| **Idempotency** | `IIdempotencyPlugin` | Idempotency key from `Idempotency-Key` header |
+| **Performance** | `IPerformancePlugin` | Named `Stopwatch`-based section timing |
+| **Tenant** | `ITenantPlugin` | Tenant ID from claim / header / route / default |
 
 ```csharp
-// Register in Program.cs or module
+// Register only what you need
 services.AddFlowPlugin<ICorrelationPlugin,  CorrelationPlugin>();
 services.AddFlowPlugin<IRetryStatePlugin,   RetryStatePlugin>();
 services.AddFlowPlugin<ITransactionPlugin,  MyEfCoreTransactionPlugin>(); // your concrete impl
+services.AddFlowPlugin<IAuditPlugin,        AuditPlugin>();
+services.AddFlowPlugin<IFeatureFlagPlugin,  FeatureFlagPlugin>();  // requires FeatureManagement
+services.AddFlowPlugin<IFlowScopePlugin,    FlowScopePlugin>();
+services.AddFlowPlugin<IIdempotencyPlugin,  IdempotencyPlugin>();
+services.AddFlowPlugin<IPerformancePlugin,  PerformancePlugin>();
+services.AddFlowPlugin<ITenantPlugin,       TenantPlugin>();
 ```
 
 **`ICorrelationPlugin`** — reads `X-Correlation-Id` header, falls back to `FlowId`:
@@ -470,6 +488,33 @@ while (retry.ShouldRetry(maxAttempts: 3))
     try   { return await Next!.HandleAsync(request, context); }
     catch { if (!retry.ShouldRetry(3)) throw; }
 }
+```
+
+**`IAuditPlugin`** — structured audit trail, flush after flow:
+```csharp
+var audit = context.Plugin<IAuditPlugin>();
+audit.Record("OrderCreated", new { orderId });
+// after flow: persist audit.Entries to DB / logging sink
+```
+
+**`IFeatureFlagPlugin`** — cached per-flow feature evaluation (requires `Microsoft.FeatureManagement.AspNetCore`):
+```csharp
+var flags = context.Plugin<IFeatureFlagPlugin>();
+if (await flags.IsEnabledAsync("NewCheckout", ct))
+    return await NewCheckoutFlow(request, context);
+```
+
+**`ITenantPlugin`** — resolves `tid` claim → `X-Tenant-Id` header → `tenantId` route → `"default"`:
+```csharp
+var tenantId = context.Plugin<ITenantPlugin>().TenantId;
+var db = context.Service<ITenantDbFactory>().GetDatabase(tenantId);
+```
+
+**`IPerformancePlugin`** — named section timing:
+```csharp
+var perf = context.Plugin<IPerformancePlugin>();
+using (perf.Measure("db-query")) result = await db.Orders.FindAsync(id);
+// perf.Elapsed["db-query"] → TimeSpan
 ```
 
 **`ITransactionPlugin`** — implement `FlowTransactionPlugin` for your DB provider:
@@ -502,7 +547,7 @@ public class EfCoreTransactionPlugin : FlowTransactionPlugin
 
 ## 🛡️ Compile-Time Safety (Roslyn Analyzers)
 
-FlowT includes **26 Roslyn analyzers** that catch threading and safety issues at compile-time:
+FlowT includes **27 Roslyn analyzers** that catch threading and safety issues at compile-time:
 
 ### 🔴 Errors (Build fails - must fix!)
 - **FlowT002**: Non-thread-safe collections (List, Dictionary, etc.)
@@ -510,7 +555,7 @@ FlowT includes **26 Roslyn analyzers** that catch threading and safety issues at
 - **FlowT004**: Static mutable state
 - **FlowT006**: FlowContext stored in field
 - **FlowT007**: Request/Response objects in fields
-- **FlowT010**: Thread.Sleep() in async methods
+- **FlowT010**: Thread.Sleep() in async context — synchronous sleep on thread pool
 - **FlowT011**: Missing .Handle<T>() in FlowDefinition.Configure()
 - **FlowT012**: IServiceProvider stored in field
 - **FlowT013**: CancellationTokenSource stored in field
@@ -519,17 +564,18 @@ FlowT includes **26 Roslyn analyzers** that catch threading and safety issues at
 - **FlowT019**: State leak types (StringBuilder, Stream, Stopwatch, arrays)
 - **FlowT021**: FlowPlugin stored in singleton field
 - **FlowT022**: Multiple .Handle<T>() calls in Configure()
+- **FlowT026**: Thread.Sleep() in synchronous flow methods
 
 ### ⚠️ Warnings
 - **FlowT001**: Mutable instance fields
 - **FlowT005**: Async void methods
 - **FlowT008**: Lock on `this` or `typeof(T)`
-- **FlowT010**: Synchronous blocking (.Result, .Wait())
 - **FlowT016**: Task/ValueTask storage
 - **FlowT017**: Manual Thread creation
 - **FlowT020**: ConfigureAwait(false) loses HttpContext/FlowContext
 - **FlowT023**: new HttpClient() in flow component (socket exhaustion)
 - **FlowT024**: Synchronous file I/O in async flow method
+- **FlowT025**: Direct IServiceProvider access (prefer context.Service<T>())
 
 ### ℹ️ Info (Suggestions)
 - **FlowT009**: Missing CancellationToken propagation
@@ -583,15 +629,15 @@ public class BadHandler : IFlowHandler<Request, Response>
 - **[Run Benchmarks](benchmarks/FlowT.Benchmarks/scripts/)** - PowerShell scripts for local testing
 
 ### 🛡️ Code Quality & Safety
-- **[FlowT.Analyzers](src/FlowT.Analyzers/README.md)** - 26 Roslyn diagnostic rules
-  - **14 Errors** - Build fails (thread-safety, DI anti-patterns, data leaks, flow configuration)
+- **[FlowT.Analyzers](src/FlowT.Analyzers/README.md)** - 27 Roslyn diagnostic rules
+  - **15 Errors** - Build fails (thread-safety, DI anti-patterns, data leaks, flow configuration, Thread.Sleep)
   - **9 Warnings** - Should fix (async issues, locking problems, HttpClient, file I/O)
   - **3 Info** - Suggestions (cancellation, empty catch blocks, service provider access)
 - **[Thread Safety Guide](docs/BEST_PRACTICES.md#-architecture)** - Singleton safety patterns
 - **Compile-time protection** - Catch bugs before production
 
 ### 🧪 Testing & Examples
-- **[FlowT.Tests](tests/FlowT.Tests/)** - 206+ unit tests with full coverage
+- **[FlowT.Tests](tests/FlowT.Tests/)** - 265+ unit tests with full coverage
   - Flow definition tests
   - Pipeline execution tests
   - FlowContext operations
@@ -615,7 +661,7 @@ FlowT is designed for **high-performance orchestration** with compile-time safet
 | Feature | Benefit |
 |---------|--------|
 | ⚡ **Singleton Architecture** | Cached pipelines, 2.7× faster than DispatchR |
-| 🛡️ **26 Roslyn Analyzers** | Catch threading/DI issues at compile-time |
+| 🛡️ **27 Roslyn Analyzers** | Catch threading/DI issues at compile-time |
 | 🧩 **IFlowModule System** | Clean vertical slice organization |
 | 🔍 **FlowInterrupt** | Type-safe error handling without exceptions |
 | 🔌 **Plugin System** | PerFlow services with 8.7× warm-path speedup |
@@ -690,7 +736,7 @@ FlowT/
 │       ├── README.md                   # Analyzer documentation
 │       └── *Analyzer.cs                # Individual analyzer implementations
 ├── tests/
-│   └── FlowT.Tests/                    # 206+ unit tests (xUnit)
+│   └── FlowT.Tests/                    # 265+ unit tests (xUnit)
 │       ├── FlowDefinitionTests.cs      # Flow pipeline tests
 │       ├── FlowContextTests.cs         # Context operations tests
 │       ├── PluginTests.cs              # Plugin system tests

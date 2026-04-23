@@ -2,11 +2,11 @@
 - **[FlowContext](FlowContext.md 'FlowT\.FlowContext')**
   - **[CancellationToken](FlowContext.CancellationToken.md 'FlowT\.FlowContext\.CancellationToken')**
   - **[FlowId](FlowContext.FlowId.md 'FlowT\.FlowContext\.FlowId')**
+  - **[FlowIdString](FlowContext.FlowIdString.md 'FlowT\.FlowContext\.FlowIdString')**
   - **[HttpContext](FlowContext.HttpContext.md 'FlowT\.FlowContext\.HttpContext')**
   - **[Services](FlowContext.Services.md 'FlowT\.FlowContext\.Services')**
   - **[StartedAt](FlowContext.StartedAt.md 'FlowT\.FlowContext\.StartedAt')**
   - **[GetClientIpAddress\(\)](FlowContext.GetClientIpAddress().md 'FlowT\.FlowContext\.GetClientIpAddress\(\)')**
-  - **[GetFlowIdString\(\)](FlowContext.GetFlowIdString().md 'FlowT\.FlowContext\.GetFlowIdString\(\)')**
   - **[GetHeader\(string\)](FlowContext.GetHeader.A4LE0Z86ZSCQUM0PPIO6VZCM3.md 'FlowT\.FlowContext\.GetHeader\(string\)')**
   - **[GetOrAdd&lt;T,TArg&gt;\(TArg, Func&lt;TArg,T&gt;, string\)](FlowContext.GetOrAdd.md#FlowT.FlowContext.GetOrAdd_T,TArg_(TArg,System.Func_TArg,T_,string) 'FlowT\.FlowContext\.GetOrAdd\<T,TArg\>\(TArg, System\.Func\<TArg,T\>, string\)')**
   - **[GetOrAdd&lt;T&gt;\(Func&lt;T&gt;, string\)](FlowContext.GetOrAdd.md#FlowT.FlowContext.GetOrAdd_T_(System.Func_T_,string) 'FlowT\.FlowContext\.GetOrAdd\<T\>\(System\.Func\<T\>, string\)')**

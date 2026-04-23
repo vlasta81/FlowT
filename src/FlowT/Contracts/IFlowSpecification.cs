@@ -9,6 +9,11 @@ namespace FlowT.Contracts
     /// If validation fails, the specification returns a <see cref="FlowInterrupt{TResponse}"/> which stops pipeline execution.
     /// </summary>
     /// <typeparam name="TRequest">The type of request to validate.</typeparam>
+    /// <remarks>
+    /// Consider inheriting from <see cref="FlowT.Abstractions.FlowSpecification{TRequest}"/> to use the
+    /// <c>Continue()</c>, <c>Fail()</c>, and <c>Stop()</c> helpers instead of the verbose
+    /// <c>ValueTask.FromResult&lt;FlowInterrupt&lt;object?&gt;?&gt;(...)</c> boilerplate.
+    /// </remarks>
     public interface IFlowSpecification<in TRequest>
     {
         /// <summary>

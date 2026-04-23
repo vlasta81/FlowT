@@ -292,8 +292,9 @@ namespace FlowT.Extensions
         private static void RegisterFlowType(IServiceCollection services, Type flowType)
         {
             Type baseType = flowType.BaseType!;
-            Type requestType = baseType.GetGenericArguments()[0];
-            Type responseType = baseType.GetGenericArguments()[1];
+            Type[] args = baseType.GetGenericArguments();
+            Type requestType = args[0];
+            Type responseType = args[1];
             // Prevent duplicate registrations - register only if not already present
             services.TryAddSingleton(flowType);
             Type interfaceType = typeof(IFlow<,>).MakeGenericType(requestType, responseType);

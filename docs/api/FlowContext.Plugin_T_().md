@@ -34,6 +34,9 @@ If the plugin inherits from [FlowPlugin](FlowPlugin.md 'FlowT\.Abstractions\.Flo
 automatically after creation via an internal call, giving the plugin full access to this context
 through its `protected Context` property.
 
+<strong>Thread safety:</strong> After the plugin is created, subsequent calls use a lockless read path for performance.
+            The first-time creation is protected by a lock to prevent duplicate initialization.
+
 ```csharp
 var metrics = context.Plugin<IRequestMetrics>();
 metrics.RecordDbQuery(elapsed);

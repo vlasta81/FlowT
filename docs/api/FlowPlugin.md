@@ -11,8 +11,14 @@ public abstract class FlowPlugin
 Inheritance [System\.Object](https://learn.microsoft.com/en-us/dotnet/api/system.object 'System\.Object') &#129106; FlowPlugin
 
 Derived  
+&#8627; [AuditPlugin](AuditPlugin.md 'FlowT\.Plugins\.AuditPlugin')  
 &#8627; [CorrelationPlugin](CorrelationPlugin.md 'FlowT\.Plugins\.CorrelationPlugin')  
+&#8627; [FeatureFlagPlugin](FeatureFlagPlugin.md 'FlowT\.Plugins\.FeatureFlagPlugin')  
+&#8627; [FlowScopePlugin](FlowScopePlugin.md 'FlowT\.Plugins\.FlowScopePlugin')  
+&#8627; [IdempotencyPlugin](IdempotencyPlugin.md 'FlowT\.Plugins\.IdempotencyPlugin')  
+&#8627; [PerformancePlugin](PerformancePlugin.md 'FlowT\.Plugins\.PerformancePlugin')  
 &#8627; [RetryStatePlugin](RetryStatePlugin.md 'FlowT\.Plugins\.RetryStatePlugin')  
+&#8627; [TenantPlugin](TenantPlugin.md 'FlowT\.Plugins\.TenantPlugin')  
 &#8627; [TransactionPlugin](TransactionPlugin.md 'FlowT\.Plugins\.TransactionPlugin')  
 &#8627; [UserIdentityPlugin](UserIdentityPlugin.md 'FlowT\.Plugins\.UserIdentityPlugin')
 

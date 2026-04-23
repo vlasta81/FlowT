@@ -110,7 +110,7 @@ services.AddFlowPlugin<IAuditPlugin, AuditPlugin>();
 
 **Performance:**
 - Cold (first call): 204 ns / 464 B (DI resolution + cache store)
-- Warm (cached): **23 ns / 0 B** (locked dictionary lookup, zero allocation)
+- Warm (cached): **23 ns / 0 B** (lockless fast path, zero allocation)
 - **8.7× speedup** after first call
 
 **⚠️ Important:**
@@ -817,25 +817,25 @@ Unique identifier for flow execution (shared across main flow and sub-flows).
 public Guid FlowId { get; init; }
 ```
 
-#### `GetFlowIdString()` - Flow ID as String
+#### `FlowIdString` - Flow ID as String
 
-Returns FlowId as a string (32 hexadecimal characters without hyphens).
+Returns `FlowId` formatted as a 32-character hexadecimal string without hyphens. This is a property (no method call overhead).
 
 ```csharp
-public string GetFlowIdString()
+public string FlowIdString { get; }
 ```
 
 **Usage:**
 ```csharp
 // ✅ Logging
-logger.LogInformation("Flow {FlowId}: Processing request", context.GetFlowIdString());
+logger.LogInformation("Flow {FlowId}: Processing request", context.FlowIdString);
 
 // ✅ Correlation
-var correlationId = context.GetFlowIdString();
+var correlationId = context.FlowIdString;
 httpClient.DefaultRequestHeaders.Add("X-Correlation-ID", correlationId);
 
 // ✅ Tracing
-Activity.Current?.AddTag("flow.id", context.GetFlowIdString());
+Activity.Current?.AddTag("flow.id", context.FlowIdString);
 
 // ✅ Database auditing
 var audit = new AuditLog
@@ -845,6 +845,8 @@ var audit = new AuditLog
     Action = "CreateOrder"
 };
 ```
+
+> ℹ️ **Migration note:** `GetFlowIdString()` was removed in v1.3.0. Replace all calls with the `FlowIdString` property.
 
 ---
 
@@ -968,7 +970,7 @@ public class PerformanceMonitoringPolicy<TRequest, TResponse> : FlowPolicy<TRequ
         {
             // Log slow request
             logger.LogWarning("Slow request: {FlowId} took {Duration}ms",
-                context.GetFlowIdString(), elapsed.TotalMilliseconds);
+                context.FlowIdString, elapsed.TotalMilliseconds);
         }
 
         return response;

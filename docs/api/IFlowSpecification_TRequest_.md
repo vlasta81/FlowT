@@ -15,6 +15,14 @@ public interface IFlowSpecification<in TRequest>
 
 The type of request to validate\.
 
+Derived  
+&#8627; [FlowSpecification&lt;TRequest&gt;](FlowSpecification_TRequest_.md 'FlowT\.Abstractions\.FlowSpecification\<TRequest\>')
+
+### Remarks
+Consider inheriting from [FlowSpecification&lt;TRequest&gt;](FlowSpecification_TRequest_.md 'FlowT\.Abstractions\.FlowSpecification\<TRequest\>') to use the
+`Continue()`, `Fail()`, and `Stop()` helpers instead of the verbose
+`ValueTask.FromResult<FlowInterrupt<object?>?>(...)` boilerplate\.
+
 | Methods | |
 | :--- | :--- |
 | [CheckAsync\(TRequest, FlowContext\)](IFlowSpecification_TRequest_.CheckAsync.NZM8Q48866JUC17QS9N2RABZ8.md 'FlowT\.Contracts\.IFlowSpecification\<TRequest\>\.CheckAsync\(TRequest, FlowT\.FlowContext\)') | Checks whether the request satisfies this specification\. |

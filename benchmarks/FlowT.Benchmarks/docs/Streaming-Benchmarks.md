@@ -1,4 +1,4 @@
-# FlowT Streaming Benchmarks
+﻿# FlowT Streaming Benchmarks
 
 This document analyzes FlowT's streaming response performance, comparing buffered vs streaming approaches and explaining the real overhead of progressive data delivery.
 
@@ -22,7 +22,7 @@ This document analyzes FlowT's streaming response performance, comparing buffere
 - ✅ **Scalability** - Handle datasets that would cause Out-of-Memory with buffering
 - ⚠️ **Overhead** - IAsyncEnumerable infrastructure adds processing cost
 
-**Key finding:** Streaming has **~25× execution overhead** but provides **96% memory reduction** and **1000× faster TTFB** with real databases.
+**Key finding:** Streaming has **~28.5× execution overhead** but provides **96% memory reduction** and **1000× faster TTFB** with real databases.
 
 ## Benchmark Suites
 
@@ -65,30 +65,32 @@ This document analyzes FlowT's streaming response performance, comparing buffere
 2. **Streaming Sync** - Pure synchronous IAsyncEnumerable (no Task.Yield)
 3. **Streaming Async** - With Task.Yield (matches StreamingBenchmarks)
 
-**Results:** [StreamingComparisonBenchmarks Results](results/FlowT.Benchmarks.StreamingComparisonBenchmarks.md)
+**Results:** [StreamingComparisonBenchmarks Results](results/FlowT.Benchmarks.StreamingComparisonBenchmarks-report-github.md)
 
 | Method                                | Time      | Memory    | Ratio  | Real Overhead |
 |---------------------------------------|-----------|-----------|--------|---------------|
-| Buffered (List<T>)                    | 726 ns    | 8,296 B   | 1.00×  | Baseline      |
-| Streaming (Sync - no Task.Yield)      | 18.0 µs   | 336 B     | 24.8×  | **REAL**      |
-| Streaming (Async - with Task.Yield)   | 220.9 µs  | 592 B     | 304×   | Artificial    |
+| Buffered (List<T>)                    | **636 ns**  | 8,296 B  | 1.00×  | Baseline      |
+| Streaming (Sync - no Task.Yield)      | **18.1 µs** | 336 B    | 28.5×  | **REAL**      |
+| Streaming (Async - with Task.Yield)   | **199.7 µs**| 592 B    | 314×   | Artificial    |
 
-**Key observation:** Real streaming overhead is **~25×**, not 300×.
+> Measured: 23.04.2026, Intel Core i5-7600K 3.80 GHz
+
+**Key observation:** Real streaming overhead is **~28.5×**, not 314×.
 
 ## Key Findings
 
-### 1. Real Overhead: 25× (Not 300×)
+### 1. Real Overhead: 28.5× (Not 314×)
 
 **What causes the overhead?**
 - **IAsyncEnumerable state machine** - Compiler-generated async iterator (~10 ns/item)
 - **MoveNextAsync calls** - Virtual dispatch + Task allocation (~5 ns/item)
 - **Yield return overhead** - State machine transitions (~3 ns/item)
-- **Total:** ~18 ns per item = 25× slower than direct List<T> access
+- **Total:** ~18 ns per item = 28.5× slower than direct List<T> access
 
-**Why 300× in StreamingBenchmarks?**
+**Why 314× in StreamingBenchmarks?**
 - `Task.Yield()` adds 200+ ns per item (simulates database latency)
 - This is an artifact of the simulation, not the streaming infrastructure
-- With real database queries (1-10 ms), streaming overhead is negligible
+- With real database queries (1–10 ms), streaming overhead is negligible
 
 ### 2. Memory Efficiency: 96% Reduction
 
@@ -374,7 +376,7 @@ Look for these key metrics:
 - **Conclusion:** Don't worry about 300×, it's Task.Yield artifact
 
 **StreamingComparisonBenchmarks (real overhead):**
-- Ratio: ~25× slower (real IAsyncEnumerable cost)
+- Ratio: ~28.5× slower (real IAsyncEnumerable cost)
 - Memory: 96% reduction
 - **Conclusion:** 25× overhead is negligible vs 1ms database queries
 

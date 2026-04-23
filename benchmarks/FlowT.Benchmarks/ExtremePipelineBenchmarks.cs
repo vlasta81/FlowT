@@ -198,66 +198,68 @@ public record LargePayloadResponse
 // 10 Specifications
 // ============================================
 
-public class ExtremeSpec1 : IFlowSpecification<ExtremeRequest>
+public class ExtremeSpec1 : FlowSpecification<ExtremeRequest>
 {
-    public ValueTask<FlowInterrupt<object?>?> CheckAsync(ExtremeRequest request, FlowContext context)
-        => ValueTask.FromResult<FlowInterrupt<object?>?>(null);
+    public override ValueTask<FlowInterrupt<object?>?> CheckAsync(ExtremeRequest request, FlowContext context)
+        => Continue();
 }
 
-public class ExtremeSpec2 : IFlowSpecification<ExtremeRequest>
+public class ExtremeSpec2 : FlowSpecification<ExtremeRequest>
 {
-    public ValueTask<FlowInterrupt<object?>?> CheckAsync(ExtremeRequest request, FlowContext context)
-        => ValueTask.FromResult<FlowInterrupt<object?>?>(null);
+    public override ValueTask<FlowInterrupt<object?>?> CheckAsync(ExtremeRequest request, FlowContext context)
+        => Continue();
 }
 
-public class ExtremeSpec3 : IFlowSpecification<ExtremeRequest>
+public class ExtremeSpec3 : FlowSpecification<ExtremeRequest>
 {
-    public ValueTask<FlowInterrupt<object?>?> CheckAsync(ExtremeRequest request, FlowContext context)
-        => ValueTask.FromResult<FlowInterrupt<object?>?>(null);
+    public override ValueTask<FlowInterrupt<object?>?> CheckAsync(ExtremeRequest request, FlowContext context)
+        => Continue();
 }
 
-public class ExtremeSpec4 : IFlowSpecification<ExtremeRequest>
+public class ExtremeSpec4 : FlowSpecification<ExtremeRequest>
 {
-    public ValueTask<FlowInterrupt<object?>?> CheckAsync(ExtremeRequest request, FlowContext context)
-        => ValueTask.FromResult<FlowInterrupt<object?>?>(null);
+    public override ValueTask<FlowInterrupt<object?>?> CheckAsync(ExtremeRequest request, FlowContext context)
+        => Continue();
 }
 
-public class ExtremeSpec5 : IFlowSpecification<ExtremeRequest>
+public class ExtremeSpec5 : FlowSpecification<ExtremeRequest>
 {
-    public ValueTask<FlowInterrupt<object?>?> CheckAsync(ExtremeRequest request, FlowContext context)
-        => ValueTask.FromResult<FlowInterrupt<object?>?>(null);
+    public override ValueTask<FlowInterrupt<object?>?> CheckAsync(ExtremeRequest request, FlowContext context)
+        => Continue();
 }
 
-public class ExtremeSpec6 : IFlowSpecification<ExtremeRequest>
+public class ExtremeSpec6 : FlowSpecification<ExtremeRequest>
 {
-    public ValueTask<FlowInterrupt<object?>?> CheckAsync(ExtremeRequest request, FlowContext context)
-        => ValueTask.FromResult<FlowInterrupt<object?>?>(null);
+    public override ValueTask<FlowInterrupt<object?>?> CheckAsync(ExtremeRequest request, FlowContext context)
+        => Continue();
 }
 
-public class ExtremeSpec7 : IFlowSpecification<ExtremeRequest>
+public class ExtremeSpec7 : FlowSpecification<ExtremeRequest>
 {
-    public ValueTask<FlowInterrupt<object?>?> CheckAsync(ExtremeRequest request, FlowContext context)
-        => ValueTask.FromResult<FlowInterrupt<object?>?>(null);
+    public override ValueTask<FlowInterrupt<object?>?> CheckAsync(ExtremeRequest request, FlowContext context)
+        => Continue();
 }
 
-public class ExtremeSpec8 : IFlowSpecification<ExtremeRequest>
+public class ExtremeSpec8 : FlowSpecification<ExtremeRequest>
 {
-    public ValueTask<FlowInterrupt<object?>?> CheckAsync(ExtremeRequest request, FlowContext context)
-        => ValueTask.FromResult<FlowInterrupt<object?>?>(null);
+    public override ValueTask<FlowInterrupt<object?>?> CheckAsync(ExtremeRequest request, FlowContext context)
+        => Continue();
 }
 
-public class ExtremeSpec9 : IFlowSpecification<ExtremeRequest>
+public class ExtremeSpec9 : FlowSpecification<ExtremeRequest>
 {
-    public ValueTask<FlowInterrupt<object?>?> CheckAsync(ExtremeRequest request, FlowContext context)
-        => ValueTask.FromResult<FlowInterrupt<object?>?>(null);
+    public override ValueTask<FlowInterrupt<object?>?> CheckAsync(ExtremeRequest request, FlowContext context)
+        => Continue();
 }
 
-public class ExtremeSpec10 : IFlowSpecification<ExtremeRequest>
+public class ExtremeSpec10 : FlowSpecification<ExtremeRequest>
 {
-    public ValueTask<FlowInterrupt<object?>?> CheckAsync(ExtremeRequest request, FlowContext context)
-        => ValueTask.FromResult<FlowInterrupt<object?>?>(request.Counter < 0 
-            ? FlowInterrupt<object?>.Fail("Counter must be non-negative") 
-            : null);
+    public override ValueTask<FlowInterrupt<object?>?> CheckAsync(ExtremeRequest request, FlowContext context)
+    {
+        if (request.Counter < 0)
+            return Fail("Counter must be non-negative");
+        return Continue();
+    }
 }
 
 // ============================================

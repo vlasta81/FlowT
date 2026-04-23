@@ -8,7 +8,7 @@ Comprehensive unit and integration test suite for the FlowT orchestration librar
 
 ## 📊 Test Coverage
 
-**206+ tests** covering all critical paths and edge cases.
+**265+ tests** covering all critical paths and edge cases.
 
 ### Test Categories
 
@@ -119,6 +119,76 @@ Comprehensive unit and integration test suite for the FlowT orchestration librar
     - Plugin instance is shared across policy and handler within one execution
     - Plugin instances are isolated between separate flow executions
     - Plugin state does not leak across concurrent contexts
+
+- **[BuiltInPluginTests.cs](BuiltInPluginTests.cs)** - Tests for the 4 built-in framework plugins
+  - **`UserIdentityPlugin`** (11 tests)
+    - Returns `null`/`false` for all identity properties when `HttpContext` is absent
+    - Returns correct `UserId` (Guid), `Email`, `IsAuthenticated`, `IsInRole` from `ClaimsPrincipal`
+    - `Principal` property returns the same instance on repeated calls
+  - **`CorrelationPlugin`** (5 tests)
+    - Falls back to `FlowId` when `HttpContext` is absent or header is missing
+    - Returns `X-Correlation-Id` header value when present
+    - Returns consistent value on multiple calls; PerFlow cache verified
+  - **`RetryStatePlugin`** (7 tests)
+    - Initial attempt counter is zero
+    - `RegisterAttempt()` increments counter; multiple calls accumulate correctly
+    - `ShouldRetry(maxAttempts)` returns correct bool relative to counter
+    - Isolated between different `FlowContext` instances
+  - **`FlowTransactionPlugin`** (7 tests)
+    - Class is abstract (cannot be instantiated directly)
+    - Implements `ITransactionPlugin`
+    - `IsActive` starts `false`; `BeginAsync` sets it `true`
+    - `CommitAsync` and `RollbackAsync` set `IsActive` back to `false`
+    - Shared across plugin calls on the same context
+
+- **[NewPluginTests.cs](NewPluginTests.cs)** - Tests for `AuditPlugin`, `TenantPlugin`, `IdempotencyPlugin`, `PerformancePlugin`, `FlowScopePlugin`
+  - **`AuditPlugin`** (8 tests)
+    - `Entries` is empty initially
+    - `Record(action, data?)` adds entry with correct action, data, and UTC timestamp
+    - Multiple calls accumulate entries in chronological order
+    - Throws `ArgumentException` on null or whitespace action
+    - Shared across pipeline stages on the same context
+  - **`TenantPlugin`** (6 tests)
+    - Falls back to `"default"` when no HTTP context, claim, or header is present
+    - Reads tenant from claim `tid` (claim takes precedence over header)
+    - Reads tenant from `X-Tenant-Id` header when claim is absent
+    - Returns the same value on repeated calls (cached)
+  - **`IdempotencyPlugin`** (6 tests)
+    - `HasKey` is `false` and `Key` is `null` when `HttpContext` is absent
+    - `HasKey` is `true` and `Key` returns header value when `X-Idempotency-Key` is present
+    - `HasKey` is `false` when header is absent
+    - Returns consistent key on multiple calls
+  - **`PerformancePlugin`** (7 tests)
+    - `Elapsed` dictionary is empty initially
+    - `Measure(name)` does not record while scope is open; records elapsed after `Dispose()`
+    - Multiple sections accumulate into `Elapsed` dictionary independently
+    - Throws `ArgumentException` on null or whitespace section name
+    - Shared across pipeline stages on the same context
+  - **`FlowScopePlugin`** (5 tests)
+    - `ScopedServices` returns a non-null `IServiceProvider`
+    - Returns the same `IServiceProvider` instance on repeated calls (lazy + cached)
+    - Can resolve services registered in the root container
+    - `ScopedServices` throws `ObjectDisposedException` after `Dispose()`
+    - `Dispose()` is idempotent (safe to call multiple times)
+
+- **[FeatureFlagPluginTests.cs](FeatureFlagPluginTests.cs)** - Tests for `FeatureFlagPlugin` (17 tests)
+  - **`IsEnabledAsync(feature)`** — simple on/off gate
+    - Returns `true` for enabled features, `false` for disabled and unknown
+    - Throws `ArgumentNullException` on null feature name
+    - Throws `ArgumentException` on whitespace feature name
+    - Result is cached: second call does not re-evaluate (mock called once)
+  - **`Cache` and `TryGetCached`**
+    - `Cache` dictionary is empty before any evaluation
+    - Contains evaluated features after `IsEnabledAsync` is called
+    - `TryGetCached` returns `false` before evaluation, `true` after
+    - Returns the correct boolean value (both enabled and disabled cases)
+  - **`IsEnabledAsync<TContext>(feature, context)`** — contextual gate
+    - Returns `true` for enabled features with context
+    - Throws on null feature name; result is cached
+  - **Isolation and wiring**
+    - Shared across pipeline stages on the same `FlowContext`
+    - Isolated between separate `FlowContext` instances
+    - Throws `ArgumentNullException` when `IVariantFeatureManager` is not registered
 
 #### 🔌 Dependency Injection
 - **[ServiceCollectionExtensionsTests.cs](ServiceCollectionExtensionsTests.cs)** - DI registration

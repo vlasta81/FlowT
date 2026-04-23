@@ -40,7 +40,9 @@ A [System\.Threading\.Tasks\.ValueTask&lt;&gt;](https://learn.microsoft.com/en-u
 ### Remarks
 This method uses an optimized hot\-path for synchronous specifications \(checks [System\.Threading\.Tasks\.ValueTask&lt;&gt;\.IsCompletedSuccessfully](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.valuetask-1.iscompletedsuccessfully 'System\.Threading\.Tasks\.ValueTask\`1\.IsCompletedSuccessfully')\)\.
 If any specification returns a [FlowInterrupt&lt;TResponse&gt;](FlowInterrupt_TResponse_.md 'FlowT\.FlowInterrupt\<TResponse\>'), the pipeline stops immediately and returns the mapped response\.
-Use this overload when executing sub\-flows where you want to share the same [FlowContext](FlowContext.md 'FlowT\.FlowContext') \(especially FlowId\)\.
+If no interrupt mapper was registered via `OnInterrupt()` and the interrupt response cannot be cast to
+[TResponse](FlowDefinition_TRequest,TResponse_.md#FlowT.Abstractions.FlowDefinition_TRequest,TResponse_.TResponse 'FlowT\.Abstractions\.FlowDefinition\<TRequest,TResponse\>\.TResponse'), an [System\.InvalidOperationException](https://learn.microsoft.com/en-us/dotnet/api/system.invalidoperationexception 'System\.InvalidOperationException') is thrown\.
+Use this overload when executing sub\-flows where you want to share the same [FlowContext](FlowContext.md 'FlowT\.FlowContext') \(especially [FlowIdString](FlowContext.FlowIdString.md 'FlowT\.FlowContext\.FlowIdString')\)\.
 For main flow execution, use [ExecuteAsync\(TRequest, IServiceProvider, CancellationToken\)](FlowDefinition_TRequest,TResponse_.ExecuteAsync.md#FlowT.Abstractions.FlowDefinition_TRequest,TResponse_.ExecuteAsync(TRequest,System.IServiceProvider,System.Threading.CancellationToken) 'FlowT\.Abstractions\.FlowDefinition\<TRequest,TResponse\>\.ExecuteAsync\(TRequest, System\.IServiceProvider, System\.Threading\.CancellationToken\)') instead\.
 
 <a name='FlowT.Abstractions.FlowDefinition_TRequest,TResponse_.ExecuteAsync(TRequest,Microsoft.AspNetCore.Http.HttpContext)'></a>

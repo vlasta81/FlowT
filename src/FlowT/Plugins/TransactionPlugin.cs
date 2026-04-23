@@ -9,7 +9,7 @@ namespace FlowT.Plugins
     /// within a single flow execution (specifications → policies → handler).
     /// </summary>
     /// <remarks>
-    /// Implement this interface via <see cref="FlowTransactionPlugin"/> for a specific database provider.
+    /// Implement this interface with a concrete class for a specific database provider.
     /// Because the plugin is PerFlow, a policy can begin a transaction that the handler participates in
     /// without any direct coupling between the two.
     /// <para>

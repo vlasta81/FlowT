@@ -18,10 +18,10 @@ This document defines expected performance baselines for FlowT operations. Use t
 
 All baseline measurements are from:
 
-- **CPU:** AMD Ryzen 9 5900X (12-core, 3.7 GHz base, 4.8 GHz boost)
-- **RAM:** 32 GB DDR4-3600 CL16
-- **OS:** Windows 11 23H2 (Build 22631.4037)
-- **.NET:** 10.0.100
+- **CPU:** Intel Core i5-7600K @ 3.80 GHz (Kaby Lake), 4 logical and 4 physical cores
+- **RAM:** 16 GB DDR4
+- **OS:** Windows 11 25H2 (Build 26200.8246)
+- **.NET:** 10.0.6
 - **BenchmarkDotNet:** 0.15.8
 
 ### Adjusting for Your Hardware
@@ -32,9 +32,9 @@ All baseline measurements are from:
 Adjusted Target = Baseline × (Baseline CPU GHz / Your CPU GHz)
 ```
 
-**Example:** Your CPU is 3.0 GHz (vs 3.7 GHz baseline)
+**Example:** Your CPU is 3.0 GHz (vs 3.8 GHz baseline)
 ```
-Adjusted Target = 30 ns × (3.7 / 3.0) = 37 ns
+Adjusted Target = 30 ns × (3.8 / 3.0) = 38 ns
 ```
 
 **Rule of thumb:**

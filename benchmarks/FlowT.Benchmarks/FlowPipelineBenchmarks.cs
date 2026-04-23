@@ -20,8 +20,11 @@ public class FlowPipelineBenchmarks
     private FlowWithSpec _flowWithSpec = null!;
     private FlowWithPolicy _flowWithPolicy = null!;
     private ComplexFlow _complexFlow = null!;
+    private FlowWithFiveSpecs _flowWithFiveSpecs = null!;
+    private FlowWithInterrupt _flowWithInterrupt = null!;
     private FlowContext _context = null!;
     private BenchmarkRequest _request = null!;
+    private BenchmarkRequest _invalidRequest = null!;
 
     [GlobalSetup]
     public void Setup()
@@ -33,12 +36,16 @@ public class FlowPipelineBenchmarks
         services.AddSingleton<FlowWithSpec>();
         services.AddSingleton<FlowWithPolicy>();
         services.AddSingleton<ComplexFlow>();
+        services.AddSingleton<FlowWithFiveSpecs>();
+        services.AddSingleton<FlowWithInterrupt>();
 
         _services = services.BuildServiceProvider();
         _simpleFlow = _services.GetRequiredService<SimpleFlow>();
         _flowWithSpec = _services.GetRequiredService<FlowWithSpec>();
         _flowWithPolicy = _services.GetRequiredService<FlowWithPolicy>();
         _complexFlow = _services.GetRequiredService<ComplexFlow>();
+        _flowWithFiveSpecs = _services.GetRequiredService<FlowWithFiveSpecs>();
+        _flowWithInterrupt = _services.GetRequiredService<FlowWithInterrupt>();
 
         _context = new FlowContext
         {
@@ -47,6 +54,7 @@ public class FlowPipelineBenchmarks
         };
 
         _request = new BenchmarkRequest { Value = "Test" };
+        _invalidRequest = new BenchmarkRequest { Value = "Invalid" };
     }
 
     [GlobalCleanup]
@@ -77,6 +85,24 @@ public class FlowPipelineBenchmarks
     public async Task<BenchmarkResponse> ComplexFlow_Execute()
     {
         return await _complexFlow.ExecuteAsync(_request, _context);
+    }
+
+    [Benchmark(Description = "Handler + 5 specifications (all pass)")]
+    public async Task<BenchmarkResponse> FlowWithFiveSpecs_Execute()
+    {
+        return await _flowWithFiveSpecs.ExecuteAsync(_request, _context);
+    }
+
+    [Benchmark(Description = "Spec fails - early interrupt, no handler")]
+    public async Task<BenchmarkResponse> FlowWithInterrupt_Execute()
+    {
+        return await _flowWithInterrupt.ExecuteAsync(_invalidRequest, _context);
+    }
+
+    [Benchmark(Description = "ExecuteAsync(IServiceProvider, CT) overload")]
+    public async Task<BenchmarkResponse> SimpleFlow_Execute_ServiceProviderOverload()
+    {
+        return await _simpleFlow.ExecuteAsync(_request, _services, CancellationToken.None);
     }
 
     [Benchmark(Description = "Create flow context")]
@@ -127,13 +153,10 @@ public class FlowPipelineBenchmarks
         }
     }
 
-    public class PassingSpec : IFlowSpecification<BenchmarkRequest>
+    public class PassingSpec : FlowSpecification<BenchmarkRequest>
     {
-        public ValueTask<FlowInterrupt<object?>?> CheckAsync(BenchmarkRequest request, FlowContext context)
-        {
-            // Always pass
-            return ValueTask.FromResult<FlowInterrupt<object?>?>(null);
-        }
+        public override ValueTask<FlowInterrupt<object?>?> CheckAsync(BenchmarkRequest request, FlowContext context)
+            => Continue();
     }
 
     // Flow with policy
@@ -192,6 +215,65 @@ public class FlowPipelineBenchmarks
         {
             var result = await Next.HandleAsync(request, context);
             return result with { Result = $"[P3]{result.Result}" };
+        }
+    }
+
+    // Flow with five passing specifications
+    public class FlowWithFiveSpecs : FlowDefinition<BenchmarkRequest, BenchmarkResponse>
+    {
+        protected override void Configure(IFlowBuilder<BenchmarkRequest, BenchmarkResponse> flow)
+        {
+            flow.Check<PassingSpec>()
+                .Check<PassingSpec2>()
+                .Check<PassingSpec3>()
+                .Check<PassingSpec4>()
+                .Check<PassingSpec5>()
+                .Handle<SimpleHandler>();
+        }
+    }
+
+    public class PassingSpec2 : FlowSpecification<BenchmarkRequest>
+    {
+        public override ValueTask<FlowInterrupt<object?>?> CheckAsync(BenchmarkRequest request, FlowContext context)
+            => Continue();
+    }
+
+    public class PassingSpec3 : FlowSpecification<BenchmarkRequest>
+    {
+        public override ValueTask<FlowInterrupt<object?>?> CheckAsync(BenchmarkRequest request, FlowContext context)
+            => Continue();
+    }
+
+    public class PassingSpec4 : FlowSpecification<BenchmarkRequest>
+    {
+        public override ValueTask<FlowInterrupt<object?>?> CheckAsync(BenchmarkRequest request, FlowContext context)
+            => Continue();
+    }
+
+    public class PassingSpec5 : FlowSpecification<BenchmarkRequest>
+    {
+        public override ValueTask<FlowInterrupt<object?>?> CheckAsync(BenchmarkRequest request, FlowContext context)
+            => Continue();
+    }
+
+    // Flow with a specification that fails on "Invalid" input — measures early-interrupt path
+    public class FlowWithInterrupt : FlowDefinition<BenchmarkRequest, BenchmarkResponse>
+    {
+        protected override void Configure(IFlowBuilder<BenchmarkRequest, BenchmarkResponse> flow)
+        {
+            flow.Check<FailingSpec>()
+                .OnInterrupt(interrupt => new BenchmarkResponse { Result = interrupt.Message ?? "Error" })
+                .Handle<SimpleHandler>();
+        }
+    }
+
+    public class FailingSpec : FlowSpecification<BenchmarkRequest>
+    {
+        public override ValueTask<FlowInterrupt<object?>?> CheckAsync(BenchmarkRequest request, FlowContext context)
+        {
+            if (request.Value == "Invalid")
+                return Fail("Validation failed");
+            return Continue();
         }
     }
 }

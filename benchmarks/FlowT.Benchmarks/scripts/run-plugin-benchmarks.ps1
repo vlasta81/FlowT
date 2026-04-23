@@ -1,3 +1,4 @@
+#Requires -PSEdition Core
 <#
 .SYNOPSIS
     Runs plugin system benchmarks for FlowT.
@@ -38,7 +39,8 @@ $ErrorActionPreference = "Stop"
 $PSScriptLocation = Split-Path -Parent $MyInvocation.MyCommand.Path
 $ProjectRoot = Split-Path -Parent $PSScriptLocation
 $BenchmarkProject = Join-Path $ProjectRoot "FlowT.Benchmarks.csproj"
-$ResultsDir = Join-Path $ProjectRoot "BenchmarkDotNet.Artifacts\results"
+$timestamp = if ($env:FLOWTBENCH_TIMESTAMP) { $env:FLOWTBENCH_TIMESTAMP } else { Get-Date -Format "yyyy-MM-dd_HH-mm" }
+$RunDir = Join-Path $ProjectRoot "BenchmarkDotNet.Artifacts\runs\$timestamp"
 
 Write-Host ""
 Write-Host "================================================" -ForegroundColor Cyan
@@ -51,9 +53,9 @@ if (-not (Test-Path $BenchmarkProject)) {
     exit 1
 }
 
-if ($Export -and -not (Test-Path $ResultsDir)) {
-    Write-Host "Creating results directory: $ResultsDir" -ForegroundColor Yellow
-    New-Item -ItemType Directory -Path $ResultsDir -Force | Out-Null
+if ($Export -and -not (Test-Path $RunDir)) {
+    Write-Host "Creating run directory: $RunDir" -ForegroundColor Yellow
+    New-Item -ItemType Directory -Path $RunDir -Force | Out-Null
 }
 
 Write-Host "📦 Building benchmarks in Release mode..." -ForegroundColor Yellow
@@ -101,6 +103,8 @@ if ($Export) {
     $arguments += "--exporters", "markdown"
 }
 
+$arguments += "--artifacts", $RunDir
+
 Write-Host "▶ Running: dotnet $($arguments -join ' ')" -ForegroundColor DarkGray
 Write-Host ""
 
@@ -120,10 +124,10 @@ Write-Host "================================================" -ForegroundColor G
 if ($Export) {
     Write-Host ""
     Write-Host "📁 Results saved to:" -ForegroundColor Cyan
-    Write-Host "   $ResultsDir" -ForegroundColor White
+    Write-Host "   $RunDir\results\" -ForegroundColor White
     Write-Host ""
 
-    $mdFiles = Get-ChildItem -Path $ResultsDir -Filter "*PluginBenchmarks*" -ErrorAction SilentlyContinue
+    $mdFiles = Get-ChildItem -Path "$RunDir\results" -Filter "*PluginBenchmarks*" -ErrorAction SilentlyContinue
     if ($mdFiles) {
         Write-Host "📄 Generated files:" -ForegroundColor Cyan
         foreach ($f in $mdFiles) {

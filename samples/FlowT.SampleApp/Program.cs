@@ -1,5 +1,7 @@
-using FlowT.Extensions;
+﻿using FlowT.Extensions;
+using FlowT.Plugins;
 using FlowT.SampleApp;
+using Microsoft.FeatureManagement;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +11,17 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<FlowInterruptExceptionHandler>();
+
+// Feature flags (reads from appsettings.json "FeatureManagement" section)
+builder.Services.AddFeatureManagement();
+
+// Register FlowT plugins — available in every flow via context.Plugin<T>()
+builder.Services.AddFlowPlugin<IAuditPlugin, AuditPlugin>();
+builder.Services.AddFlowPlugin<ITenantPlugin, TenantPlugin>();
+builder.Services.AddFlowPlugin<IIdempotencyPlugin, IdempotencyPlugin>();
+builder.Services.AddFlowPlugin<IPerformancePlugin, PerformancePlugin>();
+builder.Services.AddFlowPlugin<IFlowScopePlugin, FlowScopePlugin>();
+builder.Services.AddFlowPlugin<IFeatureFlagPlugin, FeatureFlagPlugin>();
 
 // Register FlowT modules (auto-discovers all [FlowModule] classes)
 builder.Services.AddFlowModules(typeof(Program).Assembly);
@@ -36,7 +49,13 @@ app.MapGet("/", () => Results.Ok(new
         "FlowInterrupt for type-safe error handling",
         "Named keys in FlowContext",
         "Roslyn analyzers for compile-time safety",
-        "High-performance singleton handlers"
+        "High-performance singleton handlers",
+        "AuditPlugin — structured audit trail per flow execution",
+        "TenantPlugin — automatic tenant resolution from claim/header/route",
+        "IdempotencyPlugin — X-Idempotency-Key header support",
+        "PerformancePlugin — measure named code sections with Stopwatch",
+        "FlowScopePlugin — dedicated DI scope for non-HTTP flows",
+        "FeatureFlagPlugin — per-flow feature flag evaluation with caching"
     },
     endpoints = new
     {
@@ -56,7 +75,7 @@ app.MapGet("/", () => Results.Ok(new
         },
         orders = new[]
         {
-            "POST /api/orders - Create order with validation"
+            "POST /api/orders - Create order with validation, idempotency, tenant, audit and feature-flag support"
         }
     },
     documentation = new[]

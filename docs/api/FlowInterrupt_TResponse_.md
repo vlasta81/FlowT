@@ -18,40 +18,28 @@ The type of response that can be returned as an early result\.
 
 ```csharp
 // Validation failure example
-public class ValidateEmailSpec : IFlowSpecification<CreateUserRequest>
+public class ValidateEmailSpec : FlowSpecification<CreateUserRequest>
 {
-    public ValueTask<FlowInterrupt<UserResponse>?> CheckAsync(
+    public override ValueTask<FlowInterrupt<object?>?> CheckAsync(
         CreateUserRequest request, FlowContext context)
     {
         if (!IsValidEmail(request.Email))
-        {
-            return ValueTask.FromResult<FlowInterrupt<UserResponse>?>(
-                FlowInterrupt<UserResponse>.Fail(
-                    "Email format is invalid",
-                    StatusCodes.Status400BadRequest
-                )
-            );
-        }
+            return Fail("Email format is invalid", StatusCodes.Status400BadRequest);
         
-        return ValueTask.FromResult<FlowInterrupt<UserResponse>?>(null);
+        return Continue();
     }
 }
 
 // Early return example
-public class CheckCacheSpec : IFlowSpecification<GetUserRequest>
+public class CheckCacheSpec : FlowSpecification<GetUserRequest>
 {
-    public ValueTask<FlowInterrupt<UserResponse>?> CheckAsync(
+    public override ValueTask<FlowInterrupt<object?>?> CheckAsync(
         GetUserRequest request, FlowContext context)
     {
-        var cached = context.TryGet<UserResponse>(out var cachedData);
-        if (cached)
-        {
-            return ValueTask.FromResult<FlowInterrupt<UserResponse>?>(
-                FlowInterrupt<UserResponse>.Stop(cachedData!, StatusCodes.Status200OK)
-            );
-        }
+        if (context.TryGet<UserResponse>(out var cached))
+            return Stop(cached, StatusCodes.Status200OK);
         
-        return ValueTask.FromResult<FlowInterrupt<UserResponse>?>(null);
+        return Continue();
     }
 }
 ```

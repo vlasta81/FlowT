@@ -1,3 +1,4 @@
+#Requires -PSEdition Core
 # FlowT Benchmarks - Main Launcher
 # Interactive menu for running all benchmark types
 
@@ -9,10 +10,14 @@ Write-Host ""
 Write-Host "Select benchmark type:" -ForegroundColor Yellow
 Write-Host ""
 Write-Host "  [1] Standard Benchmarks" -ForegroundColor White
-Write-Host "      - FlowContext operations" -ForegroundColor Gray
-Write-Host "      - Pipeline execution" -ForegroundColor Gray
-Write-Host "      - Allocations & throughput" -ForegroundColor Gray
-Write-Host "      - Named Keys overhead" -ForegroundColor Gray
+    Write-Host "      - FlowContext operations" -ForegroundColor Gray
+    Write-Host "      - Pipeline execution" -ForegroundColor Gray
+    Write-Host "      - Allocations and throughput" -ForegroundColor Gray
+    Write-Host "      - Named Keys overhead" -ForegroundColor Gray
+    Write-Host "      - Cancellation overhead" -ForegroundColor Gray
+    Write-Host "      - Event publishing" -ForegroundColor Gray
+    Write-Host "      - Timer operations" -ForegroundColor Gray
+    Write-Host "      - FlowSpecification overhead" -ForegroundColor Gray
 Write-Host ""
 Write-Host "  [2] Comparison Benchmarks" -ForegroundColor White
 Write-Host "      - FlowT vs DispatchR" -ForegroundColor Gray
@@ -28,9 +33,10 @@ Write-Host "      - Concurrent Execution (100 parallel)" -ForegroundColor Gray
 Write-Host "      - Deep Nesting (10 policies + 10 MB)" -ForegroundColor Gray
 Write-Host ""
 Write-Host "  [4] Streaming Benchmarks" -ForegroundColor White
-Write-Host "      - Buffered vs Streaming responses" -ForegroundColor Gray
-Write-Host "      - Memory efficiency (100, 1k, 10k items)" -ForegroundColor Gray
-Write-Host "      - PagedStreamResponse performance" -ForegroundColor Gray
+    Write-Host "      - Buffered vs Streaming responses" -ForegroundColor Gray
+    Write-Host "      - Streaming vs Async simulation comparison" -ForegroundColor Gray
+    Write-Host "      - Memory efficiency (100, 1k, 10k items)" -ForegroundColor Gray
+    Write-Host "      - PagedStreamResponse performance" -ForegroundColor Gray
 Write-Host ""
 Write-Host "  [5] Plugin Benchmarks" -ForegroundColor White
 Write-Host "      - Plugin<T>() cold vs. warm resolution" -ForegroundColor Gray
@@ -38,7 +44,7 @@ Write-Host "      - FlowPlugin Initialize overhead" -ForegroundColor Gray
 Write-Host "      - Pipeline with shared plugin instance" -ForegroundColor Gray
 Write-Host ""
 Write-Host "  [6] All Benchmarks" -ForegroundColor White
-Write-Host "      - Run complete suite (~25-40 minutes)" -ForegroundColor Gray
+    Write-Host "      - Run complete suite (~35-55 minutes)" -ForegroundColor Gray
 Write-Host ""
 Write-Host "  [Q] Quit" -ForegroundColor Red
 Write-Host ""
@@ -84,10 +90,17 @@ switch ($choice.ToUpper()) {
     "6" {
         Write-Host ""
         Write-Host "🚀 Starting ALL Benchmarks..." -ForegroundColor Green
-        Write-Host "⏱️  This will take approximately 25-40 minutes" -ForegroundColor Yellow
+        Write-Host "⏱️  This will take approximately 35-55 minutes" -ForegroundColor Yellow
         Write-Host ""
         $confirm = Read-Host "Are you sure? (Y/N)"
         if ($confirm.ToUpper() -eq "Y") {
+            # Shared timestamp so all sub-scripts write into the same run folder
+            $env:FLOWTBENCH_TIMESTAMP = Get-Date -Format "yyyy-MM-dd_HH-mm"
+            $projectPath = Split-Path -Parent $PSScriptRoot
+            $sharedRunDir = Join-Path $projectPath "BenchmarkDotNet.Artifacts\runs\$($env:FLOWTBENCH_TIMESTAMP)"
+
+            Write-Host ""
+            Write-Host "📂 All results will be saved to: $sharedRunDir" -ForegroundColor DarkGray
             Write-Host ""
             Write-Host "📊 Running Standard Benchmarks..." -ForegroundColor Cyan
             $scriptPath1 = Join-Path $PSScriptRoot "run-standard-benchmarks.ps1"
@@ -113,12 +126,14 @@ switch ($choice.ToUpper()) {
             $scriptPath5 = Join-Path $PSScriptRoot "run-plugin-benchmarks.ps1"
             pwsh -NoProfile -ExecutionPolicy Bypass -File $scriptPath5 -Export
 
+            $env:FLOWTBENCH_TIMESTAMP = $null
+
             Write-Host ""
             Write-Host "========================================" -ForegroundColor Green
             Write-Host "  ✅ All benchmarks completed!         " -ForegroundColor Green
             Write-Host "========================================" -ForegroundColor Green
             Write-Host ""
-            Write-Host "📁 Results saved to: BenchmarkDotNet.Artifacts/results/" -ForegroundColor Cyan
+            Write-Host "📁 Results saved to: $sharedRunDir\results\" -ForegroundColor Cyan
         } else {
             Write-Host "Cancelled." -ForegroundColor Yellow
         }
@@ -144,6 +159,6 @@ Write-Host ""
 Write-Host "📚 Documentation:" -ForegroundColor Cyan
 Write-Host "   README.md                  - Overview and getting started" -ForegroundColor Gray
 Write-Host "   docs/Quick-Start.md        - Running your first benchmark" -ForegroundColor Gray
-Write-Host "   docs/Benchmark-Guide.md    - Methodology & best practices" -ForegroundColor Gray
+Write-Host "   docs/Benchmark-Guide.md    - Methodology and best practices" -ForegroundColor Gray
 Write-Host "   docs/results/              - Latest benchmark results" -ForegroundColor Gray
 Write-Host ""

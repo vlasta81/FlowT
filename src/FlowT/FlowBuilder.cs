@@ -8,7 +8,7 @@ namespace FlowT
     {
         public List<Type> Specifications { get; } = new();
         public List<Type> Policies { get; } = new();
-        public Type Handler { get; private set; }
+        public Type? Handler { get; private set; }
         public Func<FlowInterrupt<object?>, TResponse>? InterruptMapper { get; private set; }
 
         public IFlowBuilder<TRequest, TResponse> Check<TSpec>() where TSpec : IFlowSpecification<TRequest>

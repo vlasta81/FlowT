@@ -1,5 +1,6 @@
 using BenchmarkDotNet.Attributes;
 using FlowT;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FlowT.Benchmarks;
 
@@ -19,9 +20,12 @@ public class FlowContextBenchmarks
     [GlobalSetup]
     public void Setup()
     {
+        var services = new ServiceCollection();
+        services.AddSingleton<IBenchmarkService, BenchmarkServiceImpl>();
+
         _context = new FlowContext
         {
-            Services = null,
+            Services = services.BuildServiceProvider(),
             CancellationToken = CancellationToken.None
         };
     }
@@ -192,5 +196,43 @@ public class FlowContextBenchmarks
         _context.TryGet<string>(out _, "key");
     }
 
+    // ============================================
+    // Service Resolution Benchmarks
+    // ============================================
+
+    [Benchmark(Description = "Service<T> - registered service")]
+    public IBenchmarkService Service_Registered()
+        => _context.Service<IBenchmarkService>();
+
+    [Benchmark(Description = "TryService<T> - registered service")]
+    public IBenchmarkService? TryService_Registered()
+        => _context.TryService<IBenchmarkService>();
+
+    [Benchmark(Description = "TryService<T> - unregistered service")]
+    public IUnregisteredService? TryService_Unregistered()
+        => _context.TryService<IUnregisteredService>();
+
+    // ============================================
+    // StartedAt Benchmark
+    // ============================================
+
+    [Benchmark(Description = "StartedAt property access")]
+    public DateTimeOffset StartedAt_Access()
+        => _context.StartedAt;
+
+    // ============================================
+    // GetOrAdd<T, TArg> (no-closure overload)
+    // ============================================
+
+    [Benchmark(Description = "GetOrAdd<T, TArg> (warm, no closure)")]
+    public List<string> GetOrAdd_WithArg_Warm()
+        => _context.GetOrAdd(10, static capacity => new List<string>(capacity));
+
     public record ComplexObject(string Name, int Value);
+
+    public interface IBenchmarkService { }
+    private sealed class BenchmarkServiceImpl : IBenchmarkService { }
+
+    // Marker for "not registered" TryService benchmark
+    public interface IUnregisteredService { }
 }

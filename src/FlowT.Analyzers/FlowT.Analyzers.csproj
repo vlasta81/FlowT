@@ -9,7 +9,7 @@
 
     <!-- NuGet package metadata -->
     <PackageId>FlowT.Analyzers</PackageId>
-    <Version>1.2.0</Version>
+    <Version>1.3.0</Version>
     <Authors>FlowT Contributors</Authors>
     <Description>Roslyn analyzers for FlowT framework to detect common threading and DI issues at compile-time.</Description>
     <PackageTags>analyzer;roslyn;flowt;thread-safety;di</PackageTags>

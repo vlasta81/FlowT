@@ -33,6 +33,9 @@ public class FlowTvsMediatRBenchmarks
     {
         var services = new ServiceCollection();
 
+        // MediatR requires ILoggerFactory (since v12+)
+        services.AddLogging();
+
         // Register FlowT
         services.AddSingleton<SimpleFlowT>();
         services.AddSingleton<FlowTWithPolicy>();

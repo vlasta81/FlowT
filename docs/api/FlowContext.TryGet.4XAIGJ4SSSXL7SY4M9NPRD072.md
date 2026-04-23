@@ -1,7 +1,7 @@
 ## FlowContext\.TryGet\<T\>\(T, string\) Method
 
 Attempts to retrieve a value from the context's shared state\.
-Uses a double\-check lock pattern for optimal read performance in the common case\.
+This method is thread\-safe\.
 
 ```csharp
 public bool TryGet<T>(out T value, string? key=null);

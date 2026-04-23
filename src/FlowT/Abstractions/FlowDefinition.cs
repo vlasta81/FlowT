@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -54,7 +53,9 @@ namespace FlowT.Abstractions
         /// <remarks>
         /// This method uses an optimized hot-path for synchronous specifications (checks <see cref="ValueTask{T}.IsCompletedSuccessfully"/>).
         /// If any specification returns a <see cref="FlowInterrupt{T}"/>, the pipeline stops immediately and returns the mapped response.
-        /// Use this overload when executing sub-flows where you want to share the same <see cref="FlowContext"/> (especially FlowId).
+        /// If no interrupt mapper was registered via <c>OnInterrupt()</c> and the interrupt response cannot be cast to
+        /// <typeparamref name="TResponse"/>, an <see cref="InvalidOperationException"/> is thrown.
+        /// Use this overload when executing sub-flows where you want to share the same <see cref="FlowContext"/> (especially <see cref="FlowContext.FlowIdString"/>).
         /// For main flow execution, use <see cref="ExecuteAsync(TRequest, IServiceProvider, CancellationToken)"/> instead.
         /// </remarks>
         public ValueTask<TResponse> ExecuteAsync(TRequest request, FlowContext context)
@@ -136,8 +137,7 @@ namespace FlowT.Abstractions
             FlowContext context = new FlowContext
             {
                 Services = serviceProvider,
-                CancellationToken = ct,
-                HttpContext = null
+                CancellationToken = ct
             };
             return ExecuteAsync(request, context);
         }
@@ -171,7 +171,9 @@ namespace FlowT.Abstractions
             {
                 return typed;
             }
-            return default!;
+            throw new InvalidOperationException(
+                $"Flow interrupt cannot be mapped to '{typeof(TResponse).Name}'. " +
+                "Register an interrupt mapper via OnInterrupt() in Configure().");
         }
 
         private void EnsureInitialized(IServiceProvider sp)
@@ -201,11 +203,14 @@ namespace FlowT.Abstractions
                 throw new InvalidOperationException($"Flow {GetType().Name} does not define a Handler.");
             }
             _interruptMapper = builder.InterruptMapper;
-            _specifications = builder.Specifications
-                .Select(type => 
-                    serviceProvider.GetService(type) as IFlowSpecification<TRequest>
-                    ?? (IFlowSpecification<TRequest>)ActivatorUtilities.CreateInstance(serviceProvider, type))
-                .ToArray();
+            var specTypes = builder.Specifications;
+            var specs = new IFlowSpecification<TRequest>[specTypes.Count];
+            for (int i = 0; i < specTypes.Count; i++)
+            {
+                specs[i] = serviceProvider.GetService(specTypes[i]) as IFlowSpecification<TRequest>
+                    ?? (IFlowSpecification<TRequest>)ActivatorUtilities.CreateInstance(serviceProvider, specTypes[i]);
+            }
+            _specifications = specs;
             _pipeline = BuildPipeline(serviceProvider, builder);
         }
 
