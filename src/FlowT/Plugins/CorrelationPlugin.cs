@@ -51,9 +51,7 @@ namespace FlowT.Plugins
                 HttpContext? http = Context.HttpContext;
                 _id = http is not null
                     && http.Request.Headers.TryGetValue("X-Correlation-Id", out var values)
-                    && values.Count > 0
-                        ? values[0]!
-                        : Context.FlowIdString;
+                    && values.Count > 0 ? values[0]! : Context.FlowIdString;
 
                 return _id;
             }

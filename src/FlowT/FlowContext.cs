@@ -361,8 +361,7 @@ namespace FlowT
         /// </remarks>
         public Task PublishInBackground<TEvent>(TEvent eventData, CancellationToken cancellationToken)
         {
-            ILogger? logger = Services.GetService<ILoggerFactory>()
-                ?.CreateLogger(nameof(FlowContext));
+            ILogger? logger = Services.GetService<ILoggerFactory>()?.CreateLogger(nameof(FlowContext));
             Task work = Task.Run(() => PublishAsync(eventData, cancellationToken), cancellationToken);
             _ = work.ContinueWith(
                 t => logger?.LogError(t.Exception, "Unhandled exception in background event handler for {EventType}.", typeof(TEvent).Name),
